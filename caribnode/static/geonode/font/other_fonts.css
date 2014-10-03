@@ -1,0 +1,6 @@
+@font-face {
+  font-family: 'FrancoisOne';
+  font-style: normal;
+  font-weight: 400;
+  src: local('FrancoisOne Regular'), local('FrancoisOne-Regular'), url(FrancoisOne.ttf) format('truetype');
+}

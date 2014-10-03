@@ -15,18 +15,15 @@ This is where you can override the hero area block. You can simply modify the co
       <div class="intro">
         <p>
           {% blocktrans %}
-            Foo blort! GeoNode is an open source platform for sharing geospatial data and maps.  If you have any questions about the software or service, join our <a href="https://groups.google.com/d/forum/geonode-users">mailing list</a>.
+            Foo blorts! GeoNode is an open source platform for sharing geospatial data and maps.  If you have any questions about the software or service, join our <a href="https://groups.google.com/d/forum/geonode-users">mailing list</a>.
           {% endblocktrans %}
-        </p>
-        <span>{% trans 'Need help' %} <a href="http://geonode.github.com/workshops/user">{% trans 'Getting Started?' %}</a></span>
+        </p>        
       </div>
-      <div class="btns">
-        <a class="btn btn-large" href="{% url "layer_browse" %}">
-          {% trans "Explore Layers" %}
-        </a>
-        <a class="btn btn-large" href="{% url "maps_browse" %}">
-          {% trans "Explore Maps" %}
-        </a>
+      <div class="search">
+        <form class="input-append  pull-right" action="{% url "search" %}" method="GET">
+          {# csrf_token #}
+          <input id="search" type="text" name="q"/>
+        </form>
       </div>
     </div>
   </div>

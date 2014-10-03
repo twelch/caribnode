@@ -1,0 +1,52 @@
+body {
+    padding-top: 0px !important;
+}
+
+#header-row {
+    height: 35px;
+}
+
+nav.main-nav {
+    overflow: auto !important;
+    margin: 0px !important;
+}
+
+nav.main-nav ul li a {
+    border: 0;
+    color: #999;
+    font-family: 'Lato',sans-serif;
+    font-weight: 300;
+    display: block;
+    float: left;
+    text-transform: uppercase;
+    font-size: 16px;
+    padding: 4px 14px;
+}
+
+nav.main-nav ul li.current a {
+    color: #fff;
+    font-weight: 300;    
+}
+
+nav.main-nav ul li a:hover {
+    font-weight: 300;
+    color: #fff;
+}
+
+.navbar-inner {
+    padding-top: 14px !important;
+    border-radius: 0px;
+    webkit-border-radius: 0px;
+    moz-border-radius: 0px;
+}
+
+.navbar .nav.account-bar {
+    margin-top: 0px;
+}
+
+#logo-text {
+    font-family: 'FrancoisOne';
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+}
