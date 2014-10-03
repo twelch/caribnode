@@ -2,6 +2,10 @@ body {
     padding-top: 0px !important;
 }
 
+.content-wrap {
+    padding: 3px 0px 0px 20px;
+}
+
 #header-row {
     height: 35px;
 }
@@ -40,8 +44,8 @@ nav.main-nav ul li a:hover {
     moz-border-radius: 0px;
 }
 
-.navbar .nav.account-bar {
-    margin-top: 0px;
+.navbar .nav.pull-right {
+    margin: 5px 0px 0px 0px !important;
 }
 
 #logo-text {
@@ -49,4 +53,32 @@ nav.main-nav ul li a:hover {
     font-size: 30px;
     color: white;
     text-decoration: none;
+}
+
+.welcome {
+    background-color: #1588a2;
+    height: 180px;
+}
+
+.welcome .welcome-header {
+    font-family: 'FrancoisOne';
+    font-size: 16px;
+    text-shadow: #333 1px 1px 1px;
+    color: white;
+    padding: 15px 0px 0px 25px;
+}
+
+.welcome .welcome-text {
+    font-family: 'Lato';
+    font-size: 32px;
+    text-shadow: #333 1px 1px 1px;
+    color: white;
+    padding: 15px 0px 10px 25px;
+    line-height: 40px;
+}
+
+.searchbar {
+    position: relative;
+    bottom: -130px;
+    right: 20px;
 }

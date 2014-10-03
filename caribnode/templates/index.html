@@ -11,39 +11,30 @@
 {% block body_class %}home{% endblock %}
 
 {% block body_outer %}
+<div class="welcome span12">
+      <div class="row">
+        <div class="span7">
+          <div class="welcome-header">{% trans "WELCOME" %}</div>
+          <div class="welcome-text">
+          {% trans "Discover valuable resources for marine management in the Eastern Caribbean" %}
+          </div>
+        </div>
+        <div class="span5">
+          <div class="searchbar">
+            <form class="input-append  pull-right" action="{% url "search" %}" method="GET">
+              {# csrf_token #}
+              <input id="search" type="text" name="q"/>
+            </form>
+          </div>
+        </div>
+      </div>
+</div>
 <div class="span12">
-  {% block hero %}
-  <div class="hero-unit">
-    <h1>{% trans "Welcome" %}</h1>
-    <div class="hero-unit-content">
-      <div class="intro">
-        <p>
-          {% blocktrans %}
-            GeoNode is an open source platform for sharing geospatial data and maps.  If you have any questions about the software or service, join our <a href="https://groups.google.com/d/forum/geonode-users">mailing list</a>.
-          {% endblocktrans %}
-        </p>
-        <span>{% trans 'Need help' %} <a href="http://docs.geonode.org/en/latest/tutorials/users/quickstart/index.html">{% trans 'Getting Started?' %}</a></span>
-      </div>
-      <div class="btns">
-        <a class="btn btn-large" href="{% url "layer_browse" %}">
-          {% trans "Explore Layers" %}
-        </a>
-        <a class="btn btn-large" href="{% url "maps_browse" %}">
-          {% trans "Explore Maps" %}
-        </a>
-        <form class="input-append  pull-right" action="{% url "search" %}" method="GET">
-          {# csrf_token #}
-          <input id="search" type="text" name="q"/>
-        </form>
-      </div>
-    </div>
-  </div>
-  {% endblock %}
   {% block mainbody %}
   <div class="row">
     <div class="span8">
       <section class="widget list paginate-contents">
-        <h2>{% trans "Crikey Latest Layers" %}</h2>
+        <h2>{% trans "Latest Layers" %}</h2>
         <div class="paginate paginate-auto" id="search-content">
           {% include 'search/search_content.html' %}
         </div>

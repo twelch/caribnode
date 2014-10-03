@@ -5,5 +5,5 @@ from geonode.urls import *
 urlpatterns = patterns('',
 
     # Static pages
-    url(r'^$', 'geonode.views.index', {'template': 'site_index.html'}, name='home'),
+    url(r'^$', 'geonode.views.index', {'template': 'index.html'}, name='home'),
  ) + urlpatterns
