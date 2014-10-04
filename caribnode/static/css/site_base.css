@@ -1,13 +1,18 @@
 body {
     padding-top: 0px !important;
+    background-image: url("../img/waves_gray_20opac.jpg");
 }
 
 .content-wrap {
-    padding: 3px 0px 0px 20px;
+    padding: 32px 0px 0px 20px;
 }
 
-#header-row {
-    height: 35px;
+.header-row {
+    height: 36px;
+}
+
+nav {
+    width: 600px;
 }
 
 nav.main-nav {
@@ -44,8 +49,16 @@ nav.main-nav ul li a:hover {
     moz-border-radius: 0px;
 }
 
+.navbar {
+    margin-bottom: 0px !important;
+}
+
 .navbar .nav.pull-right {
-    margin: 5px 0px 0px 0px !important;
+    margin: 0px 0px 0px 0px !important;
+}
+
+.header-logo {
+    padding: 0px 20px 0px 20px;
 }
 
 #logo-text {
@@ -65,7 +78,7 @@ nav.main-nav ul li a:hover {
     font-size: 16px;
     text-shadow: #333 1px 1px 1px;
     color: white;
-    padding: 15px 0px 0px 25px;
+    padding: 20px 0px 0px 25px;
 }
 
 .welcome .welcome-text {
@@ -82,3 +95,57 @@ nav.main-nav ul li a:hover {
     bottom: -130px;
     right: 20px;
 }
+
+.features {
+    background-color: white;
+    margin-top: 20px;
+    height: 270px;
+}
+
+.features .feature-header {
+    font-family: 'FrancoisOne';
+    font-size: 14px;
+    /*text-shadow: #333 1px 1px 1px;*/
+    color: #999;
+    padding: 20px 0px 0px 25px;
+}
+
+.features .feature-link {
+    font-family: 'FrancoisOne';
+    font-size: 14px;
+    padding-right: 10px;    
+}
+
+.features .feature {
+    font-family: 'Lato';
+    font-size: 24px;
+    color: #666;
+    padding: 15px 0px 0px 25px;
+    line-height: 30px;
+}
+
+.feature .feature-tool-icon {
+    height: 60px;
+    width: 60px;
+    background-color: #F5A623;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;    
+}
+
+.feature .feature-map-icon {
+    height: 60px;
+    width: 60px;
+    background-color: #7ED321;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;    
+}
+
+.feature .feature-text {
+    display: inline-block;
+    width: 330px;
+    height: 90px;
+    margin-left: 20px;
+}
+

@@ -2,3 +2,4 @@
 *.egg-info
 *~
 local_settings.py
+.DS_Store

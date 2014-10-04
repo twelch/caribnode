@@ -24,16 +24,15 @@
   </head>
   <body class="{% block body_class %}{% endblock %}">
     {% block header %}
+
     <div class="navbar">
       <div class="navbar-inner">
-        <section>
-        <div class="container">
-          <div id="header-row" class="row">
-            <div class="span2">
+        <div class="header-row container">
+            <div class="header-logo pull-left">
               <a id="logo-text" href="{% url "home" %}">CaribNode</a>
             </div>
-            <div class="span7">
-              <nav class="main-nav">              
+            <div class="">
+              <nav class="main-nav pull-left">              
                 <ul>
                   <li id="nav_about">
                     <a href="{% url "about" %}">{% trans "About" %}</a>
@@ -59,8 +58,8 @@
                 </ul>
               </nav>
             </div>
-            <div class="span3">
-              <div class="nav-collapse pull-right">
+            <div class="pull-right">
+              <div class="nav-collapse">
                 <div class="pull-right">
                   <ul class="nav pull-right account-bar">
                     {% if user.is_authenticated %}
@@ -128,10 +127,8 @@
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>          
+            </div>         
         </div> <!-- /.container -->
-        </section>
       </div> <!-- /.navbar-inner -->
     </div> <!-- /.navbar navbar-fixed-top -->
     {% endblock header %}
