@@ -30,6 +30,8 @@
       </div>
 </div>
 
+{% featured_maps "2" as last2maps %}
+
 <div class="span12">
   <div class="row">
     <div class="features span6">
@@ -47,17 +49,64 @@
       </div>
     </div>
     <div class="features span6">
-      <div class="feature-header">{% trans "FEATURED MAPS" %}</div>
+      <div class="feature-header">{% trans "LATEST MAPS" %}</div>
+
+    {% if last2maps|length > 0 %}
+      {% for map in last2maps %}
+            <div class="feature">
+              <div class="feature-map-icon pull-left">
+              <a href="{% url "map_detail" map.id %}"><img src="/static/img/map_icon_28732.png" /></a>
+              </div>
+              <div class="feature-text"><a href="{% url "map_detail" map.id %}">{{ map.title|truncatechars:72 }}</a></div>
+            </div>
+      {% endfor %}
+    {% else %}
+      <p>{% trans "No layers found" %}</p>
+    {% endif %}
+
+      <div class="feature-link pull-right">
+        <a href="/maps">{% trans "View all " %}7</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% featured_layers "2" as last2layers %}
+
+<div class="span12">
+  <div class="row">
+    <div class="features span6">
+      <div class="feature-header">{% trans "LATEST LAYERS" %}</div>
+
+    {% if last2layers|length > 0 %}
+      {% for layer in last2layers %}
+            <div class="feature">
+              <div class="feature-thumb pull-left">
+              <a href="{% url "layer_detail" layer.typename %}"><img src="{{ layer.get_thumbnail_url }}" /></a>
+              </div>
+              <div class="feature-text"><a href="{% url "layer_detail" layer.typename %}">{{ layer.title }}</a></div>
+            </div>
+      {% endfor %}
+    {% else %}
+      <p>{% trans "No layers found" %}</p>
+    {% endif %}
+
+      <div class="feature-link pull-right">
+        <a href="/layers">{% trans "View all " %}27</a>
+      </div>
+    </div>
+    <div class="features span6">
+      <div class="feature-header">{% trans "LATEST DOCUMENTS" %}</div>
       <div class="feature">
         <div class="feature-map-icon pull-left"></div>
-        <div class="feature-text">{% trans "St. Lucia Point Sables Environmental Protection Area and the Mankote…" %}</div>
+        <div class="feature-text">{% trans "Average Coral Cover 2012-2014" %}</div>
       </div>
       <div class="feature">
         <div class="feature-map-icon pull-left"></div>
-        <div class="feature-text">{% trans "Caribbean Current and Proposed Protected Areas" %}</div>
+        <div class="feature-text">{% trans "Management Effectiveness 2011-2013" %}</div>
       </div>
       <div class="feature-link pull-right">
-        <a href="#">{% trans "View all " %}4</a>
+        <a href="#">{% trans "View all " %}13</a>
       </div>
     </div>
   </div>

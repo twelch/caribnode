@@ -11,11 +11,8 @@ body {
     height: 36px;
 }
 
-nav {
-    width: 600px;
-}
-
 nav.main-nav {
+    width: 600px;
     overflow: auto !important;
     margin: 0px !important;
 }
@@ -142,10 +139,28 @@ nav.main-nav ul li a:hover {
     moz-border-radius: 5px;    
 }
 
+.feature .feature-map-icon a img {
+    padding: 13px 0px 0px 13px;
+}
+
 .feature .feature-text {
     display: inline-block;
-    width: 330px;
+    width: 290px;
     height: 90px;
     margin-left: 20px;
+}
+
+.feature .feature-thumb {
+    height: 75px;
+    width: 100px;
+}
+
+.feature .feature-thumb a img {
+    height: 75px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;    
 }
 
