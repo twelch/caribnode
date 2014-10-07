@@ -12,6 +12,7 @@
 {% block body_class %}home{% endblock %}
 
 {% block body_outer %}
+{% block mainbody %}
 <div class="welcome span12">
       <div class="row">
         <div class="span7">
@@ -36,12 +37,12 @@
     <div class="features span6">
       <div class="feature-header">{% trans "FEATURED TOOLS" %}</div>
       <div class="feature">
-        <div class="feature-tool-icon pull-left"></div>
+        <div class="feature-tool-icon-reef pull-left"></div>
         <div class="feature-text">{% trans "Caribbean Coral Reef Assessment Tool" %}</div>
       </div>
       <div class="feature">
-        <div class="feature-tool-icon pull-left"></div>
-        <div class="feature-text">{% trans "Caribbean Biodiversity Fund Status Report is this the real thing my man?" %}</div>
+        <div class="feature-tool-icon-fund pull-left"></div>
+        <div class="feature-text">{% trans "Caribbean Biodiversity Fund Status Report" %}</div>
       </div>
       <div class="feature-link pull-right">
         <a href="#">{% trans "View all " %}4</a>
@@ -71,6 +72,8 @@
     </div>
   </div>
 </div>
+
+
 
 <div class="span12">
   <div class="row">
@@ -103,8 +106,8 @@
     {% if last2docs|length > 0 %}
       {% for doc in last2docs %}
         <div class="feature">
-          <div class="feature-doc-icon clickable pull-left">          
-            <a href="{% url "document_detail" doc.id %}"></a>
+          <div class="feature-thumb pull-left">         
+            <a href="{% url "document_detail" doc.id %}"><img class="thumb" src="{{ doc.get_thumbnail_url }}" /></a>
           </div>
           <div class="feature-text"><a href="{% url "document_detail" doc.id %}">{{ doc.title }}</a></div>
         </div>
@@ -121,47 +124,20 @@
 </div>
 
 <div class="span12">
-  {% block mainbody %}
   <div class="row">
-    <div class="span8">
-      <section class="widget list paginate-contents">
-        <h2>{% trans "Latest Layers" %}</h2>
-        <div class="paginate paginate-auto" id="search-content">
-          {% include 'search/search_content.html' %}
-        </div>
-      </section>
+    <div class="partner-box span12">
+      <div class="partner-icon clickable pull-left"><a href="/partners"></a></div>
+      <div class="partner-text"><a href="/partners">{% trans "Regional partners - see who is contributing their data" %}</a></div>      
     </div>
-    <aside class="span4">
-      {% if request.user.is_authenticated %}
-        <div class="well">
-          <section>
-            <h2>{% trans "Contribute" %}</h2>
-            <p class="main-actions">
-            {% blocktrans %}
-              GeoNode enables you to upload, manage, and browse data layers. Search for data that is valuable to you, or upload your own data. 
-            {% endblocktrans %}
-              <a href="{% url "data_upload" %}" class="btn btn-large">{% trans 'Upload Layers' %}</a>
-            {% blocktrans %}
-              GeoNode enables you to compose and share maps. Create a map with our cartography tool, or explore maps shared by others. 
-            {% endblocktrans %}
-              <a href="{% url "new_map" %}" class="btn btn-large">{% trans 'Create a Map' %}</a>
-            </p>
-          </section>
-        </div>
-      {% endif %}
-      <div class="well">
-        <h2>{% trans "Latest Maps" %}</h2>
-        <section class="article-list latest-maps">
-          {% featured_maps as featured_maps %}
-          {% for map in featured_maps %}
-            {% include "maps/_map_list_item.html" %}
-          {% endfor %}
-        </section>
-      </div>
-    </aside>
   </div>
-  {% endblock %}
 </div>
+
+<hr>
+
+<br/>
+<br/>
+
+{% endblock %}
 {% endblock %}
 
 {% block extra_script %}  
