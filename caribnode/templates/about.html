@@ -1,0 +1,44 @@
+{% extends "site_base.html" %}
+
+{% load i18n %}
+{% block title %} {% trans "About CaribNode" %} {% endblock %}
+
+{% block body_outer %}
+<div class="span12 carib">
+    <div class="row">
+        <div class="span12">
+            <h1>{% trans "About CaribNode" %}</h1>
+        </div>
+        <div class="span7">            
+            <p>CaribNode is a regional information system that brings together authoritative data from national and regional entities, making it possible to create tools for resource management across the region.  </p>
+            <p>One such example is the Coral Reef Assessment Tool, which provides access to standardized indicators that allow you to monitor the status and trends of the marine environment, the effectiveness of their management, and the health of the communities that rely on it.</p>
+        </div>
+        <div class="span4 funder">
+            <div class="header">Funders</div>
+            <div>
+            <p>This system is being developed with funding from the following projects:</p>
+                <ul>
+                    <li><a href="https://www.conservationgateway.org/ConservationByGeography/NorthAmerica/Caribbean/science/management/Pages/ecmman.aspx" target="_window">Climate Resilient Eastern Caribbean Marine Managed Areas Network (ECMMAN)</a></li>
+                    <li><a href="http://www.worldbank.org/projects/P103470/sustainable-financing-management-eastern-caribbean-marine-ecosystem?lang=en" target="_window">Sustainable Financing & Management of Eastern Caribbean Marine Ecosystem Project</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>    
+</div>
+
+<div class="span12 carib">
+    <h2 name="partners">Project Partners</h2>
+    <p>A number of national governements and organizations in the Caribbean region are contributing data to CaribNode including:</p>
+    <ul>
+        <li>Antigua and Barbuda</li>
+        <li><a href="http://dominode.net/" target="_blank">Dominica</a></li>
+        <li>Grenada</li>
+        <li>Saint Kitts and Nevis</li>
+        <li><a href="http://sling.gosl.gov.lc/" target="_blank">Saint Lucia</a></li>
+        <li>Saint Vincent and the Grenadines</li>
+        <li>Organization of Eastern Caribbean States</li>
+        <li>The Nature Conservancy</li>
+    </ul>    
+</div> 
+
+{% endblock %}

@@ -3,6 +3,29 @@ body {
     background-image: url("../img/waves_gray_20opac.jpg");
 }
 
+.carib p {
+    font-size: 20px;
+    color: #333;
+    line-height: 36px;
+    font-weight: 300;
+}
+
+.carib ul {
+    font-size: 20px;
+    color: #999;
+    line-height: 36px;
+    font-weight: 300;
+}
+
+.carib ul li {
+    line-height: 25px;
+    padding-top: 10px
+}
+
+.carib a {    
+    color: #028BAF !important;
+}
+
 .content-wrap {
     padding: 32px 0px 0px 20px;
 }
@@ -222,3 +245,37 @@ to absolute */
 .partner-text {
     padding: 16px 0px 0px 25px;
 }
+
+.funder {
+    background-color: #028BAF;
+    padding-right: 10px;
+}
+
+.funder .header {
+    font-family: 'FrancoisOne';
+    font-size: 16px;
+    text-shadow: #333 1px 1px 1px;
+    color: white;
+    padding: 20px 0px 0px 25px;
+}
+
+.funder p {
+    font-family: 'Lato';
+    font-size: 20px;
+    color: white !important;
+    padding: 15px 0px 0px 25px;
+    line-height: 24px;
+}
+
+.funder a {
+    color: white !important;
+    text-decoration: none;
+}
+
+.funder ul {
+    padding-left: 20px;
+}
+
+.funder ul li {
+    color: white;
+} 
