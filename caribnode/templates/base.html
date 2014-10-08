@@ -166,27 +166,32 @@
     {% block footer %}
     <footer class="footer">
       <div class="container">
-        <div class="pull-left">
-          {% trans "Powered by" %} <a href="http://geonode.org">{% trans "GeoNode" %}</a> <em>{% trans "version" %} {{ VERSION }}</em> |
-          <a href="{% url "developer" %}">{% trans "Developers" %}</a> |
-          <a href="{% url "about" %}">{% trans "About" %}</a>
+        <div class="row">
+        <div class="span12">
+          <div class="footer-contact pull-left">
+            {% trans "Feedback? email " %} <a href="mailto:info@caribnode.org">info@caribnode.org</a>
+          </div>
+          <div class="pull-right">
+          {% if csrf_token != "NOTPROVIDED" %}
+            {% get_current_language as LANGUAGE %}
+            <form class="form-inline" action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+              <label>{% trans "Language" %}</label>
+              <select class="input span2" name="language" onchange="javascript:form.submit()">
+                {% for lang in LANGUAGES %}
+                <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
+                  {{ lang.1 }}
+                </option>
+                {% endfor %}
+              </select>
+              <span class="footer-dev">                
+                <a href="{% url "developer" %}">{% trans "API ACCESS" %}</a>
+              </span>
+            </form>
+          {% endif %}          
+          </div> <!-- /.pull-right -->
         </div>
-        <div class="pull-right">
-        {% if csrf_token != "NOTPROVIDED" %}
-          {% get_current_language as LANGUAGE %}
-          <form class="form-inline" action="/i18n/setlang/" method="post">
-          {% csrf_token %}
-            <label>{% trans "Language" %}</label>
-            <select class="input span2" name="language" onchange="javascript:form.submit()">
-              {% for lang in LANGUAGES %}
-              <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
-                {{ lang.1 }}
-              </option>
-              {% endfor %}
-            </select>
-          </form>
-        {% endif %}
-        </div> <!-- /.pull-right -->
+        </div>
       </div> <!-- /.container -->
     </footer>
     {% endblock footer %}

@@ -279,3 +279,38 @@ to absolute */
 .funder ul li {
     color: white;
 } 
+
+footer .container .row .span12 {
+    border-top: 1px solid #999;
+    padding-top: 10px;
+}
+
+footer.footer {
+    position: static !important;
+    background: transparent;
+    padding: 20px 0px 0px 10px;
+    color: #7ED321 !important;
+}
+
+footer.footer a {
+    color: #7ED321 !important;   
+}
+
+footer.footer .footer-contact {
+    font-size: 14px !important;
+}
+
+footer.footer .footer-dev {
+    margin-left: 40px;
+    font-size: 14px;
+}
+
+footer.footer form label {
+    font-size: 14px !important;
+    color: #7ED321 !important;
+    padding-right: 10px;
+}
+
+footer.footer form select {
+    font-size: 12px !important;
+}
