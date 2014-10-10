@@ -38,7 +38,7 @@
                     <a href="{% url "about" %}">{% trans "About" %}</a>
                   </li>
                   <li id="nav_tools">
-                    <a href="#">{% trans "Tools" %}</a>
+                    <a href="{% url "tool_browse" %}">{% trans "Tools" %}</a>
                   </li>
                   <li id="nav_maps">
                     <a href="{% url "maps_browse" %}">{% trans "Maps" %}</a>
@@ -53,7 +53,7 @@
                   </li>
                   {% endif %}
                   <li id="nav_search">
-                    <a href="{% url "advanced_search" %}">{% trans "Search" %}</a>
+                    <a href="{% url "search" %}">{% trans "Search" %}</a>
                   </li>                  
                 </ul>
               </nav>

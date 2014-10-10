@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'geonode.documents',
 
     # Caribnode internal apps
+    'caribnode.base',
     'caribnode.tools'
 )
 

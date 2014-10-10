@@ -22,7 +22,7 @@ from django.contrib import admin
 from caribnode.tools.models import Tool
 
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ('id', 'featured', 'name', 'description', 'url', 'org', 'org_url')
-    search_fields = ('name','organization', 'profile', )
+    list_display = ('id', 'featured', 'name', 'description', 'url', 'org', 'org_url', 'icon')
+    search_fields = ('name','description', 'org', )
 
 admin.site.register(Tool, ToolAdmin)

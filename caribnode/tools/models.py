@@ -14,6 +14,7 @@ class Tool(models.Model):
     org = models.CharField(max_length=100, blank=True)
     org_url = models.CharField(max_length=2000, null=True, blank=True)
     featured = models.BooleanField(default=False)
+    icon = models.CharField(max_length=100, default='/static/img/icon_38430_coral.png')
 
     def __unicode__(self):
         return self.name

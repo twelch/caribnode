@@ -148,23 +148,11 @@ nav.main-nav ul li a:hover {
     line-height: 30px;
 }
 
-.feature .feature-tool-icon-reef {
-    position: relative;
-    background: url('/static/img/icon_38430_coral.png') no-repeat center;
+.feature .feature-tool-icon {
+    position: relative;    
     height: 60px;
     width: 60px;
-    background-color: #F5A623;
-    border-radius: 5px;
-    webkit-border-radius: 5px;
-    moz-border-radius: 5px;    
-}
-
-.feature .feature-tool-icon-fund {
-    position: relative;
-    background: url('/static/img/icon_4218_fund.png') no-repeat center;
-    height: 60px;
-    width: 60px;
-    background-color: #F5A623;
+    background-color: #F5A623 !important;
     border-radius: 5px;
     webkit-border-radius: 5px;
     moz-border-radius: 5px;    
