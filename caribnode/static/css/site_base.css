@@ -288,8 +288,12 @@ footer .container .row .span12 {
 footer.footer {
     position: static !important;
     background: transparent;
-    padding: 20px 0px 0px 10px;
+    padding: 20px 0px 0px 0px;
     color: #7ED321 !important;
+}
+
+body.home footer.footer .container {
+    padding-left: 20px;
 }
 
 footer.footer a {

@@ -59,3 +59,59 @@ LOCALE_PATHS = (
     os.path.join(LOCAL_ROOT, 'locale'),
     ) + LOCALE_PATHS
 
+INSTALLED_APPS = (
+
+    # Apps bundled with Django
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.admin',
+    'django.contrib.sitemaps',
+    'django.contrib.staticfiles',
+    'django.contrib.messages',
+    'django.contrib.humanize',
+
+    # Third party apps
+
+    # Utility
+    'pagination',
+    'taggit',
+    'taggit_templatetags',
+    'south',
+    'friendlytagloader',
+    'geoexplorer',
+    'django_extensions',
+
+    # Theme
+    "pinax_theme_bootstrap_account",
+    "pinax_theme_bootstrap",
+    'django_forms_bootstrap',
+
+    # Social
+    'account',
+    'avatar',
+    'dialogos',
+    'agon_ratings',
+    'notification',
+    'announcements',
+    'actstream',
+    'user_messages',
+
+    # GeoNode internal apps
+    'geonode.people',
+    'geonode.base',
+    'geonode.layers',
+    'geonode.upload',
+    'geonode.maps',
+    'geonode.proxy',
+    'geonode.security',
+    'geonode.search',
+    'geonode.social',
+    'geonode.catalogue',
+    'geonode.documents',
+
+    # Caribnode internal apps
+    'caribnode.tools'
+)
+
