@@ -26,5 +26,9 @@ def tool_browse(request, template='tools/tool_list.html'):
     context = {'tool_list': tool_list}
     return render(request, template, context)
 
-def reef_assess(request, template='reef_asses.html'):
-    return HttpResponse("Fumanchu")
+def reef_assess(request, template='tools/reef_assess_region.html'):
+    context = {
+        'region': 'Caribbean',
+        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia']
+    }
+    return render(request, template, context)
