@@ -1,6 +1,7 @@
 .tool p {
     font-size: 16px;
     color: #333333;
+    line-height: 25px;
 }
 
 .tool-header {
@@ -20,7 +21,7 @@ h2.tool-unit {
 h3.section-header {
     font-size: 22px;
     color: #666666;
-    margin-top: 35px;
+    margin-top: 40px;
 }
 
 .section-body {
@@ -34,10 +35,55 @@ h3.section-header {
 }
 
 .map {
-    border-radius: 5px;
-    webkit-border-radius: 5px;
-    moz-border-radius: 5px;
     background-color: #ADD8e6;
     border: 1px solid #BFBFBF;
-    height: 500px;
+    height: 580px;
+}
+
+.ol-popup {
+    display: none;
+    position: absolute;
+    background-color: white;
+    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+}
+.ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+    .ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+    .ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+    .ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+}
+    .ol-popup-closer:after {
+    content: "✖";
+}
+
+.ol-attribution {
+    display: none !important;
 }

@@ -20,6 +20,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import Tool
+from geonode.layers.models import Layer
 
 def tool_browse(request, template='tools/tool_list.html'):
     tool_list = Tool.objects.all().order_by('featured').order_by('id')
@@ -27,8 +28,17 @@ def tool_browse(request, template='tools/tool_list.html'):
     return render(request, template, context)
 
 def reef_assess(request, template='tools/reef_assess_region.html'):
+
+    pa_layer_name = "car_poli_protectedareas_201403_wgs84"
+    pa_layer = Layer.objects.get(name=pa_layer_name)
+
+    eez_layer_name = "eez_noland"
+    eez_layer = Layer.objects.get(name=eez_layer_name)    
+
     context = {
         'region': 'Caribbean',
-        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia']
+        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia'],
+        'pa_layer': {'name':pa_layer_name, 'layer':pa_layer},
+        'eez_layer': {'name':eez_layer_name, 'layer':eez_layer},
     }
     return render(request, template, context)

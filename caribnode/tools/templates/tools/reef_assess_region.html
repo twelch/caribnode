@@ -7,38 +7,140 @@
 
 {% block middle %}
   <div class="container tool">
-      <div class="tool-header">REGIONAL ASSESSMENT</div>
+      <div class="tool-header">REGIONAL REEF ASSESSMENT</div>
       <h2 class="tool-unit">{{ region }}</h2>
+      
 
-      <h3 class='section-header'>OVERVIEW</h3>
+      <h3 class='section-header'>Overview</h3>
       <div class="row-fluid section-body">
           <div class="span5 countries">
-            <p>The following countries are included in this regional assessment and the data it provides.  All other Caribbean countries are not included.  Select a country below to view more detail.</p>
+            <p>The following countries are currently participating in this regional assessment.  Select one to view more detail.</p>
           </div>
           <div class="span7 map">
-            
+            <div id="country_map" class="map">
+          </div>
           </div>
       </div>
 
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
+      <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
+      <div class="row-fluid section-body">
+          <div class="span5 countries">
+            <p></p>
+          </div>
+          <div class="span7 map">
+            <div id="pa_map" class="map">
+            <div id="popup" class="ol-popup">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content"></div>
+            </div>
+          </div>
+          </div>
       </div>
 {% endblock %}
 
 {% block extra_script %}
+<script src="{{ STATIC_URL }}js/ol.js"></script>
+<script>
+
+/**** Country map ****/
+
+var c_map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.BingMaps({
+        key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+        imagerySet: 'Aerial'
+      })
+    }),
+    new ol.layer.Tile({
+      source: new ol.source.XYZ({
+        url: '{{ eez_layer.layer.tiles_url|safe }}'
+      })
+    }),
+  ],
+  controls: ol.control.defaults().extend([
+    new ol.control.FullScreen()
+  ]),
+  target: 'country_map',
+  view: new ol.View({
+    center: [-6793723.073986467, 1824093.2429974473],
+    zoom: 6
+  })
+});
+
+
+/**
+ * Add a click handler to the map to render the popup.
+ */
+c_map.on('click', function(evt) {
+  var coordinate = evt.coordinate;
+  var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+      coordinate, 'EPSG:3857', 'EPSG:4326'));
+
+  overlay.setPosition(coordinate);
+  content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
+      '</code>';
+  container.style.display = 'block';
+
+});
+
+
+/**** mpa map ****/
+
+/**
+ * Elements that make up the popup.
+ */
+var container = document.getElementById('popup');
+var content = document.getElementById('popup-content');
+var closer = document.getElementById('popup-closer');
+
+closer.onclick = function() {
+  container.style.display = 'none';
+  closer.blur();
+  return false;
+};
+
+var overlay = new ol.Overlay({
+  element: container
+});
+
+var pa_map = new ol.Map({
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.BingMaps({
+        key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+        imagerySet: 'Aerial'
+      })
+    }),
+    new ol.layer.Tile({
+      source: new ol.source.XYZ({
+        url: '{{ pa_layer.layer.tiles_url|safe }}'
+      })
+    }),
+  ],
+  controls: ol.control.defaults().extend([
+    new ol.control.FullScreen()
+  ]),
+  overlays: [overlay],
+  target: 'pa_map',
+  view: new ol.View({
+    center: [-6837750.802278727, 1662658.239259155],
+    zoom: 7
+  })
+});
+
+/**
+ * Add a click handler to the map to render the popup.
+ */
+pa_map.on('click', function(evt) {
+  var coordinate = evt.coordinate;
+  var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+      coordinate, 'EPSG:3857', 'EPSG:4326'));
+
+  overlay.setPosition(coordinate);
+  content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
+      '</code>';
+  container.style.display = 'block';
+});
+</script>
 {% endblock extra_script %}
