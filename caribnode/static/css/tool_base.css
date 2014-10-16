@@ -24,6 +24,10 @@ h3.section-header {
     margin-top: 40px;
 }
 
+.stats-table {
+    margin-top: 30px;
+}
+
 .section-body {
     border-radius: 5px;
     webkit-border-radius: 5px;
@@ -34,22 +38,6 @@ h3.section-header {
     padding: 20px 20px 20px 20px;
 }
 
-/**** Reef Assessment ****/
-
-.stats-table {
-    margin-top: 30px;
-}
-
-.country-icon {
-    background: url('/static/img/icon_18162_island.png') no-repeat center;
-    height: 50px;
-    width: 50px;  
-    background-color: #FF6D24;
-    border-radius: 5px;
-    webkit-border-radius: 5px;
-    moz-border-radius: 5px;     
-}
-
 .tool-list {
     margin-top: 20px;
 }
@@ -58,12 +46,16 @@ h3.section-header {
     clear: both;
     font-size: 20px;
     color: #666666;
-    padding: 15px 0px 15px 0px;
+    padding: 15px 0px 15px 10px;
     border-bottom: 1px solid #bbb;
 }
 
 .tool-list article.last {
     border-bottom: 0px !important;
+}
+
+.tool-list article:hover {
+    background-color: #eee;
 }
 
 .big-num {
@@ -88,6 +80,17 @@ h3.section-header {
     font-size: 16px;
 }
 
+/**** Reef Assessment ****/
+
+.country-icon {
+    background: url('/static/img/icon_18162_island.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #FF6D24;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
 
 /**** Mapping ****/
 
