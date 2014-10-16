@@ -14,10 +14,34 @@
       <h3 class='section-header'>Overview</h3>
       <div class="row-fluid section-body">
           <div class="span5 countries">
-            <p>The following countries are currently participating in this regional assessment.  Select one to view more detail.</p>
+            <p>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
+            <table class="stats-table">
+              <colgroup>
+                 <col span="1" style="width: 16%;">
+                 <col span="1" style="width: 42%;">
+                 <col span="1" style="width: 42%;">
+              </colgroup>
+              <tr class="num-row">
+                <td><div class="country-icon"></div></td>
+                <td class="big-num">6</td>
+                <td class="small-num">1,260</td>                
+              </tr>
+              <tr>
+                <td></td>
+                <td class="big-label">PARTICIPATING COUNTRIES</td>
+                <td class="small-label">SQUARE KM OF OCEAN</td>
+              </tr>        
+            </table>  
+
+            <div class='tool-list'>
+              {% for country in countries %}
+              <article class="{% if forloop.last %}last{% endif %}" >{{ country }}</article>
+              {% endfor %}
+            </div>                      
           </div>
-          <div class="span7 map">
-            <div id="country_map" class="map">
+
+          <div class="span7 country-map">
+            <div id="country-map">
           </div>
           </div>
       </div>
@@ -28,7 +52,7 @@
             <p></p>
           </div>
           <div class="span7 map">
-            <div id="pa_map" class="map">
+            <div id="pa_map">
             <div id="popup" class="ol-popup">
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                 <div id="popup-content"></div>
@@ -61,9 +85,9 @@ var c_map = new ol.Map({
   controls: ol.control.defaults().extend([
     new ol.control.FullScreen()
   ]),
-  target: 'country_map',
+  target: 'country-map',
   view: new ol.View({
-    center: [-6793723.073986467, 1824093.2429974473],
+    center: [-6786385.11927109, 1836323.167523076],
     zoom: 6
   })
 });

@@ -32,12 +32,12 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     pa_layer_name = "car_poli_protectedareas_201403_wgs84"
     pa_layer = Layer.objects.get(name=pa_layer_name)
 
-    eez_layer_name = "eez_noland"
+    eez_layer_name = "eez"
     eez_layer = Layer.objects.get(name=eez_layer_name)    
 
     context = {
         'region': 'Caribbean',
-        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia'],
+        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines'],
         'pa_layer': {'name':pa_layer_name, 'layer':pa_layer},
         'eez_layer': {'name':eez_layer_name, 'layer':eez_layer},
     }

@@ -34,10 +34,70 @@ h3.section-header {
     padding: 20px 20px 20px 20px;
 }
 
-.map {
+/**** Reef Assessment ****/
+
+.stats-table {
+    margin-top: 30px;
+}
+
+.country-icon {
+    background: url('/static/img/icon_18162_island.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #FF6D24;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
+
+.tool-list {
+    margin-top: 20px;
+}
+
+.tool-list article {
+    clear: both;
+    font-size: 20px;
+    color: #666666;
+    padding: 15px 0px 15px 0px;
+    border-bottom: 1px solid #bbb;
+}
+
+.tool-list article.last {
+    border-bottom: 0px !important;
+}
+
+.big-num {
+    font-family: 'OswaldBold';
+    font-size: 50px !important;
+}
+
+.big-label {
+    color: #D8D8D8 !important;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.small-num {
+    font-family: 'OswaldBold';
+    font-size: 35px !important;      
+}
+
+.small-label {
+    color: #D8D8D8 !important;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+
+/**** Mapping ****/
+
+#country-map {
+    height: 510px;
+}
+
+.country-map {
     background-color: #ADD8e6;
     border: 1px solid #BFBFBF;
-    height: 580px;
 }
 
 .ol-popup {
