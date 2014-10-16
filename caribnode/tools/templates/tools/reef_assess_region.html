@@ -70,10 +70,14 @@
 //Global config object
 config = {{config_json|safe}};
 
+//Other globals
+countryListItemClass = '.tool-list-item';
+eezNameAttr = "Sovereign";
+
 $( document ).ready(function() {
-  load_country_map();
-  load_mpa_map();
-  load_country_hover_events('.tool-list-item');
+  loadCountryMap();
+  loadMpaMap();
+  loadHoverEvents(countryOverlay, eezLayer, countryListItemClass, eezNameAttr);
 });
 
 </script>

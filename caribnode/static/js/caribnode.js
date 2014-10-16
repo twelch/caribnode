@@ -1,10 +1,85 @@
-//Other globals
-eez_layer = null;
-eez_cur_feature = null;
-eez_name_attr = "Sovereign";
+//Globals
+cMap = null; // country map object
+eezLayer = null;  // eez layer object
+countryOverlay = null;  //country overlay object
+highlight = null; //highlighted country feature
+highName = null; //name of highlighted country
 
-function load_country_map() {
-  eez_layer = new ol.layer.Vector({
+/******** HELPER FUNCTIONS ********/
+
+/*
+ * Control highlight of feature in overlay
+ */
+function highlightFeature(overlay, feature) {
+  //if new element to highlight
+  if (feature !== highlight) {
+    //Unhighlight existing feature
+    if (highlight) {
+      overlay.removeFeature(highlight);
+    }
+    //Highlight the new feature
+    if (feature) {
+      overlay.addFeature(feature);
+    }
+    //Update cur feature
+    highlight = feature;
+  }
+}
+
+/*
+ * Control highlight of list items with given elemClass 
+ * and name attribute value
+ */
+function highlightListItem(elemClass, name) {
+  //If new element to highlight
+  if (name !== highName) {    
+    //If something is already highlighted
+    if (highName) {
+      //Get element with highlighted name
+      $(elemClass).each(function(index, el){
+        if ($(el).attr('name') == highName) {
+          //Unhighlight it
+          $(el).toggleClass('highlight');
+        }
+      });      
+    }
+    //If something new to highlight
+    if (name) {
+      //Highlight element with that name
+      $(elemClass).each(function(index, el){
+        if ($(el).attr('name') == name) {
+          $(el).toggleClass('highlight');
+        }
+      });      
+    }
+    highName = name;
+  }
+}
+
+/* 
+ * Load hover events for all list elements with given class name
+ */
+function loadHoverEvents(overlay, layer, elemClass, nameAttr) {
+  //load hover events
+  $(elemClass).mouseenter(function() {
+    //Get name from list element
+    var name = $(this).attr('name');
+    //Get feature from map with that name
+    var feature = layer.getSource().forEachFeature(function(feature) {
+      if (feature.get(nameAttr) == name) {return feature};
+    });
+    highlightFeature(overlay, feature);
+    highlightListItem(elemClass, name);
+  }).mouseleave(function() {
+    highlightFeature(overlay);
+    highlightListItem(elemClass, name);
+  });
+}
+
+/******** COUNTRY MAP ********/
+
+function loadCountryMap() {
+  eezLayer = new ol.layer.Vector({
     source: new ol.source.GeoJSON({
       projection: 'EPSG:3857',
       url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
@@ -20,7 +95,7 @@ function load_country_map() {
     }      
   });
 
-  var c_map = new ol.Map({
+  cMap = new ol.Map({
     layers: [
       new ol.layer.Tile({
         source: new ol.source.BingMaps({
@@ -33,7 +108,7 @@ function load_country_map() {
           url: config.layers.coastline.Tiles
         })
       }),
-      eez_layer
+      eezLayer
     ],
     controls: ol.control.defaults().extend([
       new ol.control.FullScreen()
@@ -45,11 +120,8 @@ function load_country_map() {
     })
   });
 
-
-  /**
-   * Add a click handler to the map to render the popup.
-   */
-  c_map.on('click', function(evt) {
+  //Add a click handler to the map to render the popup.
+  cMap.on('click', function(evt) {
     var coordinate = evt.coordinate;
     var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
         coordinate, 'EPSG:3857', 'EPSG:4326'));
@@ -63,10 +135,10 @@ function load_country_map() {
 
   //Create overlay for temporary styling
   var highlightStyleCache = {};
-  featureOverlay = new ol.FeatureOverlay({
-    map: c_map,
+  countryOverlay = new ol.FeatureOverlay({
+    map: cMap,
     style: function(feature, resolution) {
-      var the_style = [new ol.style.Style({
+      var theStyle = [new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: '#FF6D24',
           width: 1
@@ -75,62 +147,28 @@ function load_country_map() {
           color: 'rgba(255,0,0,0.1)'
         })        
       })];
-      return the_style;
+      return theStyle;
     }
   });
 
-  var highlight;
-  var highlightFeature = function(feature) {
-    if (feature !== highlight) {
-      if (highlight) {
-        featureOverlay.removeFeature(highlight);
-      }
-      if (feature) {
-        featureOverlay.addFeature(feature);
-      }
-      highlight = feature;
-    }
-  };
-
-  $(c_map.getViewport()).on('mousemove', function(evt) {
-    var pixel = c_map.getEventPixel(evt.originalEvent);
-    var feature = c_map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  $(cMap.getViewport()).on('mousemove', function(evt) {
+    var pixel = cMap.getEventPixel(evt.originalEvent);
+    var feature = cMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
       return feature;
     });
-    highlightFeature(feature);
+    highlightFeature(countryOverlay, feature);
+    var countryName = feature ? feature.get(eezNameAttr) : null;
+    highlightListItem(countryListItemClass, countryName);
   });
 
-  c_map.on('click', function(evt) {
+  cMap.on('click', function(evt) {
     displayFeatureInfo(evt.pixel);
-  });
-}
-
-function load_country_hover_events() {
-  //load hover events
-  $('.tool-list-item').mouseenter(function() {
-    //Get name from list element
-    var name = $(this).attr('name');
-    //Get feature from map with that name
-    eez_cur_feature = eez_layer.getSource().forEachFeature(function(feature) {
-      if (feature.get(eez_name_attr) == name) {return feature};
-    });
-    if (eez_cur_feature) {
-      featureOverlay.addFeature(eez_cur_feature);
-    }
-  }).mouseleave(function() {
-    if (eez_cur_feature) {
-      featureOverlay.removeFeature(eez_cur_feature);
-    }
-    eez_cur_feature = null;
   });
 }
 
 /******** MPA MAP ********/
 
-function load_mpa_map() {
-  /**
-   * Elements that make up the popup.
-   */
+function loadMpaMap() {
   var container = document.getElementById('popup');
   var content = document.getElementById('popup-content');
   var closer = document.getElementById('popup-closer');
@@ -145,7 +183,7 @@ function load_mpa_map() {
     element: container
   });
 
-  var pa_map = new ol.Map({
+  var paMap = new ol.Map({
     layers: [
       new ol.layer.Tile({
         source: new ol.source.BingMaps({
@@ -155,7 +193,7 @@ function load_mpa_map() {
       }),
       new ol.layer.Tile({
         source: new ol.source.XYZ({
-          url: '{{ pa_layer.layer.tiles_url|safe }}'
+          url: config.layers.car_poli_protectedareas_201403_wgs84.Tiles
         })
       }),
     ],
@@ -171,9 +209,9 @@ function load_mpa_map() {
   });
 
   /**
-   * Add a click handler to the map to render the popup.
+   * Click handler to render the popup.
    */
-  pa_map.on('click', function(evt) {
+  paMap.on('click', function(evt) {
     var coordinate = evt.coordinate;
     var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
         coordinate, 'EPSG:3857', 'EPSG:4326'));

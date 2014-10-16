@@ -54,8 +54,8 @@ h3.section-header {
     border-bottom: 0px !important;
 }
 
-.tool-list article:hover {
-    background-color: #eee;
+.tool-list article.highlight {
+    background-color: #eee;   
 }
 
 .big-num {
