@@ -66,6 +66,9 @@
 <script src="{{ STATIC_URL }}js/ol.js"></script>
 <script>
 
+//Global config object
+config = {{config_json|safe}};
+
 /**** Country map ****/
 
 var c_map = new ol.Map({
@@ -78,9 +81,24 @@ var c_map = new ol.Map({
     }),
     new ol.layer.Tile({
       source: new ol.source.XYZ({
-        url: '{{ eez_layer.layer.tiles_url|safe }}'
+        url: config.layers.coastline.Tiles
       })
     }),
+    new ol.layer.Vector({
+      source: new ol.source.GeoJSON({
+        projection: 'EPSG:3857',
+        url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
+      }),
+      style: function(feature, resolution) {
+        return [new ol.style.Style({
+            fill: null,
+            stroke: new ol.style.Stroke({
+              color: '#666666',
+              width: 1
+            })            
+          })];
+      }      
+    })
   ],
   controls: ol.control.defaults().extend([
     new ol.control.FullScreen()

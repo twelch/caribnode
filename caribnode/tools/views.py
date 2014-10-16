@@ -31,14 +31,36 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
 
     pa_layer_name = "car_poli_protectedareas_201403_wgs84"
     pa_layer = Layer.objects.get(name=pa_layer_name)
+    pa_tiles_url = pa_layer.link_set.get(name='Tiles').url    
 
     eez_layer_name = "eez"
-    eez_layer = Layer.objects.get(name=eez_layer_name)    
+    eez_layer = Layer.objects.get(name=eez_layer_name)
+    eez_geojson_url = eez_layer.link_set.get(name='GeoJSON').url    
 
-    context = {
+    coast_layer_name = "coastline"
+    coast_layer = Layer.objects.get(name=coast_layer_name)
+    coast_tiles_url = coast_layer.link_set.get(name='Tiles').url    
+
+    #Switch to using metadata regions model for countries
+    config = {
         'region': 'Caribbean',
         'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines'],
-        'pa_layer': {'name':pa_layer_name, 'layer':pa_layer},
-        'eez_layer': {'name':eez_layer_name, 'layer':eez_layer},
+        'layers': {
+            pa_layer_name: {
+                'Tiles': pa_tiles_url
+            },
+            eez_layer_name: {
+                'GeoJSON': eez_geojson_url
+            },
+            coast_layer_name: {
+                'Tiles': coast_tiles_url
+            }
+        }
     }
-    return render(request, template, context)
+
+    import json
+    config_json = json.dumps(config)
+
+    config['config_json'] = config_json
+
+    return render(request, template, config)
