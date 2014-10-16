@@ -44,7 +44,7 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     #Switch to using metadata regions model for countries
     config = {
         'region': 'Caribbean',
-        'countries': ['Antigua and Barbuda','Dominica','Grenada','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines'],
+        'countries': ['Antigua and Barbuda','Saint Kitts and Nevis','Dominica','Saint Lucia','Saint Vincent and the Grenadines','Grenada'],
         'layers': {
             pa_layer_name: {
                 'Tiles': pa_tiles_url
