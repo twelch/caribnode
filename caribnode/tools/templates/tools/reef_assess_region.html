@@ -1,5 +1,6 @@
 {% extends "tools/tool_base.html" %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title %} {% trans "Explore Tools" %} - {{ block.super }} {% endblock %}
 
@@ -11,9 +12,9 @@
       <h2 class="tool-unit">{{ region }}</h2>
       
 
-      <h3 class='section-header'>Overview</h3>
+      <h3 class='section-header'>OVERVIEW</h3>
       <div class="row-fluid section-body">
-          <div class="span5 countries">
+          <div class="span5 overview-left">
             <p>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
             <table class="stats-table">
               <colgroup>
@@ -23,8 +24,8 @@
               </colgroup>
               <tr class="num-row">
                 <td><div class="country-icon"></div></td>
-                <td class="big-num">6</td>
-                <td class="small-num">1,260</td>                
+                <td class="big-num">{{countries|length}}</td>
+                <td class="small-num">{{stats.country_total_km|intcomma}}</td>                
               </tr>
               <tr>
                 <td></td>
@@ -40,7 +41,7 @@
             </div>                      
           </div>
 
-          <div class="span7 country-map">
+          <div class="span7 overview-right">
             <div id="country-map">
           </div>
           </div>
@@ -48,14 +49,11 @@
 
       <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
       <div class="row-fluid section-body">
-          <div class="span5 countries">
+          <div class="span5 mpa-left">
             <p></p>
           </div>
-          <div class="span7 map">
-            <div id="pa_map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
+          <div class="span7 mpa-right">
+            <div id="mpa-map">
             </div>
           </div>
           </div>
@@ -75,8 +73,8 @@ countryListItemClass = '.tool-list-item';
 eezNameAttr = "Sovereign";
 
 $( document ).ready(function() {
-  loadCountryMap();
-  loadMpaMap();
+  loadCountryMap('country-map');
+  loadMpaMap('mpa-map');
   loadHoverEvents(countryOverlay, eezLayer, countryListItemClass, eezNameAttr);
 });
 

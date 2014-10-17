@@ -35,7 +35,7 @@ h3.section-header {
     background-color: #FFF;
     border: 1px solid #BFBFBF;
     margin-top: 10px;
-    padding: 20px 20px 20px 20px;
+    /*padding: 20px 20px 20px 20px;*/
 }
 
 .tool-list {
@@ -67,6 +67,7 @@ h3.section-header {
     color: #D8D8D8 !important;
     font-weight: 300;
     font-size: 16px;
+    vertical-align: top;
 }
 
 .small-num {
@@ -78,6 +79,7 @@ h3.section-header {
     color: #D8D8D8 !important;
     font-weight: 300;
     font-size: 16px;
+    vertical-align: top;
 }
 
 /**** Reef Assessment ****/
@@ -92,15 +94,18 @@ h3.section-header {
     moz-border-radius: 5px;     
 }
 
-/**** Mapping ****/
+/**** OVERVIEW ****/
+
+.overview-left {
+    padding: 20px 0px 20px 20px;
+}
+
+.overview-right {
+    padding: 20px 20px 20px 0px;
+}
 
 #country-map {
     height: 510px;
-}
-
-.country-map {
-    background-color: #ADD8e6;
-    border: 1px solid #BFBFBF;
 }
 
 .ol-popup {
@@ -149,4 +154,18 @@ h3.section-header {
 
 .ol-attribution {
     display: none !important;
+}
+
+/**** MPA ****/
+
+.mpa-left {
+    padding: 20px 0px 20px 20px;
+}
+
+.mpa-right {
+    padding: 20px 20px 20px 0px;
+}
+
+#mpa-map {
+    height: 610px;
 }
