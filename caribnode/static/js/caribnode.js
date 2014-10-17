@@ -1,9 +1,11 @@
 //Globals
 cMap = null; // country map object
-eezLayer = null;  // eez layer object
+cEEZLayer = null;  // eez layer object
 countryOverlay = null;  //country overlay object
 highlight = null; //highlighted country feature
 highName = null; //name of highlighted country
+
+mEEZLayer = null; //eez layer object
 
 /******** HELPER FUNCTIONS ********/
 
@@ -79,7 +81,7 @@ function loadHoverEvents(overlay, layer, elemClass, nameAttr) {
 /******** COUNTRY MAP ********/
 
 function loadCountryMap(countryEl) {
-  eezLayer = new ol.layer.Vector({
+  cEEZLayer = new ol.layer.Vector({
     source: new ol.source.GeoJSON({
       projection: 'EPSG:3857',
       url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
@@ -108,7 +110,7 @@ function loadCountryMap(countryEl) {
           url: config.layers.coastline.Tiles
         })
       }),
-      eezLayer
+      cEEZLayer
     ],
     controls: ol.control.defaults().extend([
       new ol.control.FullScreen()
@@ -157,6 +159,22 @@ function loadCountryMap(countryEl) {
 
 function loadMpaMap(mapEl) {
 
+  mEEZLayer = new ol.layer.Vector({
+    source: new ol.source.GeoJSON({
+      projection: 'EPSG:3857',
+      url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
+    }),
+    style: function(feature, resolution) {
+      return [new ol.style.Style({
+          fill: null,
+          stroke: new ol.style.Stroke({
+            color: '#aaaaaa',
+            width: 1
+          })            
+        })];
+    }      
+  });
+
   var paMap = new ol.Map({
     layers: [
       new ol.layer.Tile({
@@ -170,6 +188,7 @@ function loadMpaMap(mapEl) {
           url: config.layers.car_poli_protectedareas_201403_wgs84.Tiles
         })
       }),
+      mEEZLayer
     ],
     controls: ol.control.defaults().extend([
       new ol.control.FullScreen()

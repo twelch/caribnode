@@ -15,12 +15,12 @@
       <h3 class='section-header'>OVERVIEW</h3>
       <div class="row-fluid section-body">
           <div class="span5 overview-left">
-            <p>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
+            <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
             <table class="stats-table">
               <colgroup>
-                 <col span="1" style="width: 16%;">
-                 <col span="1" style="width: 42%;">
-                 <col span="1" style="width: 42%;">
+                 <col class="stat-col col1">
+                 <col class="stat-col col2">
+                 <col class="stat-col col3">
               </colgroup>
               <tr class="num-row">
                 <td><div class="country-icon"></div></td>
@@ -50,7 +50,41 @@
       <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
       <div class="row-fluid section-body">
           <div class="span5 mpa-left">
-            <p></p>
+            <table class="stats-table">
+              <colgroup>
+                 <col class="stat-col col1">
+                 <col class="stat-col col2">
+                 <col class="stat-col col3">
+              </colgroup>
+              <tr class="num-row">
+                <td><div class="mpa-desig-icon"></div></td>
+                <td class="big-num">{{stats.pa_num_designated}}</td>
+                <td class="small-num">{{stats.pa_designated_total_area|intcomma}}</td>                
+              </tr>
+              <tr>
+                <td></td>
+                <td class="big-label">DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
+                <td class="small-label">SQUARE KM OF OCEAN</td>
+              </tr>
+            </table>
+
+            <table class="stats-table">
+              <colgroup>
+                 <col class="stat-col col1">
+                 <col class="stat-col col2">
+                 <col class="stat-col col3">
+              </colgroup>              
+              <tr class="num-row">
+                <td><div class="mpa-proposed-icon"></div></td>
+                <td class="big-num">{{stats.pa_num_proposed}}</td>
+                <td class="small-num">{{stats.pa_proposed_total_area|intcomma}}</td>                
+              </tr>
+              <tr>
+                <td></td>
+                <td class="big-label">MORE PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
+                <td class="small-label">SQUARE KM OF OCEAN</td>
+              </tr>        
+            </table> 
           </div>
           <div class="span7 mpa-right">
             <div id="mpa-map">
@@ -75,7 +109,7 @@ eezNameAttr = "Sovereign";
 $( document ).ready(function() {
   loadCountryMap('country-map');
   loadMpaMap('mpa-map');
-  loadHoverEvents(countryOverlay, eezLayer, countryListItemClass, eezNameAttr);
+  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, eezNameAttr);
 });
 
 </script>

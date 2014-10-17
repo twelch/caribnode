@@ -45,7 +45,13 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     config = {
         'region': 'Caribbean',
         'stats': {
-            'country_total_km': 10350
+            'country_total_km': 10350,
+            'pa_num_designated': 5,
+            'pa_designated_total_area': 1568,
+            'pa_year_first_designated': 1965,
+            'pa_num_proposed': 3,
+            'pa_proposed_total_area': 2550,
+            'pa_year_first_proposed': 1991
         },
         'countries': ['Antigua and Barbuda','Saint Kitts and Nevis','Dominica','Saint Lucia','Saint Vincent and the Grenadines','Grenada'],
         'layers': {

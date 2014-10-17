@@ -24,8 +24,8 @@ h3.section-header {
     margin-top: 40px;
 }
 
-.stats-table {
-    margin-top: 30px;
+.stats-intro {
+    margin-bottom: 30px;
 }
 
 .section-body {
@@ -56,6 +56,30 @@ h3.section-header {
 
 .tool-list article.highlight {
     background-color: #eee;   
+}
+
+.stats-table:nth-child(2) {
+    margin-top: 20px;
+}
+
+p:nth-child(2) {
+    background: #ff0000;
+}
+
+.stat-col {
+    column-span: 1;
+}
+
+.col1 {
+    width: 16%;
+}
+
+.col2 {
+    width: 42%;
+}
+
+.col3 {
+    width: 42%;
 }
 
 .big-num {
@@ -168,4 +192,24 @@ h3.section-header {
 
 #mpa-map {
     height: 610px;
+}
+
+.mpa-desig-icon {
+    background: url('/static/img/icon_31493_water.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #7ED321;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
+
+.mpa-proposed-icon {
+    background: url('/static/img/icon_31493_water.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #B8E986;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
 }
