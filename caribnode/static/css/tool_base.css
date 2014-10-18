@@ -71,15 +71,15 @@ p:nth-child(2) {
     column-span: 1;
 }
 
-.col1 {
+.stats-table .col1 {
     width: 16%;
 }
 
-.col2 {
+.stats-table .col2 {
     width: 42%;
 }
 
-.col3 {
+.stats-table .col3 {
     width: 42%;
 }
 
@@ -227,4 +227,90 @@ p:nth-child(2) {
     font-size: 18px;
     text-align: center;
     margin-top: 40px;
+}
+
+/******** INDICATORS ********/
+
+.indi-top {
+    padding: 20px;
+}
+
+.indi-head-table .col1 {
+    width: 8%;
+}
+
+.indi-head-table .col2 {
+    width: 10%;
+}
+
+.indi-head-table .col3 {
+    width: 72%;
+}
+
+.big-indi-num {
+    font-family: 'OswaldBold';
+    font-size: 50px !important;
+    padding: 16px 0px 20px 0px;
+}
+
+.big-indi-label {
+    color: #D8D8D8 !important;
+    font-weight: 300;
+    font-size: 16px;
+    vertical-align: top;
+}
+
+.indi-icon {
+    background: url('/static/img/icon_20073_indicator.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #B8E986;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;   
+    margin: 0px 10px 10px 0px;
+}
+
+.indi-header {
+    margin-top: 10px;
+}
+
+.indi-header-title {
+    color: #666666;
+    font-family: 'FrancoisOne';
+    font-size: 24px;
+    padding-top: 15px;
+}
+
+.bio-indi-icon {
+    background: url('/static/img/icon_2027_fish.png') no-repeat center;
+    height: 45px;
+    width: 45px;  
+    border-radius: 50px;
+    border: 1px solid #cccccc;
+    webkit-border-radius: 50px;
+    moz-border-radius: 50px;   
+    margin: 0px 20px 10px 0px;
+}
+
+.socio-indi-icon {
+    background: url('/static/img/icon_4272_socio.png') no-repeat center;
+    height: 45px;
+    width: 45px;  
+    border-radius: 50px;
+    border: 1px solid #cccccc;
+    webkit-border-radius: 50px;
+    moz-border-radius: 50px;   
+    margin: 0px 20px 10px 0px;
+}
+
+.mgmt-indi-icon {
+    background: url('/static/img/icon_7728_scale.png') no-repeat center;
+    height: 45px;
+    width: 45px;  
+    border-radius: 50px;
+    border: 1px solid #cccccc;
+    webkit-border-radius: 50px;
+    moz-border-radius: 50px;   
+    margin: 0px 20px 10px 0px;
 }

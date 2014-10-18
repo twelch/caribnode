@@ -57,6 +57,9 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
             'pa_proposed_total_area': 2550,
             'pa_year_first_proposed': 1991
         },
+        'indis': {
+            'num_indis': 12
+        },
         'countries': ['Antigua and Barbuda','Saint Kitts and Nevis','Dominica','Saint Lucia','Saint Vincent and the Grenadines','Grenada'],
         'layers': {
             pa_layer_name: {
