@@ -8,202 +8,301 @@
 
 {% block middle %}
   <div class="container tool">
-      <div class="tool-header">REGIONAL REEF ASSESSMENT</div>
-      <h2 class="tool-unit">{{ region }}</h2>
-      
+    <div class="tool-header">REGIONAL REEF ASSESSMENT</div>
+    <h2 class="tool-unit">{{ region }}</h2>
+    
+    <h3 class='section-header'>OVERVIEW</h3>
+    <div class="row-fluid section-body">
+        <div class="span6 overview-left">
+          <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
+          <table class="stats-table">
+            <colgroup>
+               <col class="stat-col col1">
+               <col class="stat-col col2">
+               <col class="stat-col col3">
+            </colgroup>
+            <tr class="num-row">
+              <td><div class="country-icon"></div></td>
+              <td class="big-num">{{countries|length}}</td>
+              <td class="small-num">{{stats.country_total_km|intcomma}}</td>                
+            </tr>
+            <tr>
+              <td></td>
+              <td class="big-label">PARTICIPATING COUNTRIES</td>
+              <td class="small-label">SQUARE KM OF OCEAN</td>
+            </tr>        
+          </table>  
 
-      <h3 class='section-header'>OVERVIEW</h3>
-      <div class="row-fluid section-body">
-          <div class="span6 overview-left">
-            <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
-            <table class="stats-table">
-              <colgroup>
-                 <col class="stat-col col1">
-                 <col class="stat-col col2">
-                 <col class="stat-col col3">
-              </colgroup>
-              <tr class="num-row">
-                <td><div class="country-icon"></div></td>
-                <td class="big-num">{{countries|length}}</td>
-                <td class="small-num">{{stats.country_total_km|intcomma}}</td>                
+          <div class='tool-list'>
+            {% for country in countries %}
+            <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{country}}" ><a href="/reef_assess/national/{{country|slugify}}">{{ country }}</a></article>
+            {% endfor %}
+          </div>                      
+        </div>
+
+        <div class="span6 overview-right">
+          <div id="country-map">
+        </div>
+        </div>
+    </div>
+
+    <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
+    <div class="row-fluid section-body">
+
+      <div class="span6 mpa-left">
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>
+          <tr class="num-row">
+            <td><div class="mpa-desig-icon"></div></td>
+            <td class="big-num">{{stats.pa_num_designated}}</td>
+            <td class="small-num">{{stats.pa_designated_total_area|intcomma}}</td>                
+          </tr>
+          <tr>
+            <td></td>
+            <td class="big-label">AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
+            <td class="small-label">SQUARE KM OF OCEAN</td>
+          </tr>
+        </table>
+
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>              
+          <tr class="num-row">
+            <td><div class="mpa-proposed-icon"></div></td>
+            <td class="big-num">{{stats.pa_num_proposed}}</td>
+            <td class="small-num">{{stats.pa_proposed_total_area|intcomma}}</td>                
+          </tr>
+          <tr>
+            <td></td>
+            <td class="big-label">MORE AREAS PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
+            <td class="small-label">SQUARE KM OF OCEAN</td>
+          </tr>        
+        </table> 
+
+        <div class="row">
+          <div class='span6'>
+            <div class='donut-header'>Ocean Protected</div>
+            <div id="ocean-donut"></div>
+          </div>
+          <div class='span6'>
+            <div class='donut-header'>Shelf Protected</div>
+            <div id="shelf-donut"></div>
+          </div>
+        </div>
+      </div>
+      <div class="span6 mpa-right">
+        <div id="mpa-map">
+        </div>
+      </div>
+    </div>
+
+    <h3 class='section-header'>INDICATORS</h3>
+
+    <div class="section-body">
+
+      <div class="row-fluid">
+
+      <div class="span12">
+
+        <section class="indi-top">                    
+          <div class="span3 pull-left">
+            <div class="indi-icon pull-left"></div>
+            <div>
+              <div class="big-indi-num">{{indis.num_indis}}</div>
+              <div class="big-indi-label">INDICATORS</div>
+            </div>              
+          </div>
+          <div class="span9">
+            <p>These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  The most recent available year is shown.</p>
+          </div>        
+        </section>
+
+        <section class="indi-header">
+          <div>
+            <div class="bio-indi-icon pull-left"></div>                
+            <div class="indi-header-title">
+              Biophysical
+            </div>
+          </div>
+        </section>
+
+        <section class="indi-section">        
+          <table class="table table-hover table-indi">
+            <thead>
+              <tr>
+                <th class="name">Name of Indicator</th>
+                <th class="year">Year</th>
+                <th class="value">Value</th>
+                <th class="trend">Trend</th>
+                <th class="grade">Grade</th>
+                <th class="map">Map</th>
+              </tr>
+            </thead>
+            <colgroup>
+               <col class="indi-col col1">
+               <col class="indi-col col2">
+               <col class="indi-col col3">
+               <col class="indi-col col4">
+               <col class="indi-col col5">
+               <col class="indi-col col6">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td class="name">Average Coral Cover</td>
+                <td class="year">2013</td>
+                <td class="value">23%</td>
+                <td class="trend"><i class="icon-upload trend-icon"></td>
+                <td class="grade"><div class="grade-fair">Fair</div></td>
+                <td class="map">Map</td>
               </tr>
               <tr>
-                <td></td>
-                <td class="big-label">PARTICIPATING COUNTRIES</td>
-                <td class="small-label">SQUARE KM OF OCEAN</td>
-              </tr>        
-            </table>  
+                <td class="name">Average Coral Diversity</td>
+                <td class="year">2011</td>
+                <td class="value">9%</td>
+                <td class="trend"><i class="icon-download trend-icon"></i></td>
+                <td class="grade"><div class="grade-good">Good</div></td>
+                <td class="map">Map</td>
+              </tr> 
+              <tr>
+                <td class="name">Algae to Coral Cover Ratio</td>
+                <td class="year">2008</td>
+                <td class="value">2.8</td>
+                <td class="trend"><i class="icon-circle trend-icon-small"></i></td>
+                <td class="grade"><div class="grade-poor">Poor</div></td>
+                <td class="map">Map</td>
+              </tr>             
+            </tbody>
+          </table>
+        </section>
 
-            <div class='tool-list'>
-              {% for country in countries %}
-              <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{country}}" ><a href="/reef_assess/national/{{country|slugify}}">{{ country }}</a></article>
-              {% endfor %}
-            </div>                      
+        <section>
+          <div class="indi-header">
+            <div class="socio-indi-icon pull-left"></div>                
+            <div class="indi-header-title">
+              Socioeconomic
+            </div>
           </div>
+        </section>
 
-          <div class="span6 overview-right">
-            <div id="country-map">
+        <section class="indi-section">        
+          <table class="table table-hover table-indi">
+            <thead>
+              <tr>
+                <th class="name">Name of Indicator</th>
+                <th class="year">Year</th>
+                <th class="value">Value</th>
+                <th class="trend">Trend</th>
+                <th class="grade">Grade</th>
+                <th class="map">Map</th>
+              </tr>
+            </thead>
+            <colgroup>
+               <col class="indi-col col1">
+               <col class="indi-col col2">
+               <col class="indi-col col3">
+               <col class="indi-col col4">
+               <col class="indi-col col5">
+               <col class="indi-col col6">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td class="name">GDP Growth Rate</td>
+                <td class="year">2013</td>
+                <td class="value">23%</td>
+                <td class="trend"><i class="icon-upload trend-icon"></td>
+                <td class="grade"><div class="grade-fair">Fair</div></td>
+                <td class="map">Map</td>
+              </tr>
+              <tr>
+                <td class="name">Average Age</td>
+                <td class="year">2011</td>
+                <td class="value">9%</td>
+                <td class="trend"><i class="icon-download trend-icon"></i></td>
+                <td class="grade"><div class="grade-good">Good</div></td>
+                <td class="map">Map</td>
+              </tr> 
+              <tr>
+                <td class="name">Are MPAs providing enough resources for your village?</td>
+                <td class="year">2008</td>
+                <td class="value">2.8</td>
+                <td class="trend"><i class="icon-circle trend-icon-small"></i></td>
+                <td class="grade"><div class="grade-poor">Poor</div></td>
+                <td class="map">Map</td>
+              </tr>             
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <div class="indi-header">
+            <div class="mgmt-indi-icon pull-left"></div>                
+            <div class="indi-header-title">
+              Management Effectiveness
+            </div>
           </div>
-          </div>
+        </section>
+
+        <section class="indi-section">        
+          <table class="table table-hover table-indi">
+            <thead>
+              <tr>
+                <th class="name">Name of Indicator</th>
+                <th class="year">Year</th>
+                <th class="value">Value</th>
+                <th class="trend">Trend</th>
+                <th class="grade">Grade</th>
+                <th class="map">Map</th>
+              </tr>
+            </thead>
+            <colgroup>
+               <col class="indi-col col1">
+               <col class="indi-col col2">
+               <col class="indi-col col3">
+               <col class="indi-col col4">
+               <col class="indi-col col5">
+               <col class="indi-col col6">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td class="name">Resources - are the proper resources in place?</td>
+                <td class="year">2013</td>
+                <td class="value">23%</td>
+                <td class="trend"><i class="icon-upload trend-icon"></td>
+                <td class="grade"><div class="grade-fair">Fair</div></td>
+                <td class="map">Map</td>
+              </tr>
+              <tr>
+                <td class="name">Planning - do the protected areas have an adopted management plan?</td>
+                <td class="year">2011</td>
+                <td class="value">9%</td>
+                <td class="trend"><i class="icon-download trend-icon"></i></td>
+                <td class="grade"><div class="grade-good">Good</div></td>
+                <td class="map">Map</td>
+              </tr> 
+              <tr>
+                <td class="name">Governane - is the proper governance in place?</td>
+                <td class="year">2008</td>
+                <td class="value">2.8</td>
+                <td class="trend"><i class="icon-circle trend-icon-small"></i></td>
+                <td class="grade"><div class="grade-poor">Poor</div></td>
+                <td class="map">Map</td>
+              </tr>             
+            </tbody>
+          </table>
+        </section>
+
       </div>
 
-      <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
-      <div class="row-fluid section-body">
-          <div class="span6 mpa-left">
-            <table class="stats-table">
-              <colgroup>
-                 <col class="stat-col col1">
-                 <col class="stat-col col2">
-                 <col class="stat-col col3">
-              </colgroup>
-              <tr class="num-row">
-                <td><div class="mpa-desig-icon"></div></td>
-                <td class="big-num">{{stats.pa_num_designated}}</td>
-                <td class="small-num">{{stats.pa_designated_total_area|intcomma}}</td>                
-              </tr>
-              <tr>
-                <td></td>
-                <td class="big-label">AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
-                <td class="small-label">SQUARE KM OF OCEAN</td>
-              </tr>
-            </table>
+    </div>
 
-            <table class="stats-table">
-              <colgroup>
-                 <col class="stat-col col1">
-                 <col class="stat-col col2">
-                 <col class="stat-col col3">
-              </colgroup>              
-              <tr class="num-row">
-                <td><div class="mpa-proposed-icon"></div></td>
-                <td class="big-num">{{stats.pa_num_proposed}}</td>
-                <td class="small-num">{{stats.pa_proposed_total_area|intcomma}}</td>                
-              </tr>
-              <tr>
-                <td></td>
-                <td class="big-label">MORE AREAS PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
-                <td class="small-label">SQUARE KM OF OCEAN</td>
-              </tr>        
-            </table> 
-
-            <div class="row">
-              <div class='span6'>
-                <div class='donut-header'>Ocean Protected</div>
-                <div id="ocean-donut"></div>
-              </div>
-              <div class='span6'>
-                <div class='donut-header'>Shelf Protected</div>
-                <div id="shelf-donut"></div>
-              </div>
-            </div>
-          </div>
-          <div class="span6 mpa-right">
-            <div id="mpa-map">
-            </div>
-          </div>
-        </div>
-
-        <h3 class='section-header'>INDICATORS</h3>
-        <div class="row-fluid section-body">
-          <div class="span12 indi-top">            
-
-            <div class="span3 pull-left">
-              <div class="indi-icon pull-left"></div>
-              <div>
-                <div class="big-indi-num">{{indis.num_indis}}</div>
-                <div class="big-indi-label">INDICATORS</div>
-              </div>              
-            </div>
-
-            <div class="span9">
-              <p>These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  The most recent available year is shown.</p>
-            </div>
-
-          </div>
-          <div class="span12">
-
-            <div class="indi-header">
-              <div class="bio-indi-icon pull-left"></div>                
-              <div class="indi-header-title">
-                Biophysical
-              </div>
-            </div>
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>...</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="indi-header">
-              <div class="socio-indi-icon pull-left"></div>                
-              <div class="indi-header-title">
-                Socioeconomic
-              </div>
-            </div>
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>...</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="indi-header">
-              <div class="mgmt-indi-icon pull-left"></div>                
-              <div class="indi-header-title">
-                Management Effectiveness
-              </div>
-            </div>
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>...</th>
-                  <th>...</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-                <tr>
-                  <td>...</td>
-                  <td>...</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-
-      </div>      
+  </div>      
 {% endblock %}
 
 {% block extra_script %}

@@ -38,6 +38,10 @@ h3.section-header {
     /*padding: 20px 20px 20px 20px;*/
 }
 
+.section-body section {
+    padding: 20px 20px 0px 20px
+}
+
 .tool-list {
     margin-top: 20px;
 }
@@ -232,7 +236,8 @@ p:nth-child(2) {
 /******** INDICATORS ********/
 
 .indi-top {
-    padding: 20px;
+    /*padding: 20px;*/
+    min-height: 80px;
 }
 
 .indi-head-table .col1 {
@@ -264,15 +269,11 @@ p:nth-child(2) {
     background: url('/static/img/icon_20073_indicator.png') no-repeat center;
     height: 50px;
     width: 50px;  
-    background-color: #B8E986;
+    background-color: #00CCAA;
     border-radius: 5px;
     webkit-border-radius: 5px;
     moz-border-radius: 5px;   
     margin: 0px 10px 10px 0px;
-}
-
-.indi-header {
-    margin-top: 10px;
 }
 
 .indi-header-title {
@@ -313,4 +314,88 @@ p:nth-child(2) {
     webkit-border-radius: 50px;
     moz-border-radius: 50px;   
     margin: 0px 20px 10px 0px;
+}
+
+.indi-col {
+    column-span: 1;
+}
+.table-indi .col1 {
+    width: 40%;
+}
+.table-indi .col2 {
+    width: 10%;
+}
+.table-indi .col3 {
+    width: 20%;
+}
+.table-indi .col4 {
+    width: 10%;
+}
+.table-indi .col5 {
+    width: 10%;
+}
+.table-indi .col6 {
+    width: 10%;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table td.name, .table td.year {
+    font-size: 20px;
+    color: #666666;
+}
+
+.table td.value {
+    font-family: 'OswaldBold';
+    font-size: 20px;
+    color: #333333;
+}
+
+.table th.year, .table th.value, .table th.trend, .table th.grade, .table th.map {
+    text-align: center;
+}
+
+.table td.year, .table td.value, .table td.trend, .table td.grade, .table td.map {
+    text-align: center;
+}
+
+.table td.name {
+    line-height: 24px;
+}
+
+.grade div {
+    font-size: 16px;
+    font-family: 'Lato-Bold'; 
+    height: 25px;
+    width: 60px; 
+    padding-top: 5px;  
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.grade-good {
+    background-color: #7DBC3D;    
+}
+
+.grade-fair {
+    background-color: #FEE333;
+}
+
+.grade-poor {
+    background-color: #EB8034;
+}
+
+.indi-section .table thead {
+    background-color: #999999;
+    color: white;
+}
+
+.trend-icon {
+    font-size: 26px;
+}
+
+.trend-icon-small {
+    font-size: 12px;
 }
