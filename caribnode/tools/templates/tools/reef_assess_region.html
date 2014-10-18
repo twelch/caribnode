@@ -14,7 +14,7 @@
 
       <h3 class='section-header'>OVERVIEW</h3>
       <div class="row-fluid section-body">
-          <div class="span5 overview-left">
+          <div class="span6 overview-left">
             <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
             <table class="stats-table">
               <colgroup>
@@ -36,12 +36,12 @@
 
             <div class='tool-list'>
               {% for country in countries %}
-              <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{country}}" >{{ country }}</article>
+              <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{country}}" ><a href="/reef_assess/national/{{country|slugify}}">{{ country }}</a></article>
               {% endfor %}
             </div>                      
           </div>
 
-          <div class="span7 overview-right">
+          <div class="span6 overview-right">
             <div id="country-map">
           </div>
           </div>
@@ -49,7 +49,7 @@
 
       <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
       <div class="row-fluid section-body">
-          <div class="span5 mpa-left">
+          <div class="span6 mpa-left">
             <table class="stats-table">
               <colgroup>
                  <col class="stat-col col1">
@@ -63,7 +63,7 @@
               </tr>
               <tr>
                 <td></td>
-                <td class="big-label">DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
+                <td class="big-label">AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
                 <td class="small-label">SQUARE KM OF OCEAN</td>
               </tr>
             </table>
@@ -81,12 +81,23 @@
               </tr>
               <tr>
                 <td></td>
-                <td class="big-label">MORE PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
+                <td class="big-label">MORE AREAS PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
                 <td class="small-label">SQUARE KM OF OCEAN</td>
               </tr>        
             </table> 
+
+            <div class="row">
+              <div class='span6'>
+                <div class='donut-header'>Ocean Protected</div>
+                <div id="ocean-donut"></div>
+              </div>
+              <div class='span6'>
+                <div class='donut-header'>Shelf Protected</div>
+                <div id="shelf-donut"></div>
+              </div>
+            </div>
           </div>
-          <div class="span7 mpa-right">
+          <div class="span6 mpa-right">
             <div id="mpa-map">
             </div>
           </div>
@@ -95,7 +106,8 @@
 {% endblock %}
 
 {% block extra_script %}
-<script src="{{ STATIC_URL }}js/ol.js"></script>
+<script src="{{ STATIC_URL }}lib/js/ol.min.js"></script>
+<script src="{{ STATIC_URL }}lib/js/highcharts.js"></script>
 <script src="{{ STATIC_URL }}js/caribnode.js"></script>
 <script>
 
@@ -110,6 +122,7 @@ $( document ).ready(function() {
   loadCountryMap('country-map');
   loadMpaMap('mpa-map');
   loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, eezNameAttr);
+  loadMpaCharts('donut');
 });
 
 </script>

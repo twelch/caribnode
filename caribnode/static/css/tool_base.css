@@ -43,6 +43,7 @@ h3.section-header {
 }
 
 .tool-list article {
+    position: relative;
     clear: both;
     font-size: 20px;
     color: #666666;
@@ -59,7 +60,7 @@ h3.section-header {
 }
 
 .stats-table:nth-child(2) {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 p:nth-child(2) {
@@ -191,7 +192,7 @@ p:nth-child(2) {
 }
 
 #mpa-map {
-    height: 610px;
+    height: 510px;
 }
 
 .mpa-desig-icon {
@@ -212,4 +213,18 @@ p:nth-child(2) {
     border-radius: 5px;
     webkit-border-radius: 5px;
     moz-border-radius: 5px;     
+}
+
+#ocean-donut {
+    width: 100%; height: 200px; margin: 0 auto
+}
+
+#shelf-donut {
+    width: 100%; height: 200px; margin: 0 auto
+}
+
+.donut-header {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 40px;
 }

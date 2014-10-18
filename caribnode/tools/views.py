@@ -41,11 +41,15 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     coast_layer = Layer.objects.get(name=coast_layer_name)
     coast_tiles_url = coast_layer.link_set.get(name='Tiles').url    
 
+    shelf_layer_name = "shelf"
+    shelf_layer = Layer.objects.get(name=shelf_layer_name)
+    shelf_tiles_url = shelf_layer.link_set.get(name='Tiles').url 
+
     #Switch to using metadata regions model for countries
     config = {
         'region': 'Caribbean',
         'stats': {
-            'country_total_km': 10350,
+            'country_total_km': 36625,
             'pa_num_designated': 5,
             'pa_designated_total_area': 1568,
             'pa_year_first_designated': 1965,
@@ -63,6 +67,9 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
             },
             coast_layer_name: {
                 'Tiles': coast_tiles_url
+            },
+            shelf_layer_name: {
+                'Tiles': shelf_tiles_url
             }
         }
     }

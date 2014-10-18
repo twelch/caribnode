@@ -1,0 +1,24 @@
+{
+  "name": "caribnode",
+  "version": "0.1",
+  "homepage": "https://github.com/twelch/caribnode",
+  "authors": [
+    "Tim Welch <tim.j.welch@gmail.com>"
+  ],
+  "description": "CaribNode regional information management system",
+  "main": "caribnode/css/site_base.css",
+  "componentsDirectory": ".components",
+  "license": "GPL v3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "openlayers": "openlayers/ol3#v3.0.0",
+    "highcharts": "highslide-software/highcharts-release"
+  }
+}

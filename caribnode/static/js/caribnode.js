@@ -5,6 +5,9 @@ countryOverlay = null;  //country overlay object
 highlight = null; //highlighted country feature
 highName = null; //name of highlighted country
 
+eezStrokeColor = '#AAAAAA';
+
+paMap = null;
 mEEZLayer = null; //eez layer object
 
 /******** HELPER FUNCTIONS ********/
@@ -90,7 +93,7 @@ function loadCountryMap(countryEl) {
       return [new ol.style.Style({
           fill: null,
           stroke: new ol.style.Stroke({
-            color: '#aaaaaa',
+            color: eezStrokeColor,
             width: 1
           })            
         })];
@@ -104,12 +107,7 @@ function loadCountryMap(countryEl) {
           url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
         })
-      }),
-      new ol.layer.Tile({
-        source: new ol.source.XYZ({
-          url: config.layers.coastline.Tiles
-        })
-      }),
+      }),      
       cEEZLayer
     ],
     controls: ol.control.defaults().extend([
@@ -168,14 +166,14 @@ function loadMpaMap(mapEl) {
       return [new ol.style.Style({
           fill: null,
           stroke: new ol.style.Stroke({
-            color: '#aaaaaa',
+            color: eezStrokeColor,
             width: 1
           })            
         })];
     }      
   });
 
-  var paMap = new ol.Map({
+  paMap = new ol.Map({
     layers: [
       new ol.layer.Tile({
         source: new ol.source.XYZ({          
@@ -188,6 +186,11 @@ function loadMpaMap(mapEl) {
           url: config.layers.car_poli_protectedareas_201403_wgs84.Tiles
         })
       }),
+      new ol.layer.Tile({
+        source: new ol.source.XYZ({
+          url: config.layers.shelf.Tiles
+        })
+      }),
       mEEZLayer
     ],
     controls: ol.control.defaults().extend([
@@ -195,8 +198,8 @@ function loadMpaMap(mapEl) {
     ]),
     target: mapEl,
     view: new ol.View({
-      center: [-6837750.802278727, 1662658.239259155],
-      zoom: 7
+      center: [-6786385.11927109, 1836323.167523076],
+      zoom: 6
     })
   });
 
@@ -213,4 +216,115 @@ function loadMpaMap(mapEl) {
         '</code>';
     container.style.display = 'block';
   });
+}
+
+function loadMpaCharts() {
+  // Create the chart
+  oceanDonut = new Highcharts.Chart({
+      chart: {
+          renderTo: 'ocean-donut',
+          type: 'pie'
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: '3%',
+          align: 'center',
+          verticalAlign: 'middle',
+          y: 15,
+          style: {
+            'font-family':'OswaldBold',
+            'font-size':'30px',
+            'color':'#333333'
+          }
+      },
+      colors: ['#7ED321','#B8E986','#D8D8D8'],
+      yAxis: {
+          title: {
+              text: 'Total percent market share'
+          }
+      },
+      plotOptions: {
+          pie: {
+              shadow: false
+          }
+      },
+      tooltip: {
+          formatter: function() {
+              return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+          }
+      },
+      series: [{
+          name: '',
+          data: [["Protected",3],["Proposed",6],["Other",91]],
+          size: '100%',
+          innerSize: '70%',
+          showInLegend:false,
+          dataLabels: {
+              enabled: false
+              //formatter: function () {
+              //    return this.y > 2 ? this.point.name : null;
+              //},
+              //color: 'black',
+              //distance: 10
+
+          }
+      }]
+  });
+
+  // Create the chart
+  shelfDonut = new Highcharts.Chart({
+      chart: {
+          renderTo: 'shelf-donut',
+          type: 'pie'
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: '4%',
+          align: 'center',
+          verticalAlign: 'middle',
+          y: 15,
+          style: {
+            'font-family':'OswaldBold',
+            'font-size':'30px',
+            'color':'#333333'
+          }
+      },
+      colors: ['#7ED321','#B8E986','#D8D8D8'],
+      yAxis: {
+          title: {
+              text: 'Total percent market share'
+          }
+      },
+      plotOptions: {
+          pie: {
+              shadow: false
+          }
+      },
+      tooltip: {
+          formatter: function() {
+              return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+          }
+      },
+      series: [{
+          name: '',
+          data: [["Protected",4],["Proposed",7],["Other",89]],
+          size: '100%',
+          innerSize: '70%',
+          showInLegend:false,
+          dataLabels: {
+              enabled: false
+              //formatter: function () {
+              //    return this.y > 2 ? this.point.name : null;
+              //},
+              //color: 'black',
+              //distance: 10
+
+          }
+      }]
+  });
+
 }

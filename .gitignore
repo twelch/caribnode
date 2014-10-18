@@ -3,3 +3,6 @@
 *~
 local_settings.py
 .DS_Store
+caribnode/static/lib/*
+bower_components
+node_modules
