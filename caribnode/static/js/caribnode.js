@@ -87,7 +87,7 @@ function loadCountryMap(countryEl) {
   cEEZLayer = new ol.layer.Vector({
     source: new ol.source.GeoJSON({
       projection: 'EPSG:3857',
-      url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
+      url: '/proxy?url='+escape(config.layers.eez.links.GeoJSON).replace('4326','3857')
     }),
     style: function(feature, resolution) {
       return [new ol.style.Style({
@@ -160,7 +160,7 @@ function loadMpaMap(mapEl) {
   mEEZLayer = new ol.layer.Vector({
     source: new ol.source.GeoJSON({
       projection: 'EPSG:3857',
-      url: '/proxy?url='+escape(config.layers.eez.GeoJSON).replace('4326','3857')
+      url: '/proxy?url='+escape(config.layers.eez.links.GeoJSON).replace('4326','3857')
     }),
     style: function(feature, resolution) {
       return [new ol.style.Style({
@@ -183,12 +183,12 @@ function loadMpaMap(mapEl) {
       }),
       new ol.layer.Tile({
         source: new ol.source.XYZ({
-          url: config.layers.car_poli_protectedareas_201403_wgs84.Tiles
+          url: config.layers.pa.links.Tiles
         })
       }),
       new ol.layer.Tile({
         source: new ol.source.XYZ({
-          url: config.layers.shelf.Tiles
+          url: config.layers.shelf.links.Tiles
         })
       }),
       mEEZLayer

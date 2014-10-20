@@ -4,6 +4,7 @@ import sys
 import uuid
 
 from django.db import models
+from jsonfield import JSONField
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ class Tool(models.Model):
     org_url = models.CharField(max_length=2000, null=True, blank=True)
     featured = models.BooleanField(default=False)
     icon = models.CharField(max_length=100, default='/static/img/icon_38430_coral.png')
+    config = JSONField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name

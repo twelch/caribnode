@@ -21,6 +21,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import Tool
 from geonode.layers.models import Layer
+from geonode.contrib.dynamic.models import ModelDescription, generate_model
+from django.db.models import Sum
+
+from django.db import connection
+from caribnode.tools import util
 
 def tool_browse(request, template='tools/tool_list.html'):
     tool_list = Tool.objects.all().order_by('featured').order_by('id')
@@ -29,56 +34,45 @@ def tool_browse(request, template='tools/tool_list.html'):
 
 def reef_assess(request, template='tools/reef_assess_region.html'):
 
-    pa_layer_name = "car_poli_protectedareas_201403_wgs84"
-    pa_layer = Layer.objects.get(name=pa_layer_name)
-    pa_tiles_url = pa_layer.link_set.get(name='Tiles').url    
+    config = Tool.objects.get(url=request.path).config
+    
+    #shortcut data layer record list
+    dls = {}
 
-    eez_layer_name = "eez"
-    eez_layer = Layer.objects.get(name=eez_layer_name)
-    eez_geojson_url = eez_layer.link_set.get(name='GeoJSON').url    
+    for layerName, layer in config['layers'].items():        
+        layerRec = Layer.objects.get(name=layer['modelname'])        
+        #Build up data layer list
+        dls[layerName] = layerRec        
 
-    coast_layer_name = "coastline"
-    coast_layer = Layer.objects.get(name=coast_layer_name)
-    coast_tiles_url = coast_layer.link_set.get(name='Tiles').url    
+        #Build up extra layer attributes
+        layer['links'] = {}
+        layer['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
+        layer['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
 
-    shelf_layer_name = "shelf"
-    shelf_layer = Layer.objects.get(name=shelf_layer_name)
-    shelf_tiles_url = shelf_layer.link_set.get(name='Tiles').url 
+    #Build up stats
+    cursor = connection.cursor()
 
-    #Switch to using metadata regions model for countries
-    config = {
-        'region': 'Caribbean',
-        'stats': {
-            'country_total_km': 36625,
-            'pa_num_designated': 5,
-            'pa_designated_total_area': 1568,
-            'pa_year_first_designated': 1965,
-            'pa_num_proposed': 3,
-            'pa_proposed_total_area': 2550,
-            'pa_year_first_proposed': 1991
-        },
-        'indis': {
-            'num_indis': 12
-        },
-        'countries': ['Antigua and Barbuda','Saint Kitts and Nevis','Dominica','Saint Lucia','Saint Vincent and the Grenadines','Grenada'],
-        'layers': {
-            pa_layer_name: {
-                'Tiles': pa_tiles_url
-            },
-            eez_layer_name: {
-                'GeoJSON': eez_geojson_url
-            },
-            coast_layer_name: {
-                'Tiles': coast_tiles_url
-            },
-            shelf_layer_name: {
-                'Tiles': shelf_tiles_url
-            }
-        }
+    #Country total km
+    cursor.execute('SELECT Sum("Shape_Area") FROM eez_noland')
+    country_total_km = cursor.fetchone()[0]/1000000
+
+    config['stats'] = {
+        'country_total_km': country_total_km,
+        'pa_num_designated': 5,
+        'pa_designated_total_area': 1568,
+        'pa_year_first_designated': 1965,
+        'pa_num_proposed': 3,
+        'pa_proposed_total_area': 2550,
+        'pa_year_first_proposed': 1991
+    }
+
+    #Build up indicators
+    config['indis'] = {
+        'num_indis': 12
     }
 
     import json
-    config_json = json.dumps(config)
+    config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
 
     config['config_json'] = config_json
 

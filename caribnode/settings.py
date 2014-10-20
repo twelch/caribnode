@@ -113,6 +113,9 @@ INSTALLED_APPS = (
 
     # Caribnode internal apps
     'caribnode.base',
-    'caribnode.tools'
+    'caribnode.tools',
+
+    #Caribnode third party apps
+    'jsonfield'
 )
 
