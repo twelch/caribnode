@@ -21,11 +21,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import Tool
 from geonode.layers.models import Layer
-from geonode.contrib.dynamic.models import ModelDescription, generate_model
 from django.db.models import Sum
 
 from django.db import connection
-from caribnode.tools import util
+from caribnode.tools.util import *
 
 def tool_browse(request, template='tools/tool_list.html'):
     tool_list = Tool.objects.all().order_by('featured').order_by('id')
@@ -56,14 +55,37 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     cursor.execute('SELECT Sum("Shape_Area") FROM eez_noland')
     country_total_km = cursor.fetchone()[0]/1000000
 
+    #Number designated PAs
+    cursor.execute('select count(*) from pa where pa."STATUS" = \'Designated\' and "ON_WATER"=1')
+    pa_num_designated = cursor.fetchone()[0]
+
+    #First year designated
+    cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Designated\' and "ON_WATER"=1 order by "PROTDATE" ASC')
+    first_desig = dictfetchall(cursor)[0]
+    pa_year_first_designated = first_desig['PROTDATE'].year
+
+    #Number proposed PAs
+    cursor.execute('select count(*) from pa where pa."STATUS" = \'Proposed\' and "ON_WATER"=1')
+    pa_num_proposed = cursor.fetchone()[0]
+
+    cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Proposed\' and "ON_WATER"=1 order by "PROTDATE" ASC')
+    first_desig = dictfetchall(cursor)[0]
+    pa_year_first_proposed = first_desig['PROTDATE'].year
+
+    import random
+
     config['stats'] = {
         'country_total_km': country_total_km,
-        'pa_num_designated': 5,
-        'pa_designated_total_area': 1568,
-        'pa_year_first_designated': 1965,
-        'pa_num_proposed': 3,
-        'pa_proposed_total_area': 2550,
-        'pa_year_first_proposed': 1991
+        'pa_num_designated': pa_num_designated,
+        'pa_designated_total_area': random.randint(1300,1700),
+        'pa_year_first_designated': pa_year_first_designated,
+        'pa_num_proposed': pa_num_proposed,
+        'pa_proposed_total_area': random.randint(2300,2700),
+        'pa_year_first_proposed': pa_year_first_proposed,
+        'pa_perc_ocean_protected': random.randint(2,4),
+        'pa_perc_ocean_proposed': random.randint(4,7),
+        'pa_perc_shelf_protected': random.randint(2,4),
+        'pa_perc_shelf_proposed': random.randint(4,7)
     }
 
     #Build up indicators

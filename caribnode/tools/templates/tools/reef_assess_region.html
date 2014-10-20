@@ -322,7 +322,14 @@ $( document ).ready(function() {
   loadCountryMap('country-map');
   loadMpaMap('mpa-map');
   loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, eezNameAttr);
-  loadMpaCharts('donut');
+  loadMpaCharts({
+    'ocean_target':'ocean-donut',
+    'perc_ocean_protected':config.stats.pa_perc_ocean_protected,
+    'perc_ocean_proposed':config.stats.pa_perc_ocean_proposed,
+    'shelf_target':'shelf-donut',
+    'perc_shelf_protected':config.stats.pa_perc_shelf_protected,
+    'perc_shelf_proposed':config.stats.pa_perc_shelf_proposed
+  });
 });
 
 </script>

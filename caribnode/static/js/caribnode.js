@@ -218,18 +218,18 @@ function loadMpaMap(mapEl) {
   });
 }
 
-function loadMpaCharts() {
+function loadMpaCharts(config) {
   // Create the chart
   oceanDonut = new Highcharts.Chart({
       chart: {
-          renderTo: 'ocean-donut',
+          renderTo: config.ocean_target,
           type: 'pie'
       },
       credits: {
           enabled: false
       },
       title: {
-          text: '3%',
+          text: config.perc_ocean_protected+'%',
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -257,7 +257,7 @@ function loadMpaCharts() {
       },
       series: [{
           name: '',
-          data: [["Protected",3],["Proposed",6],["Other",91]],
+          data: [["Protected",config.perc_ocean_protected],["Proposed",config.perc_ocean_proposed],["Other",100-config.perc_ocean_protected-config.perc_ocean_proposed]],
           size: '100%',
           innerSize: '70%',
           showInLegend:false,
@@ -276,14 +276,14 @@ function loadMpaCharts() {
   // Create the chart
   shelfDonut = new Highcharts.Chart({
       chart: {
-          renderTo: 'shelf-donut',
+          renderTo: config.shelf_target,
           type: 'pie'
       },
       credits: {
           enabled: false
       },
       title: {
-          text: '4%',
+          text: config.perc_shelf_protected+'%',
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -311,7 +311,7 @@ function loadMpaCharts() {
       },
       series: [{
           name: '',
-          data: [["Protected",4],["Proposed",7],["Other",89]],
+          data: [["Protected",config.perc_shelf_protected],["Proposed",config.perc_shelf_proposed],["Other",100-config.perc_shelf_protected-config.perc_shelf_proposed]],
           size: '100%',
           innerSize: '70%',
           showInLegend:false,
