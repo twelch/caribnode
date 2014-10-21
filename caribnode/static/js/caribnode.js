@@ -257,7 +257,7 @@ function loadMpaCharts(config) {
       },
       series: [{
           name: '',
-          data: [["Protected",config.perc_ocean_protected],["Proposed",config.perc_ocean_proposed],["Other",100-config.perc_ocean_protected-config.perc_ocean_proposed]],
+          data: [["Designated",config.perc_ocean_protected],["Proposed only",config.perc_ocean_proposed],["Other",100-config.perc_ocean_protected-config.perc_ocean_proposed]],
           size: '100%',
           innerSize: '70%',
           showInLegend:false,
@@ -311,7 +311,7 @@ function loadMpaCharts(config) {
       },
       series: [{
           name: '',
-          data: [["Protected",config.perc_shelf_protected],["Proposed",config.perc_shelf_proposed],["Other",100-config.perc_shelf_protected-config.perc_shelf_proposed]],
+          data: [["Designated",config.perc_shelf_protected],["Proposed only",config.perc_shelf_proposed],["Other",100-config.perc_shelf_protected-config.perc_shelf_proposed]],
           size: '100%',
           innerSize: '70%',
           showInLegend:false,

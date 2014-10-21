@@ -19,10 +19,25 @@
 #########################################################################
 
 from django.contrib import admin
-from caribnode.tools.models import Tool
+from caribnode.tools.models import *
 
 class ToolAdmin(admin.ModelAdmin):
     list_display = ('id', 'featured', 'name', 'description', 'url', 'org', 'org_url', 'icon', 'config')
     search_fields = ('name','description', 'org', )
 
+class IndicatorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'indi_type', 'document', 'description', 'unit_field', 'year_field', 'value_field', 'grade_field')
+    search_fields = ('name','description')
+
+class GradeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'indicator', 'order')
+    search_fields = ('name', 'description', 'indicator')
+
+class ScaleAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+    search_fields = ('name', 'description')
+
 admin.site.register(Tool, ToolAdmin)
+admin.site.register(Indicator, IndicatorAdmin)
+admin.site.register(Grade, GradeAdmin)
+admin.site.register(Scale, ScaleAdmin)

@@ -5,6 +5,7 @@ import uuid
 
 from django.db import models
 from jsonfield import JSONField
+from geonode.documents.models import Document
 
 logger = logging.getLogger(__name__)
 
@@ -20,3 +21,45 @@ class Tool(models.Model):
 
     def __unicode__(self):
         return self.name
+
+# Geographic scales
+class Scale(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+# Measurable indicator for a given geographic unit for a given year.  Expects
+# a database table for each row with a unit, year, value, and grade at a minimum
+class Indicator(models.Model):
+    INDICATOR_TYPES = (
+        ('NONE', 'None'),
+        ('BIO', 'Biophysical'),
+        ('SOC', 'Socioeconomic'),
+        ('ME', 'Management Effectiveness'),
+    )
+
+    name = models.CharField(max_length=100)
+    indi_type = models.CharField(max_length=100, choices=INDICATOR_TYPES, default='None')
+    description = models.TextField(null=True, blank=True)
+    document = models.ForeignKey(Document, related_name='document_indicator')    
+    scales = models.ManyToManyField(Scale)
+    unit_field = models.CharField(max_length=100, default='unit')
+    year_field = models.CharField(max_length=100, default='year')
+    value_field = models.CharField(max_length=100, default='value')
+    grade_field = models.CharField(max_length=100, default='grade')
+
+    def __unicode__(self):
+        return self.name
+
+# Grades for a given indicator value.  The grades are expected to be provided with the data so this
+# is not meant to be used to figure out the grade, but rather as metadata
+class Grade(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    indicator = models.ForeignKey(Indicator, related_name='indicator_grade')
+    order = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return self.name    

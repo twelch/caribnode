@@ -19,12 +19,15 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from caribnode.tools.models import Tool
+from caribnode.tools.models import *
 from geonode.layers.models import Layer
 from django.db.models import Sum
 
 from django.db import connection
 from caribnode.tools.util import *
+from django.forms.models import model_to_dict
+
+import random
 
 def tool_browse(request, template='tools/tool_list.html'):
     tool_list = Tool.objects.all().order_by('featured').order_by('id')
@@ -72,8 +75,6 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     first_desig = dictfetchall(cursor)[0]
     pa_year_first_proposed = first_desig['PROTDATE'].year
 
-    import random
-
     config['stats'] = {
         'country_total_km': country_total_km,
         'pa_num_designated': pa_num_designated,
@@ -89,13 +90,16 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
     }
 
     #Build up indicators
-    config['indis'] = {
-        'num_indis': 12
-    }
+    indiRows = Indicator.objects.filter(scales__name="Region")
+    indiDicts = []
+    for row in indiRows:
+        indiDicts.append(model_to_dict(row))
 
+    config['indis'] = indiDicts
+
+    #Convert to JSON
     import json
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
-
     config['config_json'] = config_json
 
     return render(request, template, config)
