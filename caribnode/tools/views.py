@@ -38,6 +38,8 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
 
     config = Tool.objects.get(url=request.path).config
     
+    #### Layers ####
+
     #shortcut data layer record list
     dls = {}
 
@@ -51,7 +53,8 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
         layer['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
         layer['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
 
-    #Build up stats
+    #### Stats ####
+
     cursor = connection.cursor()
 
     #Country total km
@@ -89,11 +92,18 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
         'pa_perc_shelf_proposed': random.randint(4,7)
     }
 
-    #Build up indicators
+    #### Indicators ####
+
     indiRows = Indicator.objects.filter(scales__name="Region")
     indiDicts = []
     for row in indiRows:
-        indiDicts.append(model_to_dict(row))
+        indiDict = model_to_dict(row)
+        indiDict['document'] = {
+            'name': row.document.title,
+            'link': row.document.get_absolute_url(), 
+            'download': row.document.get_absolute_url()+"/download"
+        }
+        indiDicts.append(indiDict)
 
     config['indis'] = indiDicts
 
