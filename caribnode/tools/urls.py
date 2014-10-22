@@ -26,5 +26,5 @@ js_info_dict = {
 
 urlpatterns = patterns('caribnode.tools.views',
     url(r'^$', 'tool_browse', name='tool_browse'),
-    url(r'^reef-assess$', 'reef_assess', name='reef_assess'),    
+    url(r'^reef-assess/region/([A-Za-z]+)/$', 'reef_assess', name='reef_assess'),    
 )

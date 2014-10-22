@@ -45,10 +45,10 @@ class Indicator(models.Model):
     description = models.TextField(null=True, blank=True)
     document = models.ForeignKey(Document, related_name='document_indicator')    
     scales = models.ManyToManyField(Scale)
-    unit_field = models.CharField(max_length=100, default='unit')
-    year_field = models.CharField(max_length=100, default='year')
-    value_field = models.CharField(max_length=100, default='value')
-    grade_field = models.CharField(max_length=100, default='grade')
+    unit_field = models.CharField(max_length=100, default='UNIT')
+    year_field = models.CharField(max_length=100, default='YEAR')
+    value_field = models.CharField(max_length=100, default='VALUE')
+    grade_field = models.CharField(max_length=100, default='GRADE')
 
     def __unicode__(self):
         return self.name

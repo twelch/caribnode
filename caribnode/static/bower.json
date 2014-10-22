@@ -19,6 +19,8 @@
   ],
   "dependencies": {
     "openlayers": "openlayers/ol3#v3.0.0",
-    "highcharts": "highslide-software/highcharts-release"
+    "highcharts": "highslide-software/highcharts-release",
+    "papaparse": "mholt/PapaParse",
+    "underscore": "jashkenas/underscore#v1.7.0"
   }
 }

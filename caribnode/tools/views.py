@@ -34,10 +34,16 @@ def tool_browse(request, template='tools/tool_list.html'):
     context = {'tool_list': tool_list}
     return render(request, template, context)
 
-def reef_assess(request, template='tools/reef_assess_region.html'):
+def reef_assess(request, region, template='tools/reef_assess_region.html'):
 
+    #Get tool settings
     config = Tool.objects.get(url=request.path).config
-    
+
+    #Add boilerplate
+    curScale = "Region"
+    config['scale'] = curScale
+    config['unit'] = region
+
     #### Layers ####
 
     #shortcut data layer record list
@@ -94,10 +100,11 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
 
     #### Indicators ####
 
-    indiRows = Indicator.objects.filter(scales__name="Region")
+    indiRows = Indicator.objects.filter(scales__name=curScale)
     indiDicts = []
     for row in indiRows:
         indiDict = model_to_dict(row)
+        indiDict['indi_type_display'] = row.get_indi_type_display()
         indiDict['document'] = {
             'name': row.document.title,
             'link': row.document.get_absolute_url(), 
@@ -105,7 +112,7 @@ def reef_assess(request, template='tools/reef_assess_region.html'):
         }
         indiDicts.append(indiDict)
 
-    config['indis'] = indiDicts
+    config['indis'] = indiDicts    
 
     #Convert to JSON
     import json

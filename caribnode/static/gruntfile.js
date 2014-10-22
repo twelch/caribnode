@@ -27,7 +27,20 @@ module.exports = function(grunt) {
           src: [
             'highcharts/highcharts.js',
             'highcharts/highcharts-more.js',
-            'openlayers/ol.min.js'
+            'openlayers/ol.min.js',
+            'papaparse/papaparse.min.js',
+            'underscore/underscore-min.js',
+            'underscore/underscore-min.map',
+            'jquery-ui-1.11.2.custom/jquery-ui.min.js'
+          ]
+        },{
+          expand: true,
+          flatten: true,
+          cwd: 'bower_components',
+          dest: 'lib/css',
+          src: [
+            'openlayers/css/ol.css',
+            'jquery-ui-1.11.2.custom/jquery-ui.min.css'
           ]
         }]
       }
@@ -38,7 +51,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  //grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-watch');

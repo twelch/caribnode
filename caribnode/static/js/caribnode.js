@@ -81,6 +81,163 @@ function loadHoverEvents(overlay, layer, elemClass, nameAttr) {
   });
 }
 
+/******** PARSE CSVs ********/
+
+function loadIndiData() {
+
+  var getArray = [];
+  _.each(config.indis, function(el, index, list){
+    //Create deferred object
+    var dfd = new $.Deferred();
+
+    //Papa parse call does not return a promise which will let us know when
+    //the ajax call is complete.  So, wrap papa parse call with a function 
+    //that does return a promise and have papas complete function resolve that 
+    //promise (call done event) so that listeners can act on it, namely tracking 
+    //when all of the csv's have finished processing
+    var parseWrap = _.wrap(function() {
+      Papa.parse(el.document.download, {
+        download: true,
+        dynamicTyping: true,
+        header: true,
+        error: csvError,
+        complete: function(results) {
+          //Attach csv results to document object
+          el.document.data = results.data;
+          //Resolve the promise
+          dfd.resolve();
+        }
+      })
+    }, function(func) {
+      //Call the original function above
+      func();
+      //And also return a promise to the caller
+      return dfd.promise();
+    });
+
+    //Kick things off, building up an array of promise objects
+    getArray.push(parseWrap());    
+  });
+
+  //Once all of the promises trigger they are done, we know the CSVs are all loaded
+  $.when.apply($, getArray).done(function () {
+    renderIndiData();
+  });
+}
+
+function csvError(error) {
+  console.log(error);
+}
+
+function renderIndiData() {
+  //Get unique list of indicator types
+  var curTypes = _.chain(config.indis).map(function(indi){
+    return _.pick(indi, 'indi_type', 'indi_type_display');
+  }).uniq(false, function(indi){
+    return indi.indi_type;
+  }).value();
+
+  _.each(curTypes, function(curType, index){
+    //Get all indi objects of current type
+    var indiSubset = _.filter(config.indis, function(indi) {
+      return indi.indi_type == curType.indi_type;
+    });
+
+    //Filter indi csv data down to rows for current geographic unit only
+    _.each(indiSubset, function(indi) {      
+      var dataSubset = _.filter(indi.document.data, function(row) {
+        return row[indi.unit_field] == config.unit;
+      });
+      indi.document.data = dataSubset;
+    });
+
+    //Render new section for current type
+    $('#indi-section').IndiSection({
+      'indi_type': curType.indi_type,
+      'indi_type_display': curType.indi_type_display,
+      'indis': indiSubset});
+  });
+}
+
+$.widget( "geonode.IndiSection", {
+    // Default options, must be overriden
+    options: {
+        indi_type: 'type name',
+        indi_type_display: 'type display name',
+        indis: []
+    },
+ 
+    //Generate the table values for each indi
+    _genRows: function() {
+      _.each(this.options.indis, function(indi){
+        //Get most recent two years data
+        var lastTwo = _.sortBy(indi.document.data, function(row){
+          return -row[indi.year_field];
+        }).slice(0,2);
+
+        var yearOne = null
+        var yearTwo = null;
+
+        if (lastTwo.length == 0) {
+          //No data to show
+        } else if(lastTwo.length == 1) {
+          //One year of data to show
+          yearOne = lastTwo[0];
+        } else {
+          //Two years of data to show
+          yearOne = lastTwo[0];
+          yearTwo = lastTwo[1];
+        }
+        
+        //Handle each indicator, appending display object with prepped values
+        indi.display = {};
+        if (indi.name == 'Average Coral Cover') {
+          indi.display.year = yearOne[indi.year_field];
+          indi.display.value = (yearOne[indi.value_field]*100)+'%';
+          indi.display.grade = yearOne[indi.grade_field];
+
+          if (yearTwo) {
+            if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
+              indi.display.trend = 'same';
+            } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';
+            }
+          } else {
+            indi.display.trend = false;
+          }
+        } else if (indi.name == 'Average Coral Diversity') {
+          indi.display.year = yearOne[indi.year_field];
+          indi.display.value = yearOne[indi.value_field];
+          indi.display.grade = yearOne[indi.grade_field];
+
+          if (yearTwo) {
+            if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
+              indi.display.trend = 'same';
+            } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';
+            }
+          } else {
+            indi.display.trend = false;
+          }
+        }
+      });
+    },
+
+    _create: function() {
+        this._genRows();
+
+        //Compile and render template
+        var compiled = _.template($(".indiSection").html());
+        var html = compiled(this.options);
+        this.element.append(html);
+    }
+});
+
+
 /******** COUNTRY MAP ********/
 
 function loadCountryMap(countryEl) {
@@ -259,7 +416,7 @@ function loadMpaCharts(config) {
           name: '',
           data: [["Designated",config.perc_ocean_protected],["Proposed only",config.perc_ocean_proposed],["Other",100-config.perc_ocean_protected-config.perc_ocean_proposed]],
           size: '100%',
-          innerSize: '70%',
+          innerSize: '75%',
           showInLegend:false,
           dataLabels: {
               enabled: false
@@ -313,7 +470,7 @@ function loadMpaCharts(config) {
           name: '',
           data: [["Designated",config.perc_shelf_protected],["Proposed only",config.perc_shelf_proposed],["Other",100-config.perc_shelf_protected-config.perc_shelf_proposed]],
           size: '100%',
-          innerSize: '70%',
+          innerSize: '75%',
           showInLegend:false,
           dataLabels: {
               enabled: false

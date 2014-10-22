@@ -3,6 +3,10 @@ body {
     background-image: url("../img/waves_gray_20opac.jpg");
 }
 
+.row {
+    margin-left: -20px;
+}
+
 .carib p {
     font-size: 20px;
     color: #333;
