@@ -31,7 +31,8 @@ module.exports = function(grunt) {
             'papaparse/papaparse.min.js',
             'underscore/underscore-min.js',
             'underscore/underscore-min.map',
-            'jquery-ui-1.11.2.custom/jquery-ui.min.js'
+            'jquery-ui-1.11.2.custom/jquery-ui.min.js',
+            'humanize/humanize.js'
           ]
         },{
           expand: true,

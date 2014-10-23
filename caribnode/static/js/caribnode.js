@@ -191,38 +191,27 @@ $.widget( "geonode.IndiSection", {
         
         //Handle each indicator, appending display object with prepped values
         indi.display = {};
-        if (indi.name == 'Average Coral Cover') {
-          indi.display.year = yearOne[indi.year_field];
-          indi.display.value = (yearOne[indi.value_field]*100)+'%';
-          indi.display.grade = yearOne[indi.grade_field];
 
-          if (yearTwo) {
-            if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
-              indi.display.trend = 'same';
-            } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
-              indi.display.trend = 'up';
-            } else {
-              indi.display.trend = 'down';
-            }
-          } else {
-            indi.display.trend = false;
-          }
-        } else if (indi.name == 'Average Coral Diversity') {
-          indi.display.year = yearOne[indi.year_field];
-          indi.display.value = yearOne[indi.value_field];
-          indi.display.grade = yearOne[indi.grade_field];
+        indi.display.year = yearOne[indi.year_field];
+        indi.display.value = yearOne[indi.value_field];
+        indi.display.grade = yearOne[indi.grade_field];
 
-          if (yearTwo) {
-            if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
-              indi.display.trend = 'same';
-            } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
-              indi.display.trend = 'up';
-            } else {
-              indi.display.trend = 'down';
-            }
+        if (yearTwo) {
+          if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
+            indi.display.trend = 'same';
+          } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
+            indi.display.trend = 'up';
           } else {
-            indi.display.trend = false;
+            indi.display.trend = 'down';
           }
+        } else {
+          indi.display.trend = false;
+        }
+
+        if (indi.name == 'Average Coral Cover') {          
+          indi.display.value = (indi.display.value*100)+'%';          
+        } else if (indi.name == 'Key Commercial Species') {
+          indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
         }
       });
     },
