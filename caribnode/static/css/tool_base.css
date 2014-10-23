@@ -93,7 +93,7 @@ p:nth-child(2) {
 }
 
 .big-label {
-    color: #D8D8D8 !important;
+    color: #CCCCCC !important;
     font-weight: 300;
     font-size: 16px;
     vertical-align: top;
@@ -105,7 +105,7 @@ p:nth-child(2) {
 }
 
 .small-label {
-    color: #D8D8D8 !important;
+    color: #CCCCCC !important;
     font-weight: 300;
     font-size: 16px;
     vertical-align: top;

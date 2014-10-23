@@ -152,10 +152,11 @@ function renderIndiData() {
     });
 
     //Render new section for current type
-    $('#indi-section').IndiSection({
+    $( "<div></div>" ).appendTo( "#indi-section" ).IndiSection({
       'indi_type': curType.indi_type,
       'indi_type_display': curType.indi_type_display,
-      'indis': indiSubset});
+      'indis': indiSubset
+    });
   });
 }
 
