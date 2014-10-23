@@ -173,6 +173,7 @@ $.widget( "geonode.IndiSection", {
       _.each(this.options.indis, function(indi){
         //Get most recent two years data
         var lastTwo = _.sortBy(indi.document.data, function(row){
+          //Use negative in test to sort descending, as it will sort ascending value by default
           return -row[indi.year_field];
         }).slice(0,2);
 
@@ -196,6 +197,7 @@ $.widget( "geonode.IndiSection", {
         indi.display.year = yearOne[indi.year_field];
         indi.display.value = yearOne[indi.value_field];
         indi.display.grade = yearOne[indi.grade_field];
+        indi.display.doc_link = indi.document.link;
 
         if (yearTwo) {
           if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {

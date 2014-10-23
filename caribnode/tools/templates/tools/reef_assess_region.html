@@ -187,7 +187,7 @@ $( document ).ready(function() {
                 <th class="value">Value</th>
                 <th class="trend">Trend</th>
                 <th class="grade">Grade</th>
-                <th class="map">Map</th>
+                <th class="data">Data</th>
               </tr>
             </thead>
             <colgroup>
@@ -230,7 +230,7 @@ $( document ).ready(function() {
                   N/A
                 <% } %>                
                 <%= indi.display.grade %></div></td>
-                <td class="map">Map</td>
+                <td class="data"><a href="<%= indi.display.doc_link %>"><i class="icon-table doc-data-icon"></a></td>
               </tr>              
               <% }); %>              
             </tbody>

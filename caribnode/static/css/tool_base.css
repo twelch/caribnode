@@ -332,10 +332,10 @@ p:nth-child(2) {
     width: 10%;
 }
 .table-indi .col5 {
-    width: 10%;
+    width: 14%;
 }
 .table-indi .col6 {
-    width: 10%;
+    width: 6%;
 }
 
 .table th, .table td {
@@ -353,11 +353,11 @@ p:nth-child(2) {
     color: #333333;
 }
 
-.table th.year, .table th.value, .table th.trend, .table th.grade, .table th.map {
+.table th.year, .table th.value, .table th.trend, .table th.grade, .table th.data {
     text-align: center;
 }
 
-.table td.year, .table td.value, .table td.trend, .table td.grade, .table td.map {
+.table td.year, .table td.value, .table td.trend, .table td.grade, .table td.data {
     text-align: center;
 }
 
@@ -398,4 +398,13 @@ p:nth-child(2) {
 
 .trend-icon-small {
     font-size: 12px;
+}
+
+.doc-data-icon {
+    font-size: 26px;
+}
+
+a .doc-data-icon {
+    text-decoration: none;
+    color: #d8d8d8;
 }
