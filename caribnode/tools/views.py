@@ -46,23 +46,28 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     cursor = connection.cursor()
 
-    #Country total km
-    cursor.execute('SELECT Sum("Shape_Area") FROM eez_noland')
-    country_total_km = cursor.fetchone()[0]/1000000
+    #Unit total km
+    cursor.execute('SELECT Sum("AREA_SQKM") FROM eez_noland')
+    country_total_km = cursor.fetchone()[0]
 
     #Number designated PAs
     cursor.execute('select count(*) from pa where pa."STATUS" = \'Designated\' and "ON_WATER"=1')
     pa_num_designated = cursor.fetchone()[0]
 
-    #First year designated
+    #Total area and first year designated
+    pa_year_first_designated = None
+    pa_designated_total_area = 0
     cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Designated\' and "ON_WATER"=1 order by "PROTDATE" ASC')
-    first_desig = dictfetchall(cursor)[0]
-    pa_year_first_designated = first_desig['PROTDATE'].year
+    for pa in dictfetchall(cursor):
+        if not pa_year_first_designated:
+            pa_year_first_designated = pa['PROTDATE'].year
+
 
     #Number proposed PAs
     cursor.execute('select count(*) from pa where pa."STATUS" = \'Proposed\' and "ON_WATER"=1')
     pa_num_proposed = cursor.fetchone()[0]
 
+    #First year proposed
     cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Proposed\' and "ON_WATER"=1 order by "PROTDATE" ASC')
     first_desig = dictfetchall(cursor)[0]
     pa_year_first_proposed = first_desig['PROTDATE'].year
