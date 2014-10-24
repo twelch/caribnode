@@ -146,7 +146,7 @@ function renderIndiData() {
     //Filter indi csv data down to rows for current geographic unit only
     _.each(indiSubset, function(indi) {      
       var dataSubset = _.filter(indi.document.data, function(row) {
-        return row[indi.unit_field] == config.unit;
+        return row[indi.unit_field] == config.unit.name;
       });
       indi.document.data = dataSubset;
     });

@@ -8,44 +8,9 @@
 
 {% block middle %}
   <div class="container tool">
-    <div class="tool-header">REGIONAL REEF ASSESSMENT</div>
+    <div class="tool-header">NATIONAL REEF ASSESSMENT</div>
     <h2 class="tool-unit">{{ unit.name }}</h2>
     
-    <h3 class='section-header'>OVERVIEW</h3>
-    <div class="row-fluid section-body">
-        <div class="span6 overview-left">
-          <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
-          <table class="stats-table">
-            <colgroup>
-               <col class="stat-col col1">
-               <col class="stat-col col2">
-               <col class="stat-col col3">
-            </colgroup>
-            <tr class="num-row">
-              <td><div class="country-icon"></div></td>
-              <td class="big-num">{{countries|length}}</td>
-              <td class="small-num">{{stats.country_total_km|floatformat:"0"|intcomma}}</td>                
-            </tr>
-            <tr>
-              <td></td>
-              <td class="big-label">PARTICIPATING COUNTRIES</td>
-              <td class="small-label">SQUARE KM OF OCEAN</td>
-            </tr>        
-          </table>  
-
-          <div class='tool-list'>
-            {% for unit in childUnits %}
-            <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" ><a href='{% url "reef_assess" childScale unit.id %}'>{{ unit.name }}</a></article>
-            {% endfor %}
-          </div>                      
-        </div>
-
-        <div class="span6 overview-right">
-          <div id="country-map">
-        </div>
-        </div>
-    </div>
-
     <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
     <div class="row-fluid section-body">
 

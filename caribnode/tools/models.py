@@ -22,10 +22,28 @@ class Tool(models.Model):
     def __unicode__(self):
         return self.name
 
-# Geographic scales
+# Geographic scales including layers to be loaded at that scale for each tool
 class Scale(models.Model):
     name = models.CharField(max_length=100)
+    display_name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
+    layers = JSONField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+# Geographic unit at any given scale e.g. Caribbean or Grenada, where Caribbean
+# is the parent of Grenada
+class Unit(models.Model):
+    UNIT_TYPES = (
+        ('Region', 'Region'),
+        ('Country', 'Country'),
+    )
+
+    name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
+    scale = models.ForeignKey(Scale, related_name='unit_scale')
+    order = models.IntegerField(default=1)
 
     def __unicode__(self):
         return self.name

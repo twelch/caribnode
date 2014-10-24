@@ -1,22 +1,3 @@
-#########################################################################
-#
-# Copyright (C) 2012 The Nature Conservancy
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-#########################################################################
-
 from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import *
@@ -34,30 +15,32 @@ def tool_browse(request, template='tools/tool_list.html'):
     context = {'tool_list': tool_list}
     return render(request, template, context)
 
-def reef_assess(request, region, template='tools/reef_assess_region.html'):
+def reef_assess(request, scale_name, unit_id, template=''):
 
-    #Get tool settings
-    config = Tool.objects.get(url=request.path).config
+    #### Base Config ####
+    config = {}
 
-    #Add boilerplate
-    curScale = "Region"
-    config['scale'] = curScale
-    config['unit'] = region
+    scale = Scale.objects.get(name=scale_name)
+    config['scale'] = model_to_dict(scale)
 
+    unit = Unit.objects.get(id=unit_id)
+    config['unit'] = model_to_dict(unit)
+
+    childUnits = Unit.objects.filter(parent=unit).order_by('order')    
+    if childUnits:
+        config['childUnits'] = [model_to_dict(unit) for unit in childUnits]
+        config['childScale'] = childUnits[0].scale.name
+    
     #### Layers ####
 
-    #shortcut data layer record list
-    dls = {}
-
-    for layerName, layer in config['layers'].items():        
-        layerRec = Layer.objects.get(name=layer['modelname'])        
-        #Build up data layer list
-        dls[layerName] = layerRec        
-
-        #Build up extra layer attributes
-        layer['links'] = {}
-        layer['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
-        layer['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
+    layers = {}
+    for layerNick, layerDict in scale.layers.items():        
+        layerRec = Layer.objects.get(name=layerDict['modelname'])        
+        layerDict['links'] = {}
+        layerDict['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
+        layerDict['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
+        layers[layerNick] = layerDict
+    config['layers'] = layers
 
     #### Stats ####
 
@@ -100,7 +83,7 @@ def reef_assess(request, region, template='tools/reef_assess_region.html'):
 
     #### Indicators ####
 
-    indiRows = Indicator.objects.filter(scales__name=curScale)
+    indiRows = Indicator.objects.filter(scales__name=scale)
     indiDicts = []
     for row in indiRows:
         indiDict = model_to_dict(row)
@@ -114,9 +97,16 @@ def reef_assess(request, region, template='tools/reef_assess_region.html'):
 
     config['indis'] = indiDicts    
 
-    #Convert to JSON
+    #### JSON Conversion ####
+
     import json
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
     config['config_json'] = config_json
 
+    if scale.name == 'region':
+        template = 'tools/reef_assess_region.html'
+    elif scale.name == 'country':
+        template = 'tools/reef_assess_country.html'
+
     return render(request, template, config)
+ 
