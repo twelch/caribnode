@@ -366,13 +366,17 @@ p:nth-child(2) {
 }
 
 .grade div {
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'Lato-Bold'; 
     height: 25px;
-    width: 60px; 
+    width: 80px; 
     padding-top: 5px;  
     margin-left: auto;
     margin-right: auto;
+}
+
+.grade-very-good {
+    background-color: #247729;    
 }
 
 .grade-good {

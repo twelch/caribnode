@@ -63,7 +63,7 @@
           <tr class="num-row">
             <td><div class="mpa-desig-icon"></div></td>
             <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td class="small-num">{{stats.pa_designated_total_area|intcomma|floatformat}}</td>                
+            <td class="small-num">{{stats.pa_designated_total_area|floatformat:0|intcomma}}</td>                
           </tr>
           <tr>
             <td></td>
@@ -81,7 +81,7 @@
           <tr class="num-row">
             <td><div class="mpa-proposed-icon"></div></td>
             <td class="big-num">{{stats.pa_num_proposed}}</td>
-            <td class="small-num">{{stats.pa_proposed_total_area|intcomma|floatformat}}</td>                
+            <td class="small-num">{{stats.pa_proposed_total_area|floatformat:0|intcomma}}</td>                
           </tr>
           <tr>
             <td></td>

@@ -57,14 +57,18 @@ def reef_assess(request, scale_name, unit_id, template=''):
     pa_perc_ocean_proposed = row[2]
 
     #shelf total km, ocean protected
-    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'])
+    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
     if scale.name == 'country':
         query += ' WHERE "{0}" = \'{1}\''.format(layers['shelf_noland']['unitname'], unit.name)
     cursor.execute(query)
     row = cursor.fetchone()
     shelf_total_km = row[0]
-    pa_perc_shelf_protected = row[1]
-    pa_perc_shelf_proposed = row[2]
+    if scale.name == 'country':
+        pa_perc_shelf_protected = row[1]
+        pa_perc_shelf_proposed = row[2]
+    elif scale.name == 'region':
+        pa_perc_shelf_protected = row[3]/shelf_total_km*100
+        pa_perc_shelf_proposed = row[4]/shelf_total_km*100
 
     #Number designated PAs and total area
     query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
