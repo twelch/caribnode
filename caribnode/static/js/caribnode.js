@@ -293,7 +293,7 @@ function loadCountryMap(countryEl) {
       return feature;
     });
     highlightFeature(countryOverlay, feature);
-    var countryName = feature ? feature.get(eezNameAttr) : null;
+    var countryName = feature ? feature.get(config.layers.eez.unitname) : null;
     highlightListItem(countryListItemClass, countryName);
   });
 

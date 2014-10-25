@@ -111,7 +111,6 @@ config = {{config_json|safe}};
 
 //Other globals
 countryListItemClass = '.tool-list-item';
-eezNameAttr = "Sovereign";
 
 $( document ).ready(function() {
   
@@ -121,7 +120,7 @@ $( document ).ready(function() {
   loadIndiData();
   loadCountryMap('country-map');
   loadMpaMap('mpa-map');
-  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, eezNameAttr);
+  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, config.layers.eez.unitname);
   loadMpaCharts({
     'ocean_target':'ocean-donut',
     'perc_ocean_protected':config.stats.pa_perc_ocean_protected,

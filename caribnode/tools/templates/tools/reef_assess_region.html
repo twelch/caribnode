@@ -8,9 +8,12 @@
 
 {% block middle %}
   <div class="container tool">
-    <div class="tool-header">REGIONAL REEF ASSESSMENT</div>
+    <div class="tool-header">
+    {{ scale.alt_name|upper }} REEF ASSESSMENT
+    </div>
     <h2 class="tool-unit">{{ unit.name }}</h2>
     
+  {% if scale.name == "region" %}
     <h3 class='section-header'>OVERVIEW</h3>
     <div class="row-fluid section-body">
         <div class="span6 overview-left">
@@ -24,7 +27,7 @@
             <tr class="num-row">
               <td><div class="country-icon"></div></td>
               <td class="big-num">{{childUnits|length}}</td>
-              <td class="small-num">{{stats.country_total_km|floatformat:"0"|intcomma}}</td>                
+              <td class="small-num">{{stats.eez_total_km|floatformat:"0"|intcomma}}</td>                
             </tr>
             <tr>
               <td></td>
@@ -45,6 +48,7 @@
         </div>
         </div>
     </div>
+  {% endif %}
 
     <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
     <div class="row-fluid section-body">
@@ -59,7 +63,7 @@
           <tr class="num-row">
             <td><div class="mpa-desig-icon"></div></td>
             <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td class="small-num">{{stats.pa_designated_total_area|intcomma}}</td>                
+            <td class="small-num">{{stats.pa_designated_total_area|intcomma|floatformat}}</td>                
           </tr>
           <tr>
             <td></td>
@@ -77,7 +81,7 @@
           <tr class="num-row">
             <td><div class="mpa-proposed-icon"></div></td>
             <td class="big-num">{{stats.pa_num_proposed}}</td>
-            <td class="small-num">{{stats.pa_proposed_total_area|intcomma}}</td>                
+            <td class="small-num">{{stats.pa_proposed_total_area|intcomma|floatformat}}</td>                
           </tr>
           <tr>
             <td></td>
@@ -146,7 +150,6 @@ config = {{config_json|safe}};
 
 //Other globals
 countryListItemClass = '.tool-list-item';
-eezNameAttr = "Sovereign";
 
 $( document ).ready(function() {
   
@@ -156,7 +159,7 @@ $( document ).ready(function() {
   loadIndiData();
   loadCountryMap('country-map');
   loadMpaMap('mpa-map');
-  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, eezNameAttr);
+  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, config.layers.eez.unitname);
   loadMpaCharts({
     'ocean_target':'ocean-donut',
     'perc_ocean_protected':config.stats.pa_perc_ocean_protected,

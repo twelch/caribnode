@@ -26,6 +26,7 @@ class Tool(models.Model):
 class Scale(models.Model):
     name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
+    alt_name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     layers = JSONField(null=True, blank=True)
 

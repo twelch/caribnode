@@ -34,8 +34,8 @@ class GradeAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description', 'indicator')
 
 class ScaleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'display_name', 'description')
-    search_fields = ('name', 'display_name', 'description')
+    list_display = ('id', 'name', 'display_name', 'alt_name', 'description')
+    search_fields = ('name', 'display_name', 'alt_name', 'description')
 
 class UnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'name', 'scale', 'parent')

@@ -46,44 +46,75 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     cursor = connection.cursor()
 
-    #Unit total km
-    cursor.execute('SELECT Sum("AREA_SQKM") FROM eez_noland')
-    country_total_km = cursor.fetchone()[0]
+    #eez total km, ocean protected
+    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
+    if scale.name == 'country':
+        query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    eez_total_km = row[0]
+    pa_perc_ocean_protected = row[1]
+    pa_perc_ocean_proposed = row[2]
 
-    #Number designated PAs
-    cursor.execute('select count(*) from pa where pa."STATUS" = \'Designated\' and "ON_WATER"=1')
-    pa_num_designated = cursor.fetchone()[0]
+    #shelf total km, ocean protected
+    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'])
+    if scale.name == 'country':
+        query += ' WHERE "{0}" = \'{1}\''.format(layers['shelf_noland']['unitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    shelf_total_km = row[0]
+    pa_perc_shelf_protected = row[1]
+    pa_perc_shelf_proposed = row[2]
 
-    #Total area and first year designated
+    #Number designated PAs and total area
+    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+    if scale.name == 'country':
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    pa_num_designated = row[0]
+    pa_designated_total_area = row[1]
+
+    #first year designated
     pa_year_first_designated = None
-    pa_designated_total_area = 0
-    cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Designated\' and "ON_WATER"=1 order by "PROTDATE" ASC')
-    for pa in dictfetchall(cursor):
-        if not pa_year_first_designated:
-            pa_year_first_designated = pa['PROTDATE'].year
+    query = 'select "{0}" from pa where "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
+    cursor.execute(query)
+    pas = dictfetchall(cursor)
+    latest = pas[0]
+    pa_year_first_designated = latest['PROTDATE'].year
 
+    import pdb
+    pdb.set_trace()
 
-    #Number proposed PAs
-    cursor.execute('select count(*) from pa where pa."STATUS" = \'Proposed\' and "ON_WATER"=1')
-    pa_num_proposed = cursor.fetchone()[0]
+    #Number proposed PAs and total area
+    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+    if scale.name == 'country':
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    pa_num_proposed = row[0]
+    pa_proposed_total_area = row[1]
 
     #First year proposed
-    cursor.execute('select "AREANAM", "PROTDATE" from pa where "STATUS"=\'Proposed\' and "ON_WATER"=1 order by "PROTDATE" ASC')
-    first_desig = dictfetchall(cursor)[0]
-    pa_year_first_proposed = first_desig['PROTDATE'].year
+    pa_year_first_proposed = None
+    query = 'select "{0}" from pa where "STATUS"=\'Proposed\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
+    cursor.execute(query)
+    pas = dictfetchall(cursor)
+    latest = pas[0]
+    pa_year_first_proposed = latest['PROTDATE'].year
 
     config['stats'] = {
-        'country_total_km': country_total_km,
+        'eez_total_km': eez_total_km,
         'pa_num_designated': pa_num_designated,
-        'pa_designated_total_area': random.randint(1300,1700),
+        'pa_designated_total_area': pa_designated_total_area,
         'pa_year_first_designated': pa_year_first_designated,
         'pa_num_proposed': pa_num_proposed,
-        'pa_proposed_total_area': random.randint(2300,2700),
+        'pa_proposed_total_area': pa_proposed_total_area,
         'pa_year_first_proposed': pa_year_first_proposed,
-        'pa_perc_ocean_protected': random.randint(2,4),
-        'pa_perc_ocean_proposed': random.randint(4,7),
-        'pa_perc_shelf_protected': random.randint(2,4),
-        'pa_perc_shelf_proposed': random.randint(4,7)
+        'pa_perc_ocean_protected': round(pa_perc_ocean_protected,1),
+        'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,1),
+        'pa_perc_shelf_protected': round(pa_perc_shelf_protected,1),
+        'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,1)
     }
 
     #### Indicators ####
@@ -108,10 +139,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
     config['config_json'] = config_json
 
-    if scale.name == 'region':
-        template = 'tools/reef_assess_region.html'
-    elif scale.name == 'country':
-        template = 'tools/reef_assess_country.html'
+    template = 'tools/reef_assess_region.html'
 
     return render(request, template, config)
  
