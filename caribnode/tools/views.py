@@ -87,9 +87,6 @@ def reef_assess(request, scale_name, unit_id, template=''):
     latest = pas[0]
     pa_year_first_designated = latest['PROTDATE'].year
 
-    import pdb
-    pdb.set_trace()
-
     #Number proposed PAs and total area
     query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
     if scale.name == 'country':
