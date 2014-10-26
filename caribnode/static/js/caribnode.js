@@ -212,7 +212,7 @@ $.widget( "geonode.IndiSection", {
         }
 
         if (indi.name == 'Average Coral Cover') {          
-          indi.display.value = (indi.display.value*100)+'%';          
+          indi.display.value = Math.round(indi.display.value*100)+'%';          
         } else if (indi.name == 'Key Commercial Species') {
           indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
         }

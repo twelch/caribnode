@@ -77,7 +77,10 @@ def reef_assess(request, scale_name, unit_id, template=''):
     cursor.execute(query)
     row = cursor.fetchone()
     pa_num_designated = row[0]
-    pa_designated_total_area = row[1]
+    if row[1]:
+        pa_designated_total_area = row[1]
+    else:
+        pa_designated_total_area = 0
 
     #first year designated
     pa_year_first_designated = None
