@@ -22,7 +22,6 @@
     "highcharts": "highslide-software/highcharts-release",
     "papaparse": "mholt/PapaParse",
     "underscore": "jashkenas/underscore#v1.7.0",
-    "humanize": "taijinlee/humanize#v0.0.9",
-    "jquery-ui": "jquery/jquery-ui#1.11.2"
+    "humanize": "taijinlee/humanize#v0.0.9"
   }
 }
