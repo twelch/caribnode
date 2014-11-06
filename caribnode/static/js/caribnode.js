@@ -9,6 +9,7 @@ eezStrokeColor = '#AAAAAA';
 
 paMap = null;
 mEEZLayer = null; //eez layer object
+cEEZExtent = null; //extent of eez feature
 
 /******** HELPER FUNCTIONS ********/
 
@@ -296,10 +297,6 @@ function loadCountryMap(countryEl) {
     var countryName = feature ? feature.get(config.layers.eez.unitname) : null;
     highlightListItem(countryListItemClass, countryName);
   });
-
-  cMap.on('click', function(evt) {
-    displayFeatureInfo(evt.pixel);
-  });
 }
 
 /******** MPA MAP ********/
@@ -322,6 +319,20 @@ function loadMpaMap(mapEl) {
     }      
   });
 
+  function getEEZExtent() {
+    if (config.scale.name == 'country') {
+      var eezFeat = mEEZLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      cEEZExtent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
+      paMap.getView().fitExtent(cEEZExtent, paMap.getSize());
+    }
+  }
+
+  mEEZLayer.on('change', getEEZExtent);
+
   paMap = new ol.Map({
     layers: [
       new ol.layer.Tile({
@@ -329,18 +340,22 @@ function loadMpaMap(mapEl) {
           url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
         })
-      }),
+      }),      
       new ol.layer.Tile({
-        source: new ol.source.XYZ({
-          url: config.layers.pa.links.Tiles
+        source: new ol.source.TileWMS({
+          url: config.layers.shelf.links.WMS,
+          params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
+          serverType: 'geoserver'
         })
       }),
       new ol.layer.Tile({
-        source: new ol.source.XYZ({
-          url: config.layers.shelf.links.Tiles
+        source: new ol.source.TileWMS({
+          url: config.layers.pa.links.WMS,
+          params: {'LAYERS': 'pa', 'STYLES': 'pa_4b0bd6b0', 'TILED': true},
+          serverType: 'geoserver'
         })
-      }),
-      mEEZLayer
+      }),      
+      mEEZLayer,
     ],
     controls: ol.control.defaults().extend([
       new ol.control.FullScreen()
@@ -350,20 +365,6 @@ function loadMpaMap(mapEl) {
       center: [-6786385.11927109, 1836323.167523076],
       zoom: 6
     })
-  });
-
-  /**
-   * Click handler to render the popup.
-   */
-  paMap.on('click', function(evt) {
-    var coordinate = evt.coordinate;
-    var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
-        coordinate, 'EPSG:3857', 'EPSG:4326'));
-
-    overlay.setPosition(coordinate);
-    content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-        '</code>';
-    container.style.display = 'block';
   });
 }
 

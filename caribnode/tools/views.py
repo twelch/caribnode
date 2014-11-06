@@ -39,6 +39,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
         layerDict['links'] = {}
         layerDict['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
         layerDict['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
+        layerDict['links']['WMS'] = layerRec.link_set.get(link_type='OGC:WMS').url
         layers[layerNick] = layerDict
     config['layers'] = layers
 
