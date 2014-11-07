@@ -46,21 +46,40 @@ h3.section-header {
     margin-top: 20px;
 }
 
-.tool-list article {
-    position: relative;
-    clear: both;
+.tool-list-item {
+    height: 40px;    
+    width: 100%;
+    padding: 5px 0px 5px 0px;
     font-size: 20px;
     color: #666666;
-    padding: 15px 0px 15px 10px;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;    
+    vertical-align: middle;    
 }
 
-.tool-list article.last {
+.tool-list-item.last {
     border-bottom: 0px !important;
 }
 
-.tool-list article.highlight {
+.tool-list-item.highlight {
     background-color: #eee;   
+}
+
+.tool-list-name {
+    line-height: 40px;
+}
+
+.zoom-assess-icon {
+    background: url('/static/img/icon_21994_pie_chart.png') no-repeat center;
+    height: 40px;
+    width: 40px;  
+    line-height: 40px;
+}
+
+.zoom-unit-icon {
+    background: url('/static/img/icon_66021_map_zoom.png') no-repeat center;
+    height: 40px;
+    width: 40px;  
+    line-height: 40px;
 }
 
 .stats-table:nth-child(2) {

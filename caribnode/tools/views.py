@@ -29,7 +29,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     childUnits = Unit.objects.filter(parent=unit).order_by('order')    
     if childUnits:
         config['childUnits'] = [model_to_dict(unit) for unit in childUnits]
-        config['childScale'] = childUnits[0].scale.name
+        config['childScale'] = model_to_dict(childUnits[0].scale)
     
     #### Layers ####
 

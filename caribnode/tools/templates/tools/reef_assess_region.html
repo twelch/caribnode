@@ -38,10 +38,15 @@
 
           <div class='tool-list'>
             {% for unit in childUnits %}
-            <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" ><a href='{% url "reef_assess" childScale unit.id %}'>{{ unit.name }}</a></article>
+            <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+              <a class="tool-list-name" href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a>
+              <div class="zoom-unit-icon pull-right" title="Zoom map to {{childScale.name}}"></div>
+              <div class="zoom-assess-icon pull-right" title="Go to {{childScale.alt_name|lower}} assessment"></div>
+
+            </article>
             {% endfor %}
-          </div>                      
-        </div>
+          </div>                     
+        </div>        
 
         <div class="span6 overview-right">
           <div id="country-map">
@@ -107,7 +112,7 @@
       </div>
     </div>
 
-    <h3 class='section-header'>INDICATORS</h3>
+    <h3 class='section-header'>{{ scale.alt_name|upper }} INDICATORS</h3>
 
     <div class="section-body">
 
@@ -143,34 +148,17 @@
 <script src="{{ STATIC_URL }}lib/js/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}lib/js/humanize.js"></script>
 <script src="{{ STATIC_URL }}js/caribnode.js"></script>
-<script>
 
+<script>
 //Global config object
 config = {{config_json|safe}};
 
-//Other globals
-countryListItemClass = '.tool-list-item';
-
 $( document ).ready(function() {
-  
-  //Add indexOf to ie8 for PapaParse to work
-  if (!Array.prototype.indexOf) { Array.prototype.indexOf = _.indexOf; }
-
-  loadIndiData();
-  loadCountryMap('country-map');
-  loadMpaMap('mpa-map');
-  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, config.layers.eez.unitname);
-  loadMpaCharts({
-    'ocean_target':'ocean-donut',
-    'perc_ocean_protected':config.stats.pa_perc_ocean_protected,
-    'perc_ocean_proposed':config.stats.pa_perc_ocean_proposed,
-    'shelf_target':'shelf-donut',
-    'perc_shelf_protected':config.stats.pa_perc_shelf_protected,
-    'perc_shelf_proposed':config.stats.pa_perc_shelf_proposed
-  });
+  //Create assessment widget
+  $('body').ReefAssessment({'config':config});
 });
-
 </script>
+
 <script type="text/template" class="indiSection">
         <section>
           <div class="indi-header">
