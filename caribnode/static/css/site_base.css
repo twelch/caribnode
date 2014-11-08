@@ -152,8 +152,7 @@ nav.main-nav ul li a:hover {
     line-height: 30px;
 }
 
-.feature .feature-tool-icon {
-    position: relative;    
+.feature .feature-tool-icon {    
     height: 60px;
     width: 60px;
     background-color: #F5A623 !important;
@@ -163,7 +162,6 @@ nav.main-nav ul li a:hover {
 }
 
 .feature .feature-map-icon {
-    position: relative;
     background: url('/static/img/icon_28732_map.png') no-repeat center;
     height: 60px;
     width: 60px;  
@@ -201,6 +199,11 @@ nav.main-nav ul li a:hover {
 /* Make a div "clickable" by positioning an anchor element on top of it. 
 div position must be set to relative while the inner anchor is set 
 to absolute */
+
+.clickable {
+    position: relative;
+}
+
 .clickable a {
     position: absolute;
     width: 100%;
@@ -227,7 +230,6 @@ to absolute */
 }
 
 .partner-icon {
-    position: relative;
     background: url('/static/img/icon_39138_partners.png') no-repeat center;
     height: 50px;
     width: 50px; 

@@ -11,7 +11,8 @@ $.widget( "geonode.ReefAssessment", {
   cEEZLayer: null,  //country ol.layer
   cOverlay: null,   //country ol.overlay
   cEEZExtent: null, //extent of eez feature    
-  cListItemClass: '.tool-list-item',
+  listItemClass: '.tool-list-item',
+  listZoomClass: '.zoom-unit-icon',
 
   paMap: null,       //protected area ol.map
   paEEZLayer: null, //protected area ol.layer
@@ -21,7 +22,6 @@ $.widget( "geonode.ReefAssessment", {
   highName: null,
   highFeature: null,
 
-
   /*
    * Constructor
    */
@@ -30,7 +30,21 @@ $.widget( "geonode.ReefAssessment", {
       this._loadIndiData();
       this._loadCountryMap('country-map');
       this._loadMpaMap('mpa-map');
-      this._loadHoverEvents(this.cOverlay, this.cEEZLayer, this.cListItemClass, this.options.config.layers.eez.unitname);
+
+      this._loadClickZoomMapEvents({
+        clickClass: this.listZoomClass, 
+        map: this.cMap,
+        mapLayer: this.cEEZLayer,
+        featAttr: this.options.config.layers.eez.unitname
+      });
+
+      this._loadHoverHighlightMapEvents({
+        overlay: this.cOverlay, 
+        layer: this.cEEZLayer, 
+        elemClass: this.listItemClass, 
+        nameAttr: this.options.config.layers.eez.unitname
+      });
+
       loadMpaCharts({
         'ocean_target':'ocean-donut',
         'perc_ocean_protected':this.options.config.stats.pa_perc_ocean_protected,
@@ -205,30 +219,21 @@ $.widget( "geonode.ReefAssessment", {
         projection: 'EPSG:3857',
         url: '/proxy?url='+escape(config.layers.eez.links.GeoJSON).replace('4326','3857')
       }),
-      style: function(feature, resolution) {
-        return [new ol.style.Style({
-            fill: null,
-            stroke: new ol.style.Stroke({
-              color: this.eezStrokeColor,
-              width: 1
-            })            
-          })];
-      }      
+      style: $.proxy(this._getEEZStyle, this)
     });
 
-    function getEEZExtent() {
+    function zoomToEEZ(event) {
       if (config.scale.name == 'country') {
         var eezFeat = this.paEEZLayer.getSource().forEachFeature(function(feat){
           if (feat.get(config.layers.eez.unitname) == config.unit.name) {
             return feat;
           }        
         });
-        this.cEEZExtent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-        this.paMap.getView().fitExtent(this.cEEZExtent, this.paMap.getSize());
+        flyToFeature(this.paMap, eezFeat);        
       }
     }
 
-    this.paEEZLayer.on('change', getEEZExtent);
+    this.paEEZLayer.on('change', zoomToEEZ, this);
 
     this.paMap = new ol.Map({
       layers: [
@@ -275,16 +280,42 @@ $.widget( "geonode.ReefAssessment", {
     })];
   },  
 
-  /******** UI EVENTS ********/
+/******** UI EVENT LOADERS ********/
 
   /* 
-   * Load hover events for all list elements with given class name
+   * Load event handlers to manage the clicking of a button in a list
+   * to zoom to a specific feature on a map.  Expects param object with the following:
+   * clickClass - class of DOM elements to apply click event to.
+   * map - ol.Map containing mapLayer
+   * mapLayer - ol.Layer containing features to zoom to
+   * featAttr - name of feature attribute to match on for triggering action
    */
-  _loadHoverEvents: function(overlay, layer, elemClass, nameAttr) {
-    //load hover events
-    var params = {'overlay':overlay, 'layer':layer, 'elemClass':elemClass, 'nameAttr':nameAttr};
-    $(elemClass).mouseenter(params, $.proxy(this._hoverIn, this));
-    $(elemClass).mouseleave(params, $.proxy(this._hoverOut, this));
+  _loadClickZoomMapEvents: function(params) {
+    $(params.clickClass).click(params, $.proxy(this._clickZoom, this));
+  },
+
+  /* 
+   * Load event handlers to manage the highlighting of DOM elements on 
+   * hover in synch with a map
+   * overlay - ol.Overlay to highlight features
+   * layer - ol.Layer with features related to list
+   * elemClass - class of DOM elements to apply hover event to.  These typically will be list or group items
+   * nameAttr - attribute in elemClass elements containing the name that maps to the feature name.  This is the link between them
+   */
+  _loadHoverHighlightMapEvents: function(params) {
+    //load hover events    
+    $(params.elemClass).mouseenter(params, $.proxy(this._hoverIn, this));
+    $(params.elemClass).mouseleave(params, $.proxy(this._hoverOut, this));
+  },
+
+/******** UI EVENT HANDLERS ********/
+
+  _clickZoom: function(event) {
+    //Get name from list element
+    var name = $(event.currentTarget).attr('name');
+    //Get feature from map with that name
+    var feature = getFeatureByAttribute(event.data.mapLayer, event.data.featAttr, name);
+    flyToFeature(event.data.map, feature);
   },
 
   _hoverIn: function(event) {
@@ -296,12 +327,18 @@ $.widget( "geonode.ReefAssessment", {
     });
     this._highlightFeature(event.data.overlay, feature);
     this._highlightListItem(event.data.elemClass, name);
+    //Show buttons
+    $(event.currentTarget).children('.zoom-assess-icon').show();
+    $(event.currentTarget).children('.zoom-unit-icon').show();
   },
 
   _hoverOut: function(event) {
     var name = $(event.currentTarget).attr('name')
     this._highlightFeature(event.data.overlay, null);
     this._highlightListItem(event.data.elemClass, null);
+    //Hide buttons
+    $(event.currentTarget).children('.zoom-assess-icon').hide();
+    $(event.currentTarget).children('.zoom-unit-icon').hide();
   },
 
   /*
@@ -538,3 +575,51 @@ function loadMpaCharts(config) {
       }]
   });
 }
+
+//// Util functions
+function zoomFeature(feature){
+  console.log('Zoom!');
+  console.log(feature);
+};
+
+//Returns features with given attribute value
+function getFeatureByAttribute(layer, attr, value) {
+  var feature = layer.getSource().forEachFeature(function(feature) {
+    if (feature.get(attr) == value) {return feature};
+  });
+  return feature;
+};
+
+function zoomToFeature(map, feature) {
+  var extent = feature ? feature.getGeometry().getExtent() : null;
+  map.getView().fitExtent(extent, map.getSize());
+}
+
+function flyToFeature(map, feature) {
+  var view = map.getView();
+  var extent = feature ? feature.getGeometry().getExtent() : null;
+  
+  //Experimental OL3 method
+  var zoomResolution = view.getResolutionForExtent(extent, map.getSize());
+
+  var duration = 1000;
+  var start = +new Date();
+
+  var pan = ol.animation.pan({
+    duration: duration,
+    source: (view.getCenter()),
+    start: start
+  });
+
+  var zoom = ol.animation.zoom({
+    duration: 1000,
+    resolution: view.getResolution(),
+    start: +new Date(),    
+  })
+
+  map.beforeRender(pan, zoom);  
+
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(zoomResolution);    
+}
+

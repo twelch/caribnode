@@ -72,14 +72,17 @@ h3.section-header {
     background: url('/static/img/icon_21994_pie_chart.png') no-repeat center;
     height: 40px;
     width: 40px;  
-    line-height: 40px;
+    line-height: 30px;
+    display: none;
 }
 
 .zoom-unit-icon {
     background: url('/static/img/icon_66021_map_zoom.png') no-repeat center;
     height: 40px;
     width: 40px;  
-    line-height: 40px;
+    line-height: 30px;
+    cursor: pointer;
+    display: none;
 }
 
 .stats-table:nth-child(2) {

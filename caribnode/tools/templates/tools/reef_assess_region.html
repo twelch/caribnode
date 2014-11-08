@@ -39,9 +39,9 @@
           <div class='tool-list'>
             {% for unit in childUnits %}
             <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-              <a class="tool-list-name" href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a>
-              <div class="zoom-unit-icon pull-right" title="Zoom map to {{childScale.name}}"></div>
-              <div class="zoom-assess-icon pull-right" title="Go to {{childScale.alt_name|lower}} assessment"></div>
+              <span class="tool-list-name" >{{ unit.name }}</span>
+              <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+              <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
 
             </article>
             {% endfor %}
@@ -154,6 +154,8 @@
 config = {{config_json|safe}};
 
 $( document ).ready(function() {
+  //Add indexOf function to ie8 for PapaParse to work
+  if (!Array.prototype.indexOf) { Array.prototype.indexOf = _.indexOf; }
   //Create assessment widget
   $('body').ReefAssessment({'config':config});
 });
