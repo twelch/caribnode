@@ -39,7 +39,7 @@
           <div class='tool-list'>
             {% for unit in childUnits %}
             <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-              <span class="tool-list-name" >{{ unit.name }}</span>
+              <div class="tool-list-name" >{{ unit.name }}</div>
               <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
               <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
 
@@ -49,7 +49,15 @@
         </div>        
 
         <div class="span6 overview-right">
-          <div id="country-map">
+          <div id="country-map"></div>
+          <div class="legend">
+          <table>
+            <tr>        
+              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&_OLSALT=0.07123626442626119&SCALE=17471285.8058239"/>
+              </td>              
+            </tr>
+          </table>
         </div>
         </div>
     </div>
@@ -108,6 +116,18 @@
       </div>
       <div class="span6 mpa-right">
         <div id="mpa-map">
+        </div>
+        <div class="legend">
+          <table>
+            <tr>        
+              <td><p>Protected Areas</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
+              </td>
+              <td class="last"><p>Shelf</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&_OLSALT=0.8861698159016669&SCALE=8735642.90291195"/>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>

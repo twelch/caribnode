@@ -33,7 +33,7 @@ $.widget( "geonode.ReefAssessment", {
 
       this._loadClickZoomMapEvents({
         clickClass: this.listZoomClass, 
-        map: this.cMap,
+        maps: [this.cMap, this.paMap],
         mapLayer: this.cEEZLayer,
         featAttr: this.options.config.layers.eez.unitname
       });
@@ -169,7 +169,7 @@ $.widget( "geonode.ReefAssessment", {
               'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
           })
         }),      
-        this.cEEZLayer
+        this.cEEZLayer        
       ],
       controls: ol.control.defaults().extend([
         new ol.control.FullScreen()
@@ -229,7 +229,8 @@ $.widget( "geonode.ReefAssessment", {
             return feat;
           }        
         });
-        flyToFeature(this.paMap, eezFeat);        
+        var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
+        flyToExtent(this.paMap, extent);        
       }
     }
 
@@ -240,9 +241,9 @@ $.widget( "geonode.ReefAssessment", {
         new ol.layer.Tile({
           source: new ol.source.XYZ({          
             url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
-              'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+              'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
           })
-        }),      
+        }),            
         new ol.layer.Tile({
           source: new ol.source.TileWMS({
             url: config.layers.shelf.links.WMS,
@@ -258,6 +259,12 @@ $.widget( "geonode.ReefAssessment", {
           })
         }),      
         this.paEEZLayer,
+        new ol.layer.Tile({
+          source: new ol.source.XYZ({          
+            url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+              'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
+          })
+        })        
       ],
       controls: ol.control.defaults().extend([
         new ol.control.FullScreen()
@@ -286,7 +293,7 @@ $.widget( "geonode.ReefAssessment", {
    * Load event handlers to manage the clicking of a button in a list
    * to zoom to a specific feature on a map.  Expects param object with the following:
    * clickClass - class of DOM elements to apply click event to.
-   * map - ol.Map containing mapLayer
+   * maps - maps to zoom
    * mapLayer - ol.Layer containing features to zoom to
    * featAttr - name of feature attribute to match on for triggering action
    */
@@ -315,7 +322,11 @@ $.widget( "geonode.ReefAssessment", {
     var name = $(event.currentTarget).attr('name');
     //Get feature from map with that name
     var feature = getFeatureByAttribute(event.data.mapLayer, event.data.featAttr, name);
-    flyToFeature(event.data.map, feature);
+    //Zoom each of the maps to the feature extent
+    _.each(event.data.maps, function(map){
+      var extent = feature ? feature.getGeometry().getExtent() : null;
+      flyToExtent(map, extent);
+    });
   },
 
   _hoverIn: function(event) {
@@ -328,8 +339,8 @@ $.widget( "geonode.ReefAssessment", {
     this._highlightFeature(event.data.overlay, feature);
     this._highlightListItem(event.data.elemClass, name);
     //Show buttons
-    $(event.currentTarget).children('.zoom-assess-icon').show();
-    $(event.currentTarget).children('.zoom-unit-icon').show();
+    $(event.currentTarget).children('.zoom-assess-icon').css('display','inline-block');
+    $(event.currentTarget).children('.zoom-unit-icon').css('display','inline-block');
   },
 
   _hoverOut: function(event) {
@@ -595,9 +606,8 @@ function zoomToFeature(map, feature) {
   map.getView().fitExtent(extent, map.getSize());
 }
 
-function flyToFeature(map, feature) {
-  var view = map.getView();
-  var extent = feature ? feature.getGeometry().getExtent() : null;
+function flyToExtent(map, extent) {
+  var view = map.getView();  
   
   //Experimental OL3 method
   var zoomResolution = view.getResolutionForExtent(extent, map.getSize());

@@ -46,8 +46,7 @@ h3.section-header {
     margin-top: 20px;
 }
 
-.tool-list-item {
-    height: 40px;    
+.tool-list-item {   
     width: 100%;
     padding: 5px 0px 5px 0px;
     font-size: 20px;
@@ -65,14 +64,15 @@ h3.section-header {
 }
 
 .tool-list-name {
-    line-height: 40px;
+    line-height: 36px;
+    width:70%;
+    display: inline-block;
 }
 
 .zoom-assess-icon {
     background: url('/static/img/icon_21994_pie_chart.png') no-repeat center;
     height: 40px;
     width: 40px;  
-    line-height: 30px;
     display: none;
 }
 
@@ -80,7 +80,6 @@ h3.section-header {
     background: url('/static/img/icon_66021_map_zoom.png') no-repeat center;
     height: 40px;
     width: 40px;  
-    line-height: 30px;
     cursor: pointer;
     display: none;
 }
@@ -153,6 +152,25 @@ p:nth-child(2) {
 
 .overview-right {
     padding: 20px 20px 20px 0px;
+}
+
+.legend {
+    float: right;
+}
+
+.legend p {
+    font-size: 14px;
+    margin: 0px;
+}
+
+.legend td {
+    vertical-align: top;
+    border-right: 1px solid #ccc;
+    padding: 5px 15px;
+}
+
+.legend td.last {
+    border-right: none;
 }
 
 #country-map {
