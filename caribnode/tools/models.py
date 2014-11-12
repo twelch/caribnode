@@ -11,13 +11,14 @@ logger = logging.getLogger(__name__)
 
 class Tool(models.Model):
     name = models.CharField(max_length=100)
+    display_name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     url = models.CharField(max_length=2000, null=True, blank=True)
     org = models.CharField(max_length=100, blank=True)
     org_url = models.CharField(max_length=2000, null=True, blank=True)
     featured = models.BooleanField(default=False)
     icon = models.CharField(max_length=100, default='/static/img/icon_38430_coral.png')
-    config = JSONField(null=True, blank=True)
+    layers = JSONField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -36,11 +37,6 @@ class Scale(models.Model):
 # Geographic unit at any given scale e.g. Caribbean or Grenada, where Caribbean
 # is the parent of Grenada
 class Unit(models.Model):
-    UNIT_TYPES = (
-        ('Region', 'Region'),
-        ('Country', 'Country'),
-    )
-
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
     scale = models.ForeignKey(Scale, related_name='unit_scale')

@@ -22,7 +22,7 @@ from django.contrib import admin
 from caribnode.tools.models import *
 
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ('id', 'featured', 'name', 'description', 'url', 'org', 'org_url', 'icon', 'config')
+    list_display = ('id', 'featured', 'name', 'display_name', 'description', 'url', 'org', 'org_url', 'icon', 'layers')
     search_fields = ('name','description', 'org', )
 
 class IndicatorAdmin(admin.ModelAdmin):

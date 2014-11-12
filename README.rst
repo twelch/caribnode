@@ -21,6 +21,11 @@ Create a new template based on the geonode example project.::
 
 .. note:: You should NOT use the name geonode for your project as it will conflict with the default geonode package name.
 
+Configure CaribNode::
+
+  * Upload a protected area shapefile layer with the name 'pa'
+  * Load the pa's into the Unit model with the management command: python manage.py loadmpas
+
 Usage
 -----
 

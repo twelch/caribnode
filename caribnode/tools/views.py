@@ -5,7 +5,7 @@ from geonode.layers.models import Layer
 from django.db.models import Sum
 
 from django.db import connection
-from caribnode.tools.util import *
+from caribnode.tools.util import dictfetchall
 from django.forms.models import model_to_dict
 
 import random
@@ -17,35 +17,41 @@ def tool_browse(request, template='tools/tool_list.html'):
 
 def reef_assess(request, scale_name, unit_id, template=''):
 
-    #### Base Config ####
+    #Database cursor
+    cursor = connection.cursor()
+    #Config object
     config = {}
 
-    scale = Scale.objects.get(name=scale_name)
-    config['scale'] = model_to_dict(scale)
+    #### Base Config ####
 
+    tool = Tool.objects.get(name='reef-assess')
+    scale = Scale.objects.get(name=scale_name)    
     unit = Unit.objects.get(id=unit_id)
+
+    config['scale'] = model_to_dict(scale)
     config['unit'] = model_to_dict(unit)
 
-    childUnits = Unit.objects.filter(parent=unit).order_by('order')    
-    if childUnits:
-        config['childUnits'] = [model_to_dict(unit) for unit in childUnits]
-        config['childScale'] = model_to_dict(childUnits[0].scale)
-    
     #### Layers ####
 
     layers = {}
-    for layerNick, layerDict in scale.layers.items():        
+    for layerNick, layerDict in tool.layers.items():        
         layerRec = Layer.objects.get(name=layerDict['modelname'])        
         layerDict['links'] = {}
         layerDict['links']['Tiles'] = layerRec.link_set.get(name='Tiles').url
         layerDict['links']['GeoJSON'] = layerRec.link_set.get(name='GeoJSON').url
         layerDict['links']['WMS'] = layerRec.link_set.get(link_type='OGC:WMS').url
         layers[layerNick] = layerDict
+    
     config['layers'] = layers
 
-    #### Stats ####
+    #### Child Units ####
 
-    cursor = connection.cursor()
+    childUnits = Unit.objects.filter(parent=unit).order_by('order')    
+    if childUnits:
+        config['childScale'] = model_to_dict(childUnits[0].scale)
+        config['childUnits'] = [model_to_dict(cUnit) for cUnit in childUnits]
+
+    #### Stats ####
 
     #eez total km, ocean protected
     query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
