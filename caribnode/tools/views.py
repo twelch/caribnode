@@ -80,7 +80,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     #Number designated PAs and total area
     query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
     if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
     cursor.execute(query)
     row = cursor.fetchone()
     pa_num_designated = row[0]
@@ -100,7 +100,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     #Number proposed PAs and total area
     query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
     if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
     cursor.execute(query)
     row = cursor.fetchone()
     pa_num_proposed = row[0]

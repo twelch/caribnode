@@ -1,3 +1,4 @@
+
 /******** MAIN WIDGET ********/
 
 $.widget( "geonode.ReefAssessment", {
@@ -14,10 +15,10 @@ $.widget( "geonode.ReefAssessment", {
   listItemClass: '.tool-list-item',
   listZoomClass: '.zoom-unit-icon',
 
-  paMap: null,       //protected area ol.map
-  paEEZLayer: null, //protected area ol.layer
-
-  eezStrokeColor: '#AAAAAA',
+  paMap: null,      //protected area ol.map
+  paEEZLayer: null, //protected area eez ol.layer
+  paOverlay: null,  //protected area overlay ol.layer
+  paLayer: null,    //protected area ol.layer
 
   highName: null,
   highFeature: null,
@@ -38,12 +39,24 @@ $.widget( "geonode.ReefAssessment", {
         featAttr: this.options.config.layers.eez.unitname
       });
 
-      this._loadHoverHighlightMapEvents({
-        overlay: this.cOverlay, 
-        layer: this.cEEZLayer, 
-        elemClass: this.listItemClass, 
-        nameAttr: this.options.config.layers.eez.unitname
-      });
+      var hoverConfig = null;
+      if (config.scale.name == 'region') {
+        hoverConfig = {
+          overlay: this.cOverlay, 
+          layer: this.cEEZLayer, 
+          elemClass: this.listItemClass, 
+          nameAttr: this.options.config.layers.eez.unitname
+        }
+      } else if (config.scale.name == 'country') {
+        hoverConfig = {
+          overlay: this.paOverlay, 
+          layer: this.paLayer, 
+          elemClass: this.listItemClass, 
+          nameAttr: this.options.config.layers.pa.unitname
+        }
+      }
+
+      this._loadHoverHighlightMapEvents(hoverConfig);
 
       loadMpaCharts({
         'ocean_target':'ocean-donut',
@@ -181,8 +194,9 @@ $.widget( "geonode.ReefAssessment", {
       })
     });
 
-    //Create overlay for temporary styling
-    var highlightStyleCache = {};
+    /******** Feature Overlays ********/
+
+    //Highlight Overlap
     this.cOverlay = new ol.FeatureOverlay({
       map: this.cMap,
       style: function(feature, resolution) {
@@ -209,16 +223,128 @@ $.widget( "geonode.ReefAssessment", {
     });
     this._highlightFeature(this.cOverlay, feature);
     var countryName = feature ? feature.get(config.layers.eez.unitname) : null;
-    this._highlightListItem(this.cListItemClass, countryName);
+    this._highlightListItem(this.listItemClass, countryName);
   },
 
-  _loadMpaMap: function(mapEl) {
+  _loadMpaMap: function(mapEl) {  
+
+    this.paMap = new ol.Map({
+      controls: ol.control.defaults().extend([
+        new ol.control.FullScreen()
+      ]),
+      target: mapEl,
+      view: new ol.View({
+        center: [-6786385.11927109, 1836323.167523076],
+        zoom: 6
+      })
+    });
+
+    /******** Base Layers ********/
+
+    this.paMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.XYZ({          
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+          'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+      })
+    }));
+
+    /******* Shelf Layer ********/
+
+    this.paMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** PA Layer ********/
+
+    if (config.scale.name == 'region') {
+      /*
+       * Lot of features at this scale so use WMS tiles 
+       * with custom GeoNode layer style 
+       */
+      this.paLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.pa.links.WMS,
+          params: {'LAYERS': 'pa', 'STYLES': 'pa_4b0bd6b0', 'TILED': true},
+          serverType: 'geoserver'
+        })
+      });
+      this.paMap.addLayer(this.paLayer); 
+
+    } else if (config.scale.name=='country') {
+      /* Use client-side vector layer which allows highlighting and 
+       * bringing current PA to the top, not possible with WMS
+       */
+
+      //Get base URL and switch to web mercator projection
+      var paUrl = config.layers.pa.links.GeoJSON.replace('4326','3857');
+      //Also switch from JSON to JSONP
+      paUrl = paUrl.replace('json','text/javascript');
+      //Filter to include only mpas for current country 
+      paUrl += '&cql_filter='+config.layers.pa.parentunitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
+
+      //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+      function paLoad(extent, resolution, projection) {
+        $.ajax({
+          url: paUrl,
+          dataType: 'jsonp',
+          jsonpCallback: 'parseResponse',
+          context: this,          
+          success: function( response ) {
+            this.paSource.addFeatures(this.paSource.readFeatures(response));
+          }
+        });
+      }
+
+      //OL3 ServerVector source that uses custom loader
+      this.paSource = new ol.source.ServerVector({
+        format: new ol.format.GeoJSON(),
+        projection: 'EPSG:3857',
+        loader: $.proxy(paLoad, this)
+      });
+
+      this.paLayer = new ol.layer.Vector({
+        source: this.paSource,
+        style: $.proxy(this._getPAStyle, this)
+      });      
+    }
+
+    this.paMap.addLayer(this.paLayer);
+
+    /******** EEZ Layer ********/
+
+    //Get base URL and switch to web mercator projection
+    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
+    //Switch from JSON to JSONP
+    eezUrl = eezUrl.replace('json','text/javascript');
+    //Filter to include only current country
+    eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+
+    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+    function paEEZLoad(extent, resolution, projection) {
+      $.ajax({
+        url: eezUrl,
+        dataType: 'jsonp',
+        jsonpCallback: 'parseResponse',
+        context: this,          
+        success: function( response ) {
+          this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(response));
+        }
+      });
+    }
+
+    //OL3 ServerVector source that uses custom loader
+    this.paEEZSource = new ol.source.ServerVector({
+      format: new ol.format.GeoJSON(),
+      projection: 'EPSG:3857',
+      loader: $.proxy(paEEZLoad, this)
+    });
 
     this.paEEZLayer = new ol.layer.Vector({
-      source: new ol.source.GeoJSON({
-        projection: 'EPSG:3857',
-        url: '/proxy?url='+escape(config.layers.eez.links.GeoJSON).replace('4326','3857')
-      }),
+      source: this.paEEZSource,
       style: $.proxy(this._getEEZStyle, this)
     });
 
@@ -234,55 +360,77 @@ $.widget( "geonode.ReefAssessment", {
       }
     }
 
-    this.paEEZLayer.on('change', zoomToEEZ, this);
+    //Zoom in to the EEZ feature after a few seconds
+    window.setTimeout($.proxy(zoomToEEZ, this), 2000);
 
-    this.paMap = new ol.Map({
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.XYZ({          
-            url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
-              'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-          })
-        }),            
-        new ol.layer.Tile({
-          source: new ol.source.TileWMS({
-            url: config.layers.shelf.links.WMS,
-            params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
-            serverType: 'geoserver'
-          })
-        }),
-        new ol.layer.Tile({
-          source: new ol.source.TileWMS({
-            url: config.layers.pa.links.WMS,
-            params: {'LAYERS': 'pa', 'STYLES': 'pa_4b0bd6b0', 'TILED': true},
-            serverType: 'geoserver'
-          })
-        }),      
-        this.paEEZLayer,
-        new ol.layer.Tile({
-          source: new ol.source.XYZ({          
-            url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
-              'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
-          })
-        })        
-      ],
-      controls: ol.control.defaults().extend([
-        new ol.control.FullScreen()
-      ]),
-      target: mapEl,
-      view: new ol.View({
-        center: [-6786385.11927109, 1836323.167523076],
-        zoom: 6
-      })
+    this.paMap.addLayer(this.paEEZLayer);
+
+    /******** Feature Overlays ********/
+
+    this.paOverlay = new ol.FeatureOverlay({
+      map: this.paMap,
+      style: function(feature, resolution) {
+        var theStyle = [new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: '#FF6D24',
+            width: 1
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(255,0,0,0.02)'
+          })        
+        })];
+        return theStyle;
+      }
     });
+
+    /******** Annotation Layers ********/
+
+    this.paMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.XYZ({          
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+          'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
+      })
+    }));
   },
 
   _getEEZStyle: function(feature, resolution) {
     return [new ol.style.Style({
       fill: null,
       stroke: new ol.style.Stroke({
-        color: this.eezStrokeColor,
+        color: '#AAAAAA',
         width: 1
+      })            
+    })];
+  },  
+
+  _getPAStyle: function(feature, resolution) {
+    var strokeColor = 'red';
+    var strokeWidth = 1;
+    var fillColor = 'red';
+    var fillOpacity = .5;
+    var status = feature.get(config.layers.pa.statusname);    
+
+    //Style based on mpa status
+    if (status == "Proposed") {
+      strokeColor = 'rgba(184,233,134,1.0)';
+      strokeWidth = 1;
+      fillColor = 'rgba(184,233,134,0.5)';
+      fillOpacity = .5;
+    } else if (status == "Designated") {
+      strokeColor = 'rgba(126,211,33,1.0)';
+      strokeWidth = 1;
+      fillColor = 'rgba(126,211,33,0.5)';
+      fillOpacity = .5;      
+    }
+
+    return [new ol.style.Style({
+      fill: new ol.style.Stroke({
+        color: fillColor,
+        width: 1
+      }),
+      stroke: new ol.style.Stroke({
+        color: strokeColor,
+        width: strokeWidth
       })            
     })];
   },  
@@ -334,7 +482,9 @@ $.widget( "geonode.ReefAssessment", {
     var name = $(event.currentTarget).attr('name');
     //Get feature from map with that name
     var feature = event.data.layer.getSource().forEachFeature(function(feature) {
-      if (feature.get(event.data.nameAttr) == name) {return feature};
+      if (feature.get(event.data.nameAttr) == name) {
+        return feature
+      };
     });
     this._highlightFeature(event.data.overlay, feature);
     this._highlightListItem(event.data.elemClass, name);
