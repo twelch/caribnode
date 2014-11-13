@@ -32,12 +32,24 @@ $.widget( "geonode.ReefAssessment", {
       this._loadCountryMap('country-map');
       this._loadMpaMap('mpa-map');
 
-      this._loadClickZoomMapEvents({
-        clickClass: this.listZoomClass, 
-        maps: [this.cMap, this.paMap],
-        mapLayer: this.cEEZLayer,
-        featAttr: this.options.config.layers.eez.unitname
-      });
+      var clickZoomConfig = null;
+      if (config.scale.name == 'region') {
+        clickZoomConfig = {
+          clickClass: this.listZoomClass, 
+          maps: [this.cMap, this.paMap],
+          mapLayer: this.cEEZLayer,
+          featAttr: this.options.config.layers.eez.unitname
+        }
+      } else if (config.scale.name == 'country') {
+        clickZoomConfig = {
+          clickClass: this.listZoomClass, 
+          maps: [this.paMap],
+          mapLayer: this.paLayer,
+          featAttr: this.options.config.layers.pa.unitname
+        }
+      }
+
+      this._loadClickZoomMapEvents(clickZoomConfig);
 
       var hoverConfig = null;
       if (config.scale.name == 'region') {
@@ -356,7 +368,8 @@ $.widget( "geonode.ReefAssessment", {
           }        
         });
         var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-        flyToExtent(this.paMap, extent);        
+        var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
+        flyToExtent(this.paMap, bufExtent);        
       }
     }
 
@@ -473,7 +486,8 @@ $.widget( "geonode.ReefAssessment", {
     //Zoom each of the maps to the feature extent
     _.each(event.data.maps, function(map){
       var extent = feature ? feature.getGeometry().getExtent() : null;
-      flyToExtent(map, extent);
+      var bufExtent = getBufferedExtent(extent, config.childScale.params.zoomBufScale)
+      flyToExtent(map, bufExtent);
     });
   },
 
@@ -756,10 +770,17 @@ function zoomToFeature(map, feature) {
   map.getView().fitExtent(extent, map.getSize());
 }
 
+function getBufferedExtent(extent, bufScale) {
+  //Create buffered extent depending on scale
+  //extent - [minx, miny, maxx, maxy]
+  var size = ol.extent.getSize(extent);
+  var biggerDim = size[0]>size[1] ? size[0] : size[1];
+  var bufferSize = parseInt(biggerDim/bufScale);
+  return ol.extent.buffer(extent, bufferSize);
+}
+
 function flyToExtent(map, extent) {
-  var view = map.getView();  
-  
-  //Experimental OL3 method
+  var view = map.getView();    
   var zoomResolution = view.getResolutionForExtent(extent, map.getSize());
 
   var duration = 1000;

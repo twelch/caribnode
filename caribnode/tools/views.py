@@ -29,6 +29,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     unit = Unit.objects.get(id=unit_id)
 
     config['scale'] = model_to_dict(scale)
+    config['scale']['params'] = scale.params
     config['unit'] = model_to_dict(unit)
 
     #### Layers ####
@@ -49,6 +50,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     childUnits = Unit.objects.filter(parent=unit).order_by('order')    
     if childUnits:
         config['childScale'] = model_to_dict(childUnits[0].scale)
+        config['childScale']['params'] = childUnits[0].scale.params
         config['childUnits'] = [model_to_dict(cUnit) for cUnit in childUnits]
 
     #### Stats ####

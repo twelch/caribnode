@@ -29,7 +29,7 @@ class Scale(models.Model):
     display_name = models.CharField(max_length=100)
     alt_name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    layers = JSONField(null=True, blank=True)
+    params = JSONField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
