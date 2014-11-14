@@ -29,15 +29,22 @@ class Command(BaseCommand):
 
         self.stdout.write('Loading new MPAs:')
         orderIndex = 0
+        dupIndex = 1
         for mpa in mpas:
             #Get parent
-            parent = Unit.objects.get(name=mpa[layers['pa']['unitname']])
+            parent = Unit.objects.get(name=mpa[layers['pa']['parentunitname']])
             try:
+                #Check for pa with the same name
                 oldMpa = Unit.objects.get(parent=parent, scale=mpaScale, name=mpa['AREANAM'])
+                if oldMpa:
+                    #Create new pa with dupIndex added to the end
+                    newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM']+' '+unicode(dupIndex), order=orderIndex)
+                    newMpa.save()
+                    dupIndex += 1
+                    self.stdout.write('Created de-duped "%s"' % newMpa.name)
             except Unit.DoesNotExist:
                 newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM'], order=orderIndex)
-                newMpa.save()
+                newMpa.save()                
+                self.stdout.write('Created "%s"' % newMpa.name)
             orderIndex += 1
-            self.stdout.write('Created "%s"' % newMpa.name)
-
         self.stdout.write('Created %s mpa units' % orderIndex)

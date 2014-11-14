@@ -296,18 +296,16 @@ $.widget( "geonode.ReefAssessment", {
       //Also switch from JSON to JSONP
       paUrl = paUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      paUrl += '&cql_filter='+config.layers.pa.parentunitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
+      paUrl += '&format_options=callback:loadPAFeatures&cql_filter='+config.layers.pa.parentunitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paLoad(extent, resolution, projection) {
         $.ajax({
           url: paUrl,
           dataType: 'jsonp',
-          jsonpCallback: 'parseResponse',
-          context: this,          
-          success: function( response ) {
-            this.paSource.addFeatures(this.paSource.readFeatures(response));
-          }
+          jsonp: null,
+          jsonpCallback: "loadPAFeatures",
+          context: this
         });
       }
 
@@ -333,18 +331,16 @@ $.widget( "geonode.ReefAssessment", {
     //Switch from JSON to JSONP
     eezUrl = eezUrl.replace('json','text/javascript');
     //Filter to include only current country
-    eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    eezUrl += '&format_options=callback:loadEEZFeatures&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
 
     //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
     function paEEZLoad(extent, resolution, projection) {
       $.ajax({
         url: eezUrl,
         dataType: 'jsonp',
-        jsonpCallback: 'parseResponse',
-        context: this,          
-        success: function( response ) {
-          this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(response));
-        }
+        jsonp: null,
+        jsonpCallback: 'loadEEZFeatures',
+        context: this
       });
     }
 
@@ -374,7 +370,7 @@ $.widget( "geonode.ReefAssessment", {
     }
 
     //Zoom in to the EEZ feature after a few seconds
-    window.setTimeout($.proxy(zoomToEEZ, this), 2000);
+    window.setTimeout($.proxy(zoomToEEZ, this), 3000);
 
     this.paMap.addLayer(this.paEEZLayer);
 
@@ -427,12 +423,12 @@ $.widget( "geonode.ReefAssessment", {
     if (status == "Proposed") {
       strokeColor = 'rgba(184,233,134,1.0)';
       strokeWidth = 1;
-      fillColor = 'rgba(184,233,134,0.5)';
+      fillColor = 'rgba(184,233,134,0.2)';
       fillOpacity = .5;
     } else if (status == "Designated") {
       strokeColor = 'rgba(126,211,33,1.0)';
       strokeWidth = 1;
-      fillColor = 'rgba(126,211,33,0.5)';
+      fillColor = 'rgba(126,211,33,0.2)';
       fillOpacity = .5;      
     }
 
@@ -447,6 +443,16 @@ $.widget( "geonode.ReefAssessment", {
       })            
     })];
   },  
+
+/******** Public Methods ********/
+
+  loadPAFeatures: function(features) {
+    this.paSource.addFeatures(this.paSource.readFeatures(features));    
+  },
+
+  loadEEZFeatures: function(features) {
+    this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(features));
+  },
 
 /******** UI EVENT LOADERS ********/
 
@@ -751,11 +757,20 @@ function loadMpaCharts(config) {
   });
 }
 
-//// Util functions
-function zoomFeature(feature){
-  console.log('Zoom!');
-  console.log(feature);
-};
+/******** JQuery JSONP Global Handlers ********/
+
+function loadEEZFeatures(features) {
+  console.log('eez');    
+  $('body').data().geonodeReefAssessment.loadEEZFeatures(features);  
+}
+
+function loadPAFeatures(features) {
+  console.log('pa');
+  $('body').data().geonodeReefAssessment.loadPAFeatures(features);  
+}
+
+
+/******** Global Util Functions ********/
 
 //Returns features with given attribute value
 function getFeatureByAttribute(layer, attr, value) {
