@@ -42,13 +42,13 @@ h3.section-header {
     padding: 20px 20px 0px 20px
 }
 
-.tool-list {
+.unit-list {
     height: 290px;
     margin-top: 20px;
     overflow: scroll;
 }
 
-.tool-list-item {   
+.unit-list-item {   
     width: 100%;
     padding: 5px 0px 5px 0px;
     font-size: 20px;
@@ -57,15 +57,15 @@ h3.section-header {
     vertical-align: middle;    
 }
 
-.tool-list-item.last {
+.unit-list-item.last {
     border-bottom: 0px !important;
 }
 
-.tool-list-item.highlight {
+.unit-list-item.highlight {
     background-color: #eee;   
 }
 
-.tool-list-name {
+.unit-list-name {
     line-height: 36px;
     width:70%;
     display: inline-block;

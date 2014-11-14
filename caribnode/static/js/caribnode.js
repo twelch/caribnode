@@ -12,7 +12,7 @@ $.widget( "geonode.ReefAssessment", {
   cEEZLayer: null,  //country ol.layer
   cOverlay: null,   //country ol.overlay
   cEEZExtent: null, //extent of eez feature    
-  listItemClass: '.tool-list-item',
+  listItemClass: '.unit-list-item',
   listZoomClass: '.zoom-unit-icon',
 
   paMap: null,      //protected area ol.map

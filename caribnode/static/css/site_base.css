@@ -3,6 +3,11 @@ body {
     background-image: url("../img/waves_gray_20opac.jpg");
 }
 
+h2 {
+    font-weight: 300;
+    font-size: 24px;
+}
+
 .row {
     margin-left: -20px;
 }
@@ -273,6 +278,33 @@ to absolute */
 .funder ul li {
     color: white;
 } 
+
+.tool-list {
+    margin: 10px 0px 40px 0px;
+}
+
+.tool-list-item {   
+    width: 100%;
+    padding: 5px 0px 5px 0px;
+    font-size: 20px;
+    color: #666666;
+    border-bottom: 1px solid #bbb;    
+    vertical-align: middle;    
+}
+
+.tool-list-item.last {
+    border-bottom: 0px !important;
+}
+
+.tool-list-item:hover {
+    background-color: #eee;   
+}
+
+.tool-list-name {
+    line-height: 36px;
+    width:100%;
+    display: inline-block;
+}
 
 footer .container .row .span12 {
     border-top: 1px solid #999;

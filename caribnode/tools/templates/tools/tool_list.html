@@ -12,16 +12,37 @@
 
   <div class="span12">
     <div class="row">
-      <div class="span4">
-        <ul>
-        {% for tool in tool_list %}
-        <li><a href="{{ tool.url }}">{{ tool.name }}</a></li>
-        {% endfor %}
-        </ul>
+      <div class="span6">
+        <div class='tool-list'>
+          {% for tool in tool_list %}
+          {% if not tool.external %}
+          <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="tool-list-name" >
+              <a href="{{ tool.url }}">{{tool.display_name}}</a>
+            </div>            
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>
+
+        <h2>REGIONAL PARTNER TOOLS</h2>
+        <div class='tool-list'>
+          {% for tool in tool_list %}
+          {% if tool.external %}
+          <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="tool-list-name" >
+              <a target="_window" href="{{ tool.url }}">{{tool.display_name}}</a>
+            </div>            
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>        
       </div>
     </div>
   </div>
 {% endblock %}
+
+
 
 {% block extra_script %}
 {% endblock extra_script %}

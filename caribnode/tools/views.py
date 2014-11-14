@@ -11,7 +11,7 @@ from django.forms.models import model_to_dict
 import random
 
 def tool_browse(request, template='tools/tool_list.html'):
-    tool_list = Tool.objects.all().order_by('featured').order_by('id')
+    tool_list = Tool.objects.all().order_by('featured').order_by('order')
     context = {'tool_list': tool_list}
     return render(request, template, context)
 

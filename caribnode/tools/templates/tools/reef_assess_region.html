@@ -36,10 +36,10 @@
             </tr>        
           </table>  
 
-          <div class='tool-list'>
+          <div class='unit-list'>
             {% for unit in childUnits %}
-            <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-              <div class="tool-list-name" >{{ unit.name }}</div>
+            <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+              <div class="unit-list-name" >{{ unit.name }}</div>
               <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
               <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
 
@@ -104,10 +104,10 @@
         </table> 
 
         {% if scale.name != 'region' %}
-        <div class='tool-list'>
+        <div class='unit-list'>
           {% for unit in childUnits %}
-          <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-            <div class="tool-list-name" >{{ unit.name }}</div>
+          <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="unit-list-name" >{{ unit.name }}</div>
             <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
             <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
           </article>
