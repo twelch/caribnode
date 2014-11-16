@@ -760,12 +760,10 @@ function loadMpaCharts(config) {
 /******** JQuery JSONP Global Handlers ********/
 
 function loadEEZFeatures(features) {
-  console.log('eez');    
   $('body').data().geonodeReefAssessment.loadEEZFeatures(features);  
 }
 
 function loadPAFeatures(features) {
-  console.log('pa');
   $('body').data().geonodeReefAssessment.loadPAFeatures(features);  
 }
 
