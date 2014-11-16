@@ -22,7 +22,7 @@ from django.contrib import admin
 from caribnode.tools.models import *
 
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'external', 'featured', 'name', 'display_name', 'description', 'url', 'org', 'org_url', 'icon', 'layers')
+    list_display = ('id', 'order', 'external', 'featured', 'name', 'display_name', 'description', 'url', 'org', 'org_url', 'layers', 'settings')
     search_fields = ('name','description', 'org', )
 
 class IndicatorAdmin(admin.ModelAdmin):
@@ -38,7 +38,7 @@ class ScaleAdmin(admin.ModelAdmin):
     search_fields = ('name', 'display_name', 'alt_name', 'description', 'params')
 
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'name', 'scale', 'parent')
+    list_display = ('id', 'order', 'name', 'scale', 'parent', 'status')
     search_fields = ('name',)    
 
 admin.site.register(Tool, ToolAdmin)

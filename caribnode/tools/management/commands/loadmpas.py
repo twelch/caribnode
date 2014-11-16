@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     dupIndex += 1
                     self.stdout.write('Created de-duped "%s"' % newMpa.name)
             except Unit.DoesNotExist:
-                newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM'], order=orderIndex)
+                newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM'], order=orderIndex, status=mpa['STATUS'])
                 newMpa.save()                
                 self.stdout.write('Created "%s"' % newMpa.name)
             orderIndex += 1

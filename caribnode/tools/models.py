@@ -20,6 +20,7 @@ class Tool(models.Model):
     external = models.BooleanField(default=False)
     icon = models.CharField(max_length=100, blank=True, default='/static/img/icon_38430_coral.png')
     layers = JSONField(null=True, blank=True)
+    settings = JSONField(null=True, blank=True)
     order = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -43,6 +44,7 @@ class Unit(models.Model):
     parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
     scale = models.ForeignKey(Scale, related_name='unit_scale')
     order = models.IntegerField(default=1)
+    status = models.CharField(max_length=100, null=True)
 
     def __unicode__(self):
         return self.name

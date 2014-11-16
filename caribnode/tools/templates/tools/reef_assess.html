@@ -2,15 +2,67 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block title %} {% trans "Explore Tools" %} - {{ block.super }} {% endblock %}
+{% block title %} {% trans "Reef Assessment" %} - {{ block.super }} {% endblock %}
 
 {% block body_class %}data data-list explore{% endblock %}
 
 {% block middle %}
   <div class="container tool">
-    <div class="tool-header">NATIONAL REEF ASSESSMENT</div>
+    <div class="tool-header">
+    {{ scale.alt_name|upper }} REEF ASSESSMENT
+    </div>
     <h2 class="tool-unit">{{ unit.name }}</h2>
     
+  {% if scale.name == "region" %}
+    <h3 class='section-header'>OVERVIEW</h3>
+    <div class="row-fluid section-body">
+        <div class="span6 overview-left">
+          <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
+          <table class="stats-table">
+            <colgroup>
+               <col class="stat-col col1">
+               <col class="stat-col col2">
+               <col class="stat-col col3">
+            </colgroup>
+            <tr class="num-row">
+              <td><div class="country-icon"></div></td>
+              <td class="big-num">{{childUnits|length}}</td>
+              <td class="small-num">{{stats.eez_total_km|floatformat:"0"|intcomma}}</td>                
+            </tr>
+            <tr>
+              <td></td>
+              <td class="big-label">PARTICIPATING COUNTRIES</td>
+              <td class="small-label">SQUARE KM OF OCEAN</td>
+            </tr>        
+          </table>  
+
+          <div class='unit-list'>
+            {% for unit in childUnits %}
+            <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+              <div class="unit-list-name" >{{ unit.name }}</div>
+              <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+              <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
+
+            </article>
+            {% endfor %}
+          </div>                     
+        </div>        
+
+        <div class="span6 overview-right">
+          <div id="country-map"></div>
+          <div class="legend">
+          <table>
+            <tr>        
+              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&_OLSALT=0.07123626442626119&SCALE=17471285.8058239"/>
+              </td>              
+            </tr>
+          </table>
+        </div>
+        </div>
+    </div>
+  {% endif %}
+
     <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
     <div class="row-fluid section-body">
 
@@ -24,7 +76,7 @@
           <tr class="num-row">
             <td><div class="mpa-desig-icon"></div></td>
             <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td class="small-num">{{stats.pa_designated_total_area|intcomma}}</td>                
+            <td class="small-num">{{stats.pa_designated_total_area|floatformat:0|intcomma}}</td>                
           </tr>
           <tr>
             <td></td>
@@ -32,6 +84,20 @@
             <td class="small-label">SQUARE KM OF OCEAN</td>
           </tr>
         </table>
+
+        {% if scale.name != 'region' and stats.pa_num_designated > 0 %}
+        <div class='unit-list country-pa-unit-list'>
+          {% for unit in childUnits %}
+          {% if unit.status == 'Designated' %}
+          <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="unit-list-name" >{{ unit.name }}</div>
+            <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+            <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
 
         <table class="stats-table">
           <colgroup>
@@ -42,15 +108,30 @@
           <tr class="num-row">
             <td><div class="mpa-proposed-icon"></div></td>
             <td class="big-num">{{stats.pa_num_proposed}}</td>
-            <td class="small-num">{{stats.pa_proposed_total_area|intcomma}}</td>                
+            <td class="small-num">{{stats.pa_proposed_total_area|floatformat:0|intcomma}}</td>                
           </tr>
           <tr>
             <td></td>
-            <td class="big-label">MORE AREAS PROPOSED SINCE {{stats.pa_year_first_proposed}}</td>
+            <td class="big-label">MORE AREAS PROPOSED AND AWAITING DESIGNATION</td>
             <td class="small-label">SQUARE KM OF OCEAN</td>
           </tr>        
         </table> 
 
+        {% if scale.name != 'region' and stats.pa_num_proposed > 0 %}
+        <div class='unit-list country-pa-unit-list'>
+          {% for unit in childUnits %}
+          {% if unit.status == 'Proposed' %}
+          <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="unit-list-name" >{{ unit.name }}</div>
+            <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+            <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if scale.name == 'region' %}
         <div class="row">
           <div class='span6'>
             <div class='donut-header'>Ocean Protected</div>
@@ -60,15 +141,46 @@
             <div class='donut-header'>Shelf Protected</div>
             <div id="shelf-donut"></div>
           </div>
-        </div>
+        </div>        
+        {% endif %}
+
       </div>
       <div class="span6 mpa-right">
         <div id="mpa-map">
         </div>
+        <div class="legend">
+          <table>
+            <tr>        
+              <td><p>Protected Areas</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
+              </td>
+              <td><p>Shelf</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&_OLSALT=0.8861698159016669&SCALE=8735642.90291195"/>
+              </td>
+              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&_OLSALT=0.07123626442626119&SCALE=17471285.8058239"/>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        {% if scale.name != 'region' %}
+        <div class="row">
+          <div class='span6'>
+            <div class='donut-header'>Ocean Protected</div>
+            <div id="ocean-donut"></div>
+          </div>
+          <div class='span6'>
+            <div class='donut-header'>Shelf Protected</div>
+            <div id="shelf-donut"></div>
+          </div>
+        </div>        
+        {% endif %}
+
       </div>
     </div>
 
-    <h3 class='section-header'>INDICATORS</h3>
+    <h3 class='section-header'>{{ scale.alt_name|upper }} INDICATORS</h3>
 
     <div class="section-body">
 
@@ -104,34 +216,19 @@
 <script src="{{ STATIC_URL }}lib/js/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}lib/js/humanize.js"></script>
 <script src="{{ STATIC_URL }}js/caribnode.js"></script>
-<script>
 
+<script>
 //Global config object
 config = {{config_json|safe}};
 
-//Other globals
-countryListItemClass = '.tool-list-item';
-
 $( document ).ready(function() {
-  
-  //Add indexOf to ie8 for PapaParse to work
+  //Add indexOf function to ie8 for PapaParse to work
   if (!Array.prototype.indexOf) { Array.prototype.indexOf = _.indexOf; }
-
-  loadIndiData();
-  loadCountryMap('country-map');
-  loadMpaMap('mpa-map');
-  loadHoverEvents(countryOverlay, cEEZLayer, countryListItemClass, config.layers.eez.unitname);
-  loadMpaCharts({
-    'ocean_target':'ocean-donut',
-    'perc_ocean_protected':config.stats.pa_perc_ocean_protected,
-    'perc_ocean_proposed':config.stats.pa_perc_ocean_proposed,
-    'shelf_target':'shelf-donut',
-    'perc_shelf_protected':config.stats.pa_perc_shelf_protected,
-    'perc_shelf_proposed':config.stats.pa_perc_shelf_proposed
-  });
+  //Create assessment widget
+  $('body').ReefAssessment({'config':config});
 });
-
 </script>
+
 <script type="text/template" class="indiSection">
         <section>
           <div class="indi-header">

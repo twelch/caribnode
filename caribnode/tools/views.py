@@ -32,6 +32,8 @@ def reef_assess(request, scale_name, unit_id, template=''):
     config['scale']['params'] = scale.params
     config['unit'] = model_to_dict(unit)
 
+    config['settings'] = tool.settings
+
     #### Layers ####
 
     layers = {}
@@ -54,6 +56,43 @@ def reef_assess(request, scale_name, unit_id, template=''):
         config['childUnits'] = [model_to_dict(cUnit) for cUnit in childUnits]
 
     #### Stats ####
+
+    #Number designated PAs and total area
+    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+    if scale.name == 'country':
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    pa_num_designated = row[0]
+    if row[1]:
+        pa_designated_total_area = row[1]
+    else:
+        pa_designated_total_area = 0
+
+    #first year designated
+    pa_year_first_designated = None
+    query = 'select "{0}" from pa'.format(layers['pa']['protdatename'])
+    if scale.name == 'region':
+        query += ' WHERE "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
+    elif scale.name == 'country':
+        query += ' WHERE "{0}" = \'{1}\' and "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{2}" ASC'.format(layers['pa']['parentunitname'], unit.name, layers['pa']['protdatename'])
+    cursor.execute(query)
+    pas = dictfetchall(cursor)
+    if len(pas) > 0:
+        latest = pas[0]
+        pa_year_first_designated = latest['PROTDATE'].year
+    else:
+        pa_year_first_designated = 'N/A'
+    
+
+    #Number proposed PAs and total area
+    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+    if scale.name == 'country':
+        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
+    cursor.execute(query)
+    row = cursor.fetchone()
+    pa_num_proposed = row[0]
+    pa_proposed_total_area = row[1]
 
     #eez total km, ocean protected
     query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
@@ -79,43 +118,6 @@ def reef_assess(request, scale_name, unit_id, template=''):
         pa_perc_shelf_protected = row[3]/shelf_total_km*100
         pa_perc_shelf_proposed = row[4]/shelf_total_km*100
 
-    #Number designated PAs and total area
-    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
-    if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    pa_num_designated = row[0]
-    if row[1]:
-        pa_designated_total_area = row[1]
-    else:
-        pa_designated_total_area = 0
-
-    #first year designated
-    pa_year_first_designated = None
-    query = 'select "{0}" from pa where "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
-    cursor.execute(query)
-    pas = dictfetchall(cursor)
-    latest = pas[0]
-    pa_year_first_designated = latest['PROTDATE'].year
-
-    #Number proposed PAs and total area
-    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
-    if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    pa_num_proposed = row[0]
-    pa_proposed_total_area = row[1]
-
-    #First year proposed
-    pa_year_first_proposed = None
-    query = 'select "{0}" from pa where "STATUS"=\'Proposed\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
-    cursor.execute(query)
-    pas = dictfetchall(cursor)
-    latest = pas[0]
-    pa_year_first_proposed = latest['PROTDATE'].year
-
     config['stats'] = {
         'eez_total_km': eez_total_km,
         'pa_num_designated': pa_num_designated,
@@ -123,7 +125,6 @@ def reef_assess(request, scale_name, unit_id, template=''):
         'pa_year_first_designated': pa_year_first_designated,
         'pa_num_proposed': pa_num_proposed,
         'pa_proposed_total_area': pa_proposed_total_area,
-        'pa_year_first_proposed': pa_year_first_proposed,
         'pa_perc_ocean_protected': round(pa_perc_ocean_protected,1),
         'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,1),
         'pa_perc_shelf_protected': round(pa_perc_shelf_protected,1),
@@ -152,7 +153,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
     config['config_json'] = config_json
 
-    template = 'tools/reef_assess_region.html'
+    template = 'tools/reef_assess.html'
 
     return render(request, template, config)
  
