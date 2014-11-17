@@ -63,7 +63,7 @@
     </div>
   {% endif %}
 
-    <h3 class='section-header'>MARINE PROTECTED AREAS</h3>
+    <h3 class='section-header'>MARINE MANAGED AREAS</h3>
     <div class="row-fluid section-body">
 
       <div class="span6 mpa-left">
@@ -80,7 +80,13 @@
           </tr>
           <tr>
             <td></td>
-            <td class="big-label">AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}</td>
+            <td class="big-label">
+              {% if stats.pa_num_designated == 0 %}
+              AREAS DESIGNATED
+              {% else %} 
+              AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}
+              {% endif %}
+            </td>
             <td class="small-label">SQUARE KM OF OCEAN</td>
           </tr>
         </table>
@@ -112,7 +118,7 @@
           </tr>
           <tr>
             <td></td>
-            <td class="big-label">MORE AREAS PROPOSED AND AWAITING DESIGNATION</td>
+            <td class="big-label">AREAS PROPOSED AND AWAITING DESIGNATION</td>
             <td class="small-label">SQUARE KM OF OCEAN</td>
           </tr>        
         </table> 
@@ -134,12 +140,14 @@
         {% if scale.name == 'region' %}
         <div class="row">
           <div class='span6'>
-            <div class='donut-header'>Ocean Protected</div>
+            <div class='donut-header'>Ocean Managed</div>
             <div id="ocean-donut"></div>
+            <div class='donut-footer'>Goal: {{settings.oceanGoal}}%</div>
           </div>
           <div class='span6'>
-            <div class='donut-header'>Shelf Protected</div>
+            <div class='donut-header'>Shelf Managed</div>
             <div id="shelf-donut"></div>
+            <div class='donut-footer'>Goal: {{settings.shelfGoal}}%</div>
           </div>
         </div>        
         {% endif %}
@@ -151,7 +159,7 @@
         <div class="legend">
           <table>
             <tr>        
-              <td><p>Protected Areas</p>
+              <td><p>Managed Areas</p>
               <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
               <td><p>Shelf</p>

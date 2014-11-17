@@ -123,7 +123,7 @@ p:nth-child(2) {
 .big-label {
     color: #AAAAAA !important;
     font-weight: 300;
-    font-size: 16px;
+    font-size: 17px;
     vertical-align: top;
 }
 
@@ -135,7 +135,7 @@ p:nth-child(2) {
 .small-label {
     color: #AAAAAA !important;
     font-weight: 300;
-    font-size: 16px;
+    font-size: 17px;
     vertical-align: top;
 }
 
@@ -277,7 +277,13 @@ p:nth-child(2) {
 .donut-header {
     font-size: 18px;
     text-align: center;
-    margin-top: 40px;
+    margin: 40px 0px 5px 0px;
+}
+
+.donut-footer {
+    color: #AAAAAA;
+    font-size: 12px;
+    text-align: center;
 }
 
 /******** INDICATORS ********/

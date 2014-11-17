@@ -101,6 +101,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     cursor.execute(query)
     row = cursor.fetchone()
     eez_total_km = row[0]
+
     pa_perc_ocean_protected = row[1]
     pa_perc_ocean_proposed = row[2]
 
@@ -125,10 +126,10 @@ def reef_assess(request, scale_name, unit_id, template=''):
         'pa_year_first_designated': pa_year_first_designated,
         'pa_num_proposed': pa_num_proposed,
         'pa_proposed_total_area': pa_proposed_total_area,
-        'pa_perc_ocean_protected': round(pa_perc_ocean_protected,1),
-        'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,1),
-        'pa_perc_shelf_protected': round(pa_perc_shelf_protected,1),
-        'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,1)
+        'pa_perc_ocean_protected': round(pa_perc_ocean_protected,2),
+        'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,2),
+        'pa_perc_shelf_protected': round(pa_perc_shelf_protected,2),
+        'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,2)
     }
 
     #### Indicators ####

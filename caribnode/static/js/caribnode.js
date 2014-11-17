@@ -74,9 +74,11 @@ $.widget( "geonode.ReefAssessment", {
         'ocean_target':'ocean-donut',
         'perc_ocean_protected':this.options.config.stats.pa_perc_ocean_protected,
         'perc_ocean_proposed':this.options.config.stats.pa_perc_ocean_proposed,
+        'oceanGoal': this.options.config.settings.oceanGoal,
         'shelf_target':'shelf-donut',
         'perc_shelf_protected':this.options.config.stats.pa_perc_shelf_protected,
-        'perc_shelf_proposed':this.options.config.stats.pa_perc_shelf_proposed
+        'perc_shelf_proposed':this.options.config.stats.pa_perc_shelf_proposed,
+        'shelfGoal': this.options.config.settings.shelfGoal
       });
   },
 
@@ -333,7 +335,7 @@ $.widget( "geonode.ReefAssessment", {
     //Filter to include only current country
     eezUrl += '&format_options=callback:loadEEZFeatures';
     if (config.scale.name != 'region') {
-      eezUrl =+ '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
     }
 
     //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
@@ -631,7 +633,7 @@ $.widget( "geonode.IndiSection", {
       }
 
       if (indi.name == 'Average Coral Cover') {          
-        indi.display.value = Math.round(indi.display.value*100)+'%';          
+        indi.display.value = parseFloat(indi.display.value*100)+'%';          
       } else if (indi.name == 'Key Commercial Species') {
         indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
       }
@@ -648,18 +650,29 @@ $.widget( "geonode.IndiSection", {
   }
 });
 
-function loadMpaCharts(config) {
+function loadMpaCharts(chartConfig) {
+
+  //Check if value is less than one and set formatter for display accordingly
+  var less_ocean_protected = chartConfig.perc_ocean_protected < 1 ? '< ' : ''
+  var less_shelf_protected = chartConfig.perc_shelf_protected < 1 ? '< ' : ''  
+
+  //Format values for display by rounding up
+  chartConfig.perc_ocean_protected = Math.ceil(chartConfig.perc_ocean_protected);
+  chartConfig.perc_ocean_proposed = Math.ceil(chartConfig.perc_ocean_proposed);
+  chartConfig.perc_shelf_protected = Math.ceil(chartConfig.perc_shelf_protected);
+  chartConfig.perc_shelf_proposed = Math.ceil(chartConfig.perc_shelf_proposed);
+
   // Create the chart
   oceanDonut = new Highcharts.Chart({
       chart: {
-          renderTo: config.ocean_target,
+          renderTo: chartConfig.ocean_target,
           type: 'pie'
       },
       credits: {
           enabled: false
       },
       title: {
-          text: config.perc_ocean_protected+'%',
+          text: less_ocean_protected+chartConfig.perc_ocean_protected+'%',
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -682,23 +695,18 @@ function loadMpaCharts(config) {
       },
       tooltip: {
           formatter: function() {
-              return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+            var less_than_one_indicator = this.y == 1 ? '< ' : '';
+            return '<b>'+this.point.name+'</b>: '+less_than_one_indicator+this.y+' %';
           }
       },
       series: [{
           name: '',
-          data: [["Designated",config.perc_ocean_protected],["Proposed only",config.perc_ocean_proposed],["Other",100-config.perc_ocean_protected-config.perc_ocean_proposed]],
+          data: [["Designated",chartConfig.perc_ocean_protected],["Proposed",chartConfig.perc_ocean_proposed],["Unproposed",chartConfig.oceanGoal-chartConfig.perc_ocean_protected-chartConfig.perc_ocean_proposed]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
           dataLabels: {
               enabled: false
-              //formatter: function () {
-              //    return this.y > 2 ? this.point.name : null;
-              //},
-              //color: 'black',
-              //distance: 10
-
           }
       }]
   });
@@ -706,14 +714,14 @@ function loadMpaCharts(config) {
   // Create the chart
   shelfDonut = new Highcharts.Chart({
       chart: {
-          renderTo: config.shelf_target,
+          renderTo: chartConfig.shelf_target,
           type: 'pie'
       },
       credits: {
           enabled: false
       },
       title: {
-          text: config.perc_shelf_protected+'%',
+          text: less_shelf_protected+chartConfig.perc_shelf_protected+'%',
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -741,7 +749,7 @@ function loadMpaCharts(config) {
       },
       series: [{
           name: '',
-          data: [["Designated",config.perc_shelf_protected],["Proposed only",config.perc_shelf_proposed],["Other",100-config.perc_shelf_protected-config.perc_shelf_proposed]],
+          data: [["Designated",chartConfig.perc_shelf_protected],["Proposed",chartConfig.perc_shelf_proposed],["Unproposed",chartConfig.shelfGoal-chartConfig.perc_shelf_protected-chartConfig.perc_shelf_proposed]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
