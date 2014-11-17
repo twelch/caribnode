@@ -121,7 +121,7 @@ p:nth-child(2) {
 }
 
 .big-label {
-    color: #CCCCCC !important;
+    color: #AAAAAA !important;
     font-weight: 300;
     font-size: 16px;
     vertical-align: top;
@@ -133,7 +133,7 @@ p:nth-child(2) {
 }
 
 .small-label {
-    color: #CCCCCC !important;
+    color: #AAAAAA !important;
     font-weight: 300;
     font-size: 16px;
     vertical-align: top;

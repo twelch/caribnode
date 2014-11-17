@@ -218,7 +218,7 @@ $.widget( "geonode.ReefAssessment", {
             width: 1
           }),
           fill: new ol.style.Fill({
-            color: 'rgba(255,0,0,0.02)'
+            color: 'rgba(255,109,36,0.05)'
           })        
         })];
         return theStyle;
@@ -331,7 +331,10 @@ $.widget( "geonode.ReefAssessment", {
     //Switch from JSON to JSONP
     eezUrl = eezUrl.replace('json','text/javascript');
     //Filter to include only current country
-    eezUrl += '&format_options=callback:loadEEZFeatures&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    eezUrl += '&format_options=callback:loadEEZFeatures';
+    if (config.scale.name != 'region') {
+      eezUrl =+ '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    }
 
     //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
     function paEEZLoad(extent, resolution, projection) {
@@ -422,14 +425,12 @@ $.widget( "geonode.ReefAssessment", {
     //Style based on mpa status
     if (status == "Proposed") {
       strokeColor = 'rgba(184,233,134,1.0)';
-      strokeWidth = 1;
-      fillColor = 'rgba(184,233,134,0.2)';
-      fillOpacity = .5;
+      strokeWidth = 1.5;
+      fillColor = 'rgba(184,233,134,0)';
     } else if (status == "Designated") {
       strokeColor = 'rgba(126,211,33,1.0)';
-      strokeWidth = 1;
-      fillColor = 'rgba(126,211,33,0.2)';
-      fillOpacity = .5;      
+      strokeWidth = 1.5;
+      fillColor = 'rgba(126,211,33,0)';
     }
 
     return [new ol.style.Style({
