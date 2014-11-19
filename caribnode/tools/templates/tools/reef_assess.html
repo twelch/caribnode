@@ -105,7 +105,13 @@
           </tr>            
           <tr class="num-row">
             <td></td>
-            <td class="smaller-num">{{stats.pa_protdate}}</td>
+            <td class="smaller-num">
+              {% if stats.pa_protdate == None %}
+                N/A
+              {% else %}
+                {{stats.pa_protdate}}
+              {% endif %}
+            </td>
             <td class="smaller-num">{{stats.pa_mod_date}}</td>                
           </tr>
           <tr>

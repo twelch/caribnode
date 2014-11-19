@@ -141,12 +141,20 @@ def reef_assess(request, scale_name, unit_id, template=''):
         query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = {1}'.format(layers['pa']['unitname'], QuotedString(unit.name))
         cursor.execute(query)
         row = cursor.fetchone()
+
+        pa_protdate = pa_mod_date = None
+        if row[1]:
+            pa_protdate = row[1].strftime('%b %d %Y')
+
+        if row[4]:
+            pa_mod_date = row[4].strftime('%b %d %Y')
+
         config['stats'] = {
             'pa_status': row[0],
-            'pa_protdate': row[1].strftime('%b %d %Y'),
+            'pa_protdate': pa_protdate,
             'pa_campam_id': int(row[2]),
             'pa_wdpa_id': int(row[3]),
-            'pa_mod_date': row[4].strftime('%b %d %Y'),
+            'pa_mod_date': pa_mod_date,
             'pa_area': row[5]
         }
 
