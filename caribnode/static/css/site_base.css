@@ -104,7 +104,8 @@ nav.main-nav ul li a:hover {
 
 .welcome {
     background-color: #1588a2;
-    height: 180px;
+    margin-top: 20px;
+    min-height: 180px !important;
 }
 
 .welcome .welcome-header {
@@ -133,7 +134,7 @@ nav.main-nav ul li a:hover {
 .features {
     background-color: white;
     margin-top: 20px;
-    height: 270px;
+    min-height: 270px !important;
 }
 
 .features .feature-header {
@@ -160,6 +161,7 @@ nav.main-nav ul li a:hover {
     color: #666;
     padding: 15px 0px 0px 25px;
     line-height: 30px;
+    min-height: 87px;
 }
 
 .feature-tool-icon {    
@@ -183,8 +185,8 @@ nav.main-nav ul li a:hover {
 
 .feature-text {
     display: inline-block;
-    width: 290px;
-    height: 90px;
+    width: 60%;
+    min-height: 60px;
     margin-left: 20px;
 }
 
@@ -285,13 +287,13 @@ to absolute */
 } 
 
 .tool-list {
-    margin: 10px 0px 20px 0px;
+    margin: 10px 0px 40px 0px;
 }
 
 .tool-list .feature {
     font-family: 'Lato';
     font-size: 24px;
-    padding: 0px 0px 0px 0px;
+    padding: 10px 0px 0px 0px;
     line-height: 30px;
 }
 

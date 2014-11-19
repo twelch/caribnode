@@ -1,4 +1,4 @@
-{% extends "site_base.html" %}
+{% extends "tools/tool_base.html" %}
 {% load i18n %}
 {% load carib_tags %}
 {% load tools_tags %}
@@ -11,11 +11,13 @@
 
 {% block title %} {% trans "Welcome!" %} - {{ block.super }} {% endblock %}
 
-{% block body_class %}home{% endblock %}
+{% block body_class %}{% endblock %}
 
-{% block body_outer %}
-<div class="welcome span12">
-      <div class="row">
+{% block middle %}
+<div class="container">
+  <div class="row-fluid">
+    <div class="span12 welcome">
+      <div class="row-fluid">
         <div class="span7">
           <div class="welcome-header">{% trans "WELCOME" %}</div>
           <div class="welcome-text">
@@ -31,10 +33,10 @@
           </div>
         </div>
       </div>
-</div>
+    </div>
+  </div>
 
-<div class="span12">
-  <div class="row">
+  <div class="row-fluid">
     <div class="features span6">
       <div class="feature-header">{% trans "FEATURED TOOLS" %}</div>
       
@@ -46,7 +48,7 @@
           <a href="{{ tool.url }}"></a>
         </div>
         <div class="feature-text">
-          <a href="{{ tool.url }}">{{ tool.display_name|truncatechars:72 }}</a>
+          <a href="{{ tool.url }}">{{ tool.display_name|truncatechars:60 }}</a>
         </div>
       </div>
       {% endfor %}
@@ -69,7 +71,7 @@
           <div class="feature-map-icon clickable pull-left">
             <a href="{% url "map_detail" map.id %}"></a>
           </div>
-          <div class="feature-text"><a href="{% url "map_detail" map.id %}">{{ map.title|truncatechars:72 }}</a></div>
+          <div class="feature-text"><a href="{% url "map_detail" map.id %}">{{ map.title|truncatechars:60 }}</a></div>
         </div>
       {% endfor %}
     {% else %}
@@ -81,12 +83,8 @@
       </div>
     </div>
   </div>
-</div>
 
-
-
-<div class="span12">
-  <div class="row">
+  <div class="row-fluid">
     <div class="features span6">
       <div class="feature-header">{% trans "LATEST LAYERS" %}</div>
 
@@ -131,21 +129,14 @@
       </div>
     </div>
   </div>
-</div>
 
-<div class="span12">
-  <div class="row">
+  <div class="row-fluid">
     <div class="partner-box span12">
       <div class="partner-icon clickable pull-left"><a href="/about#partners"></a></div>
       <div class="partner-text"><a href="/about#partners">{% trans "Regional partners - see who is contributing their data" %}</a></div>      
     </div>
   </div>
 </div>
-
-<hr>
-
-<br/>
-<br/>
 
 {% endblock %}
 
