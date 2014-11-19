@@ -1,6 +1,7 @@
 {% extends "tools/tool_base.html" %}
 {% load i18n %}
 {% load humanize %}
+{% load tools_tags %}
 
 {% block title %} {% trans "Reef Assessment" %} - {{ block.super }} {% endblock %}
 
@@ -12,6 +13,8 @@
     {{ scale.alt_name|upper }} REEF ASSESSMENT
     </div>
     <h2 class="tool-unit">{{ unit.name }}</h2>
+
+<!-------- OVERVIEW SECTION -------->
     
   {% if scale.name == "region" %}
     <h3 class='section-header'>OVERVIEW</h3>
@@ -42,7 +45,6 @@
               <div class="unit-list-name" >{{ unit.name }}</div>
               <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
               <div class="zoom-assess-icon clickable pull-right" title="Go to {{childScale.alt_name|lower}} assessment"><a href='{% url "reef_assess" childScale.name unit.id %}'></a></div>
-
             </article>
             {% endfor %}
           </div>                     
@@ -63,6 +65,105 @@
     </div>
   {% endif %}
 
+  {% if scale.name == "mpa" %}
+    <h3 class='section-header'>Overview</h3>
+    <div class="row-fluid section-body">
+
+      <div class="span6 mpa-left">
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>
+          <tr class="num-row">
+            <td><div class="mpa-desig-icon"></div></td>
+            <td class="small-num">{{stats.pa_status}}</td>
+            <td class="small-num"></td>                
+          </tr>
+          <tr class="label-row">
+            <td></td>
+            <td class="small-label">CURRENT STATUS</td>
+          </tr>
+        </table>
+
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>          
+          <tr class="num-row">
+            <td></td>
+            <td class="small-num">{{stats.pa_area|floatformat:0|intcomma}}</td>
+            <td class="small-num">0.02%</td>                
+          </tr>
+          <tr>
+            <td class="label-row"></td>
+            <td class="small-label">SQUARE KM OF OCEAN</td>
+            <td class="small-label">OF NATIONAL WATERS (EEZ)</td>
+          </tr>            
+          <tr class="num-row">
+            <td></td>
+            <td class="smaller-num">{{stats.pa_protdate}}</td>
+            <td class="smaller-num">{{stats.pa_mod_date}}</td>                
+          </tr>
+          <tr>
+            <td class="label-row"></td>
+            <td class="small-label">DATE DESIGNATED</td>
+            <td class="small-label">BOUNDARY LAST UPDATED</td>
+          </tr>                  
+        </table>
+
+    {% get_pa_layer as palayer %}
+    <div class='pa-link-list'>
+      <article class="pa-link-list-item" >
+        <div class="pa-link-list-name" >
+          <a href="{{palayer.get_absolute_url}}">{% trans "Boundary Data Layer" %}</a>
+        </div>            
+      </article>
+      {% if stats.pa_campam_id %}
+      <article class="pa-link-list-item" >
+        <div class="pa-link-list-name" >
+          <a target="_window" href="http://campam.gcfi.org/CaribbeanMPA/pdfexport/pdf_generator.php?mpaId={{stats.pa_campam_id}}">{% trans "CaMPAM Report" %}</a>
+        </div>            
+      </article>
+      {% endif %}
+      {% if stats.pa_wdpa_id %}
+      <article class="pa-link-list-item last" >
+        <div class="pa-link-list-name" >
+          <a target="_window" href="http://www.protectedplanet.net/sites/{{stats.pa_wdpa_id}}">{% trans "IUCN World Database Record" %}</a>
+        </div>            
+      </article>      
+      {% endif %}
+    </div>
+
+      </div>
+      <div class="span6 mpa-right">
+        <div id="mpa-map">
+        </div>
+        <div class="legend">
+          <table>
+            <tr>        
+              <td><p>Managed Areas</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
+              </td>
+              <td><p>Continental Shelf</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&_OLSALT=0.8861698159016669&SCALE=8735642.90291195"/>
+              </td>
+              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&_OLSALT=0.07123626442626119&SCALE=17471285.8058239"/>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+<!-------- MARINE MANAGED AREAS SECTION -------->
+
+  {% if scale.name == "region" or scale.name == "country" %}
     <h3 class='section-header'>MARINE MANAGED AREAS</h3>
     <div class="row-fluid section-body">
 
@@ -142,12 +243,12 @@
           <div class='span6'>
             <div class='donut-header'>Ocean Managed</div>
             <div id="ocean-donut"></div>
-            <div class='donut-footer'>Goal: {{settings.oceanGoal}}%</div>
+            <div class='donut-footer'>Goal - {{settings.oceanGoal}}% of EEZ</div>
           </div>
           <div class='span6'>
             <div class='donut-header'>Shelf Managed</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>Goal: {{settings.shelfGoal}}%</div>
+            <div class='donut-footer'>Goal - {{settings.shelfGoal}}% of continental shelf</div>
           </div>
         </div>        
         {% endif %}
@@ -162,7 +263,7 @@
               <td><p>Managed Areas</p>
               <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>Shelf</p>
+              <td><p>Continental Shelf</p>
               <img src="http://caribnode.foo/geoserver/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&_OLSALT=0.8861698159016669&SCALE=8735642.90291195"/>
               </td>
               <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
@@ -187,6 +288,7 @@
 
       </div>
     </div>
+  {% endif %}
 
     <h3 class='section-header'>{{ scale.alt_name|upper }} INDICATORS</h3>
 

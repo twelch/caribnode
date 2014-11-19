@@ -8,6 +8,11 @@ h2 {
     font-size: 24px;
 }
 
+.content-back {
+    background-color: white;
+    padding: 32px 0px 0px 20px;
+}
+
 .row {
     margin-left: -20px;
 }
@@ -157,7 +162,7 @@ nav.main-nav ul li a:hover {
     line-height: 30px;
 }
 
-.feature .feature-tool-icon {    
+.feature-tool-icon {    
     height: 60px;
     width: 60px;
     background-color: #F5A623 !important;
@@ -176,7 +181,7 @@ nav.main-nav ul li a:hover {
     moz-border-radius: 5px;     
 }
 
-.feature .feature-text {
+.feature-text {
     display: inline-block;
     width: 290px;
     height: 90px;
@@ -187,12 +192,12 @@ nav.main-nav ul li a:hover {
     color: #666;
 }
 
-.feature .feature-thumb {
+.feature-thumb {
     height: 75px;
     width: 100px;
 }
 
-.feature .feature-thumb a img {
+.feature-thumb a img {
     height: 75px;
     width: 100px;
     border: 1px solid #ccc;
@@ -280,13 +285,25 @@ to absolute */
 } 
 
 .tool-list {
-    margin: 10px 0px 40px 0px;
+    margin: 10px 0px 20px 0px;
+}
+
+.tool-list .feature {
+    font-family: 'Lato';
+    font-size: 24px;
+    padding: 0px 0px 0px 0px;
+    line-height: 30px;
+}
+
+.tool-list .feature .feature-text a {
+    color: #41aaba !important;
 }
 
 .tool-list-item {   
     width: 100%;
     padding: 5px 0px 5px 0px;
-    font-size: 20px;
+    font-size: 24px;
+    line-height: 30px;
     color: #666666;
     border-bottom: 1px solid #bbb;    
     vertical-align: middle;    
@@ -301,9 +318,19 @@ to absolute */
 }
 
 .tool-list-name {
-    line-height: 36px;
+    line-height: 30px;
     width:100%;
     display: inline-block;
+}
+
+.tool-list-icon {    
+    height: 60px;
+    width: 60px;
+    margin-right: 10px;
+    background-color: #F5A623 !important;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;    
 }
 
 footer .container .row .span12 {

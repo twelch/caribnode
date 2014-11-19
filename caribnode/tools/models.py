@@ -9,6 +9,17 @@ from geonode.documents.models import Document
 
 logger = logging.getLogger(__name__)
 
+# Geographic scales including layers to be loaded at that scale for each tool
+class Scale(models.Model):
+    name = models.CharField(max_length=100)
+    display_name = models.CharField(max_length=100)
+    alt_name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    params = JSONField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
 class Tool(models.Model):
     name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
@@ -22,17 +33,7 @@ class Tool(models.Model):
     layers = JSONField(null=True, blank=True)
     settings = JSONField(null=True, blank=True)
     order = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.name
-
-# Geographic scales including layers to be loaded at that scale for each tool
-class Scale(models.Model):
-    name = models.CharField(max_length=100)
-    display_name = models.CharField(max_length=100)
-    alt_name = models.CharField(max_length=100, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    params = JSONField(null=True, blank=True)
+    scale = models.ForeignKey(Scale, related_name='tool_scale')
 
     def __unicode__(self):
         return self.name

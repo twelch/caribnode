@@ -1,34 +1,45 @@
-{% extends "site_base.html" %}
+{% extends "tools/tool_base.html" %}
 {% load i18n %}
 
 {% block title %} {% trans "Explore Tools" %} - {{ block.super }} {% endblock %}
 
 {% block body_class %}data data-list explore{% endblock %}
 
-{% block body_outer %}
-  <div class="span12">
-    <h2 class="page-title">{% trans "Explore Tools" %}</h2>
-  </div>
+{% block middle %}
 
-  <div class="span12">
-    <div class="row">
-      <div class="span6">
+  <div class="container content-back">
+    <h2 class="page-title">{% trans "CaribNode Tools" %}</h2>
+    <div class="row-fluid">
+      <div class="span8">
         <div class='tool-list'>
           {% for tool in tool_list %}
           {% if not tool.external %}
-          <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+
+          <!--<article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >            
             <div class="tool-list-name" >
+              <div class="tool-list-icon clickable pull-left" style="background: url('{{ tool.icon }}') no-repeat center;">
+                <a href="{{ tool.url }}"></a>
+              </div>
               <a href="{{ tool.url }}">{{tool.display_name}}</a>
             </div>            
-          </article>
+          </article>-->
+
+          <div class="feature">
+            <div class="feature-tool-icon clickable pull-left" style="background: url('{{ tool.icon }}') no-repeat center;">
+              <a href="{{ tool.url }}"></a>
+            </div>
+            <div class="feature-text">
+              <a href="{{ tool.url }}">{{ tool.display_name|truncatechars:72 }}</a>
+            </div>
+          </div>
           {% endif %}
           {% endfor %}
         </div>
 
-        <h2>REGIONAL PARTNER TOOLS</h2>
+        <h2>NATIONAL PARTNER TOOLS</h2>
         <div class='tool-list'>
           {% for tool in tool_list %}
-          {% if tool.external %}
+          {% if tool.external and tool.scale.name == "country" %}
           <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
             <div class="tool-list-name" >
               <a target="_window" href="{{ tool.url }}">{{tool.display_name}}</a>
@@ -37,7 +48,22 @@
           {% endif %}
           {% endfor %}
         </div>        
+
+        <h2>REGIONAL PARTNER TOOLS</h2>
+        <div class='tool-list'>
+          {% for tool in tool_list %}
+          {% if tool.external and tool.scale.name == "region" %}
+          <article class="tool-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+            <div class="tool-list-name" >
+              <a target="_window" href="{{ tool.url }}">{{tool.display_name}}</a>
+            </div>            
+          </article>
+          {% endif %}
+          {% endfor %}
+        </div>         
       </div>
+
+
     </div>
   </div>
 {% endblock %}

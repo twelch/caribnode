@@ -5,6 +5,7 @@ from geonode.layers.models import Layer
 from django.db.models import Sum
 
 from django.db import connection
+from psycopg2.extensions import QuotedString
 from caribnode.tools.util import dictfetchall
 from django.forms.models import model_to_dict
 
@@ -22,7 +23,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     #Config object
     config = {}
 
-    #### Base Config ####
+    #### Create Base Config ####
 
     tool = Tool.objects.get(name='reef-assess')
     scale = Scale.objects.get(name=scale_name)    
@@ -31,10 +32,9 @@ def reef_assess(request, scale_name, unit_id, template=''):
     config['scale'] = model_to_dict(scale)
     config['scale']['params'] = scale.params
     config['unit'] = model_to_dict(unit)
-
     config['settings'] = tool.settings
 
-    #### Layers ####
+    #### Add Layers ####
 
     layers = {}
     for layerNick, layerDict in tool.layers.items():        
@@ -47,7 +47,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
     
     config['layers'] = layers
 
-    #### Child Units ####
+    #### Add Child Units ####
 
     childUnits = Unit.objects.filter(parent=unit).order_by('order')    
     if childUnits:
@@ -55,84 +55,106 @@ def reef_assess(request, scale_name, unit_id, template=''):
         config['childScale']['params'] = childUnits[0].scale.params
         config['childUnits'] = [model_to_dict(cUnit) for cUnit in childUnits]
 
-    #### Stats ####
+    #### Add Region and Country Stats ####
 
-    #Number designated PAs and total area
-    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
-    if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    pa_num_designated = row[0]
-    if row[1]:
-        pa_designated_total_area = row[1]
-    else:
-        pa_designated_total_area = 0
+    if scale.name == 'region' or scale.name == 'country':
 
-    #first year designated
-    pa_year_first_designated = None
-    query = 'select "{0}" from pa'.format(layers['pa']['protdatename'])
-    if scale.name == 'region':
-        query += ' WHERE "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
-    elif scale.name == 'country':
-        query += ' WHERE "{0}" = \'{1}\' and "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{2}" ASC'.format(layers['pa']['parentunitname'], unit.name, layers['pa']['protdatename'])
-    cursor.execute(query)
-    pas = dictfetchall(cursor)
-    if len(pas) > 0:
-        latest = pas[0]
-        pa_year_first_designated = latest['PROTDATE'].year
-    else:
-        pa_year_first_designated = 'N/A'
-    
+        #Number designated PAs and total area
+        query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+        if scale.name == 'country':
+            query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        pa_num_designated = row[0]
+        if row[1]:
+            pa_designated_total_area = row[1]
+        else:
+            pa_designated_total_area = 0
 
-    #Number proposed PAs and total area
-    query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
-    if scale.name == 'country':
-        query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    pa_num_proposed = row[0]
-    pa_proposed_total_area = row[1]
+        #first year designated
+        pa_year_first_designated = None
+        query = 'select "{0}" from pa'.format(layers['pa']['protdatename'])
+        if scale.name == 'region':
+            query += ' WHERE "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
+        elif scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\' and "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{2}" ASC'.format(layers['pa']['parentunitname'], unit.name, layers['pa']['protdatename'])
+        cursor.execute(query)
+        pas = dictfetchall(cursor)
+        if len(pas) > 0:
+            latest = pas[0]
+            pa_year_first_designated = latest['PROTDATE'].year
+        else:
+            pa_year_first_designated = 'N/A'
+        
+        #Number proposed PAs and total area
+        query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+        if scale.name == 'country':
+            query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        pa_num_proposed = row[0]
+        pa_proposed_total_area = row[1]
 
-    #eez total km, ocean protected
-    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
-    if scale.name == 'country':
-        query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    eez_total_km = row[0]
+        #eez total km, ocean protected
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        eez_total_km = row[0]
 
-    pa_perc_ocean_protected = row[1]
-    pa_perc_ocean_proposed = row[2]
+        pa_perc_ocean_protected = row[1]
+        pa_perc_ocean_proposed = row[2]
 
-    #shelf total km, ocean protected
-    query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
-    if scale.name == 'country':
-        query += ' WHERE "{0}" = \'{1}\''.format(layers['shelf_noland']['unitname'], unit.name)
-    cursor.execute(query)
-    row = cursor.fetchone()
-    shelf_total_km = row[0]
-    if scale.name == 'country':
-        pa_perc_shelf_protected = row[1]
-        pa_perc_shelf_proposed = row[2]
-    elif scale.name == 'region':
-        pa_perc_shelf_protected = row[3]/shelf_total_km*100
-        pa_perc_shelf_proposed = row[4]/shelf_total_km*100
+        #shelf total km, ocean protected
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['shelf_noland']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        shelf_total_km = row[0]
+        if scale.name == 'country':
+            pa_perc_shelf_protected = row[1]
+            pa_perc_shelf_proposed = row[2]
+        elif scale.name == 'region':
+            pa_perc_shelf_protected = row[3]/shelf_total_km*100
+            pa_perc_shelf_proposed = row[4]/shelf_total_km*100
 
-    config['stats'] = {
-        'eez_total_km': eez_total_km,
-        'pa_num_designated': pa_num_designated,
-        'pa_designated_total_area': pa_designated_total_area,
-        'pa_year_first_designated': pa_year_first_designated,
-        'pa_num_proposed': pa_num_proposed,
-        'pa_proposed_total_area': pa_proposed_total_area,
-        'pa_perc_ocean_protected': round(pa_perc_ocean_protected,2),
-        'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,2),
-        'pa_perc_shelf_protected': round(pa_perc_shelf_protected,2),
-        'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,2)
-    }
+        config['stats'] = {
+            'eez_total_km': eez_total_km,
+            'pa_num_designated': pa_num_designated,
+            'pa_designated_total_area': pa_designated_total_area,
+            'pa_year_first_designated': pa_year_first_designated,
+            'pa_num_proposed': pa_num_proposed,
+            'pa_proposed_total_area': pa_proposed_total_area,
+            'pa_perc_ocean_protected': round(pa_perc_ocean_protected,2),
+            'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,2),
+            'pa_perc_shelf_protected': round(pa_perc_shelf_protected,2),
+            'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,2)
+        }
 
-    #### Indicators ####
+    #### Add MPA Stats ####
+
+    if scale.name == 'mpa':
+
+        #Get all current pa attributes
+        query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = {1}'.format(layers['pa']['unitname'], QuotedString(unit.name))
+        cursor.execute(query)
+        row = cursor.fetchone()
+        config['stats'] = {
+            'pa_status': row[0],
+            'pa_protdate': row[1].strftime('%b %d %Y'),
+            'pa_campam_id': int(row[2]),
+            'pa_wdpa_id': int(row[3]),
+            'pa_mod_date': row[4].strftime('%b %d %Y'),
+            'pa_area': row[5]
+        }
+
+        #config['palayer'] = config['layers']['pa']
+        #Get PA document link
+        #config['pa']['layer'] = Layers.objects.get(name='pa')        
+
+    #### Add Indicators ####
 
     indiRows = Indicator.objects.filter(scales__name=scale)
     indiDicts = []
@@ -148,7 +170,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     config['indis'] = indiDicts    
 
-    #### JSON Conversion ####
+    #### Final JSON Conversion ####
 
     import json
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))

@@ -95,10 +95,6 @@ h3.section-header {
     margin-top: 30px;
 }
 
-p:nth-child(2) {
-    background: #ff0000;
-}
-
 .stat-col {
     column-span: 1;
 }
@@ -106,13 +102,50 @@ p:nth-child(2) {
 .stats-table .col1 {
     width: 16%;
 }
-
 .stats-table .col2 {
     width: 42%;
 }
-
 .stats-table .col3 {
     width: 42%;
+}
+
+.stats-table .num-row {
+    height: 50px;
+}
+
+.stats-table .label-row td {
+    padding-bottom: 15px;
+}
+
+.pa-link-list {
+    margin: 40px 0px 40px 0px;
+}
+
+.pa-link-list-item {   
+    width: 100%;
+    padding: 5px 0px 5px 0px;
+    font-size: 20px;
+    color: #666666;
+    border-bottom: 1px solid #bbb;    
+    vertical-align: middle;    
+}
+
+.pa-link-list-item.last {
+    border-bottom: 0px !important;
+}
+
+.pa-link-list-item:hover {
+    background-color: #eee;   
+}
+
+.pa-link-list-name {
+    line-height: 36px;
+    width:100%;
+    display: inline-block;
+}
+
+td.small-num {
+    padding-right: 20px;
 }
 
 .big-num {
@@ -130,6 +163,11 @@ p:nth-child(2) {
 .small-num {
     font-family: 'OswaldBold';
     font-size: 35px !important;      
+}
+
+.smaller-num {
+    font-family: 'OswaldBold';
+    font-size: 26px !important;         
 }
 
 .small-label {
@@ -282,7 +320,7 @@ p:nth-child(2) {
 
 .donut-footer {
     color: #AAAAAA;
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
 }
 
