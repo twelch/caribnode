@@ -27,59 +27,74 @@ $.widget( "geonode.ReefAssessment", {
    * Constructor
    */
   _create: function() {
+
+      //Load for all views
       this._boilerplate();
       this._loadIndiData();
-      this._loadCountryMap('country-map');
-      this._loadMpaMap('mpa-map');
 
-      var clickZoomConfig = null;
-      if (config.scale.name == 'region') {
+      //Selective loading depending on view
+      if (config.scale.name == 'region') {      
+        this._loadCountryMap('country-map');
+        this._loadMpaMap('mpa-map');
+        
+        var clickZoomConfig = null;
         clickZoomConfig = {
           clickClass: this.listZoomClass, 
           maps: [this.cMap, this.paMap],
           mapLayer: this.cEEZLayer,
           featAttr: this.options.config.layers.eez.unitname
         }
-      } else if (config.scale.name == 'country') {
-        clickZoomConfig = {
-          clickClass: this.listZoomClass, 
-          maps: [this.paMap],
-          mapLayer: this.paLayer,
-          featAttr: this.options.config.layers.pa.unitname
-        }
-      }
+        this._loadClickZoomMapEvents(clickZoomConfig);
 
-      this._loadClickZoomMapEvents(clickZoomConfig);
-
-      var hoverConfig = null;
-      if (config.scale.name == 'region') {
+        var hoverConfig = null;
         hoverConfig = {
           overlay: this.cOverlay, 
           layer: this.cEEZLayer, 
           elemClass: this.listItemClass, 
           nameAttr: this.options.config.layers.eez.unitname
         }
-      } else if (config.scale.name == 'country') {
+        this._loadHoverHighlightMapEvents(hoverConfig);        
+      }
+      
+      if (config.scale.name == 'country') {
+        this._loadCountryMap('country-map');
+        this._loadMpaMap('mpa-map');
+
+        var clickZoomConfig = null;
+        clickZoomConfig = {
+          clickClass: this.listZoomClass, 
+          maps: [this.paMap],
+          mapLayer: this.paLayer,
+          featAttr: this.options.config.layers.pa.unitname
+        }
+        this._loadClickZoomMapEvents(clickZoomConfig);
+
         hoverConfig = {
           overlay: this.paOverlay, 
           layer: this.paLayer, 
           elemClass: this.listItemClass, 
           nameAttr: this.options.config.layers.pa.unitname
         }
+        this._loadHoverHighlightMapEvents(hoverConfig);
+      } 
+
+      if (config.scale.name == 'region' || config.scale.name == 'country') {
+        loadMpaCharts({
+          'ocean_target':'ocean-donut',
+          'perc_ocean_protected':this.options.config.stats.pa_perc_ocean_protected,
+          'perc_ocean_proposed':this.options.config.stats.pa_perc_ocean_proposed,
+          'oceanGoal': this.options.config.settings.oceanGoal,
+          'shelf_target':'shelf-donut',
+          'perc_shelf_protected':this.options.config.stats.pa_perc_shelf_protected,
+          'perc_shelf_proposed':this.options.config.stats.pa_perc_shelf_proposed,
+          'shelfGoal': this.options.config.settings.shelfGoal
+        });
       }
 
-      this._loadHoverHighlightMapEvents(hoverConfig);
-
-      loadMpaCharts({
-        'ocean_target':'ocean-donut',
-        'perc_ocean_protected':this.options.config.stats.pa_perc_ocean_protected,
-        'perc_ocean_proposed':this.options.config.stats.pa_perc_ocean_proposed,
-        'oceanGoal': this.options.config.settings.oceanGoal,
-        'shelf_target':'shelf-donut',
-        'perc_shelf_protected':this.options.config.stats.pa_perc_shelf_protected,
-        'perc_shelf_proposed':this.options.config.stats.pa_perc_shelf_proposed,
-        'shelfGoal': this.options.config.settings.shelfGoal
-      });
+      if (config.scale.name == 'mpa') {
+        this._loadCountryMap('country-map');
+        this._loadMpaMap('mpa-map');
+      }
   },
 
   /*
@@ -289,9 +304,8 @@ $.widget( "geonode.ReefAssessment", {
       this.paMap.addLayer(this.paLayer); 
 
     } else if (config.scale.name=='country') {
-      /* Use client-side vector layer which allows highlighting and 
-       * bringing current PA to the top, not possible with WMS
-       */
+      /* Use client-side vector layer which allows highlighting
+      not possible with WMS */
 
       //Get base URL and switch to web mercator projection
       var paUrl = config.layers.pa.links.GeoJSON.replace('4326','3857');
@@ -299,6 +313,40 @@ $.widget( "geonode.ReefAssessment", {
       paUrl = paUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
       paUrl += '&format_options=callback:loadPAFeatures&cql_filter='+config.layers.pa.parentunitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
+
+      //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+      function paLoad(extent, resolution, projection) {
+        $.ajax({
+          url: paUrl,
+          dataType: 'jsonp',
+          jsonp: null,
+          jsonpCallback: "loadPAFeatures",
+          context: this
+        });
+      }
+
+      //OL3 ServerVector source that uses custom loader
+      this.paSource = new ol.source.ServerVector({
+        format: new ol.format.GeoJSON(),
+        projection: 'EPSG:3857',
+        loader: $.proxy(paLoad, this)
+      });
+
+      this.paLayer = new ol.layer.Vector({
+        source: this.paSource,
+        style: $.proxy(this._getPAStyle, this)
+      });      
+    
+    } else if (config.scale.name=='mpa') {
+      /* Use client-side vector layer which allows dynamic highlighting, 
+      not possible with WMS */
+
+      //Get base URL and switch to web mercator projection
+      var paUrl = config.layers.pa.links.GeoJSON.replace('4326','3857');
+      //Also switch from JSON to JSONP
+      paUrl = paUrl.replace('json','text/javascript');
+      //Filter to include only mpas for current country 
+      paUrl += '&format_options=callback:loadPAFeatures&cql_filter='+config.layers.pa.unitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paLoad(extent, resolution, projection) {
@@ -362,20 +410,36 @@ $.widget( "geonode.ReefAssessment", {
     });
 
     function zoomToEEZ(event) {
-      if (config.scale.name == 'country') {
-        var eezFeat = this.paEEZLayer.getSource().forEachFeature(function(feat){
-          if (feat.get(config.layers.eez.unitname) == config.unit.name) {
-            return feat;
-          }        
-        });
-        var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-        var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
-        flyToExtent(this.paMap, bufExtent);        
-      }
+      var eezFeat = this.paEEZLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
+      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
+      flyToExtent(this.paMap, bufExtent);        
     }
 
-    //Zoom in to the EEZ feature after a few seconds
-    window.setTimeout($.proxy(zoomToEEZ, this), 3000);
+    function zoomToPA(event) {
+      var paFeat = this.paLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.pa.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      var extent = paFeat ? paFeat.getGeometry().getExtent() : null;
+      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
+      flyToExtent(this.paMap, bufExtent);   
+    }
+
+
+    if (config.scale.name == 'country') {
+      //Zoom in to the EEZ feature after a few seconds
+      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
+    } else if (config.scale.name == 'mpa') {
+      //Zoom in to the PA feature after a few seconds
+      window.setTimeout($.proxy(zoomToPA, this), 3000);
+    }
+    
 
     this.paMap.addLayer(this.paEEZLayer);
 
