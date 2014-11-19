@@ -95,8 +95,21 @@
           </colgroup>          
           <tr class="num-row">
             <td></td>
-            <td class="small-num">{{stats.pa_area|floatformat:0|intcomma}}</td>
-            <td class="small-num">0.02%</td>                
+            <td class="small-num">
+              {% if stats.pa_area < 1 %}
+                < 1
+              {% else %}
+                {{stats.pa_area|floatformat:0|intcomma}}
+              {% endif %}
+
+            </td>
+            <td class="small-num">
+              {% if stats.perc_eez < .01 %}
+                < .01%
+              {% else %}
+                {{stats.perc_eez|floatformat:2|intcomma}}%
+              {% endif %}
+            </td>                
           </tr>
           <tr>
             <td class="label-row"></td>
@@ -106,9 +119,7 @@
           <tr class="num-row">
             <td></td>
             <td class="smaller-num">
-              {% if stats.pa_protdate == None %}
-                N/A
-              {% else %}
+              {% if stats.pa_protdate != None %}
                 {{stats.pa_protdate}}
               {% endif %}
             </td>
@@ -116,7 +127,11 @@
           </tr>
           <tr>
             <td class="label-row"></td>
-            <td class="small-label">DATE DESIGNATED</td>
+            <td class="small-label">
+              {% if stats.pa_protdate != None %}
+                DATE DESIGNATED
+              {% endif %}
+            </td>
             <td class="small-label">BOUNDARY LAST UPDATED</td>
           </tr>                  
         </table>

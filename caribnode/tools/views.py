@@ -137,11 +137,21 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     if scale.name == 'mpa':
 
+        #Get eez for this PA
+        query = 'SELECT "{0}" FROM eez_noland WHERE "{1}" = \'{2}\''.format(layers['eez_noland']['areaname'], layers['eez_noland']['unitname'], unit.parent.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        eezArea = row[0]
+
         #Get all current pa attributes
         query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = {1}'.format(layers['pa']['unitname'], QuotedString(unit.name))
         cursor.execute(query)
         row = cursor.fetchone()
 
+        #Calc % EEZ
+        percEEZ = (row[5]/eezArea)*100
+
+        #Format attributes as needed
         pa_protdate = pa_mod_date = None
         if row[1]:
             pa_protdate = row[1].strftime('%b %d %Y')
@@ -155,7 +165,8 @@ def reef_assess(request, scale_name, unit_id, template=''):
             'pa_campam_id': int(row[2]),
             'pa_wdpa_id': int(row[3]),
             'pa_mod_date': pa_mod_date,
-            'pa_area': row[5]
+            'pa_area': row[5],
+            'perc_eez': percEEZ
         }
 
         #config['palayer'] = config['layers']['pa']
