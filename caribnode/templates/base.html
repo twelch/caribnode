@@ -22,7 +22,7 @@
       <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
-  <body class="{% block body_class %}{% endblock %}">
+  <body class="{% block body_class %}about{% endblock %}">
     {% block header %}
 
     <div class="navbar">
@@ -169,7 +169,7 @@
         <div class="row">
         <div class="span12">
           <div class="footer-contact pull-left">
-            {% trans "Feedback? email " %} <a href="mailto:info@caribnode.org">info@caribnode.org</a>
+            {% trans "Feedback? email " %} <a href="mailto:hello@caribnode.org">hello@caribnode.org</a>
           </div>
           <div class="pull-right">
           {% if csrf_token != "NOTPROVIDED" %}
