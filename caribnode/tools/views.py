@@ -29,10 +29,14 @@ def reef_assess(request, scale_name, unit_id, template=''):
     scale = Scale.objects.get(name=scale_name)    
     unit = Unit.objects.get(id=unit_id)
 
+    config['settings'] = tool.settings
     config['scale'] = model_to_dict(scale)
     config['scale']['params'] = scale.params
+
     config['unit'] = model_to_dict(unit)
-    config['settings'] = tool.settings
+    if unit.parent:
+        config['unit']['parentname'] = unit.parent.name
+
 
     #### Add Layers ####
 
@@ -169,10 +173,6 @@ def reef_assess(request, scale_name, unit_id, template=''):
             'perc_eez': percEEZ
         }
 
-        #config['palayer'] = config['layers']['pa']
-        #Get PA document link
-        #config['pa']['layer'] = Layers.objects.get(name='pa')        
-
     #### Add Indicators ####
 
     indiRows = Indicator.objects.filter(scales__name=scale)
@@ -194,6 +194,9 @@ def reef_assess(request, scale_name, unit_id, template=''):
     import json
     config_json = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
     config['config_json'] = config_json
+
+    from django.conf import settings
+    config['GEOSERVER_URL'] = settings.GEOSERVER_URL
 
     template = 'tools/reef_assess.html'
 

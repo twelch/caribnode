@@ -346,7 +346,7 @@ $.widget( "geonode.ReefAssessment", {
       //Also switch from JSON to JSONP
       paUrl = paUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      paUrl += '&format_options=callback:loadPAFeatures&cql_filter='+config.layers.pa.unitname+'=\''+config.unit.name+'\' and '+config.layers.pa.iswatername+'=1';    
+      paUrl += '&format_options=callback:loadPAFeatures&cql_filter='+config.layers.pa.unitname+'=\''+config.unit.name.replace("'", "''")+'\' and '+config.layers.pa.iswatername+'=1';    
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paLoad(extent, resolution, projection) {
@@ -382,8 +382,10 @@ $.widget( "geonode.ReefAssessment", {
     eezUrl = eezUrl.replace('json','text/javascript');
     //Filter to include only current country
     eezUrl += '&format_options=callback:loadEEZFeatures';
-    if (config.scale.name != 'region') {
+    if (config.scale.name == 'country') {
       eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    } else if (config.scale.name == 'mpa') {
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
     }
 
     //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
