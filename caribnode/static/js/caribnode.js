@@ -270,12 +270,23 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** Base Layers ********/
 
-    this.paMap.addLayer(new ol.layer.Tile({
-      source: new ol.source.XYZ({          
-        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
-          'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-      })
-    }));
+    if (this.options.config.scale.name == 'country') {
+      this.paMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.XYZ({          
+          url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        })
+      }));
+    }
+
+    if (this.options.config.scale.name == 'mpa') {
+      this.paMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.BingMaps({
+          key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+          imagerySet: 'AerialWithLabels'
+        })
+      }));
+    }
 
     /******* Shelf Layer ********/
 
@@ -429,8 +440,8 @@ $.widget( "geonode.ReefAssessment", {
         }        
       });
       var extent = paFeat ? paFeat.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
-      flyToExtent(this.paMap, bufExtent);   
+      var bufExtent = getBufferedExtent(extent, this.options.config.scale.params.zoomBufScale)
+      flyToExtent(this.paMap, bufExtent, this.options.config.settings.maxSatResolution);   
     }
 
 
@@ -561,9 +572,9 @@ $.widget( "geonode.ReefAssessment", {
     //Zoom each of the maps to the feature extent
     _.each(event.data.maps, function(map){
       var extent = feature ? feature.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, config.childScale.params.zoomBufScale)
-      flyToExtent(map, bufExtent);
-    });
+      var bufExtent = getBufferedExtent(extent, this.options.config.childScale.params.zoomBufScale)
+      flyToExtent(map, bufExtent, this.options.config.settings.maxSatResolution);
+    }, this);
   },
 
   _hoverIn: function(event) {
@@ -867,9 +878,12 @@ function getBufferedExtent(extent, bufScale) {
   return ol.extent.buffer(extent, bufferSize);
 }
 
-function flyToExtent(map, extent) {
+function flyToExtent(map, extent, maxResolution) {
   var view = map.getView();    
   var zoomResolution = view.getResolutionForExtent(extent, map.getSize());
+
+  //Enforce max resolution for bing satellite layer
+  zoomResolution = zoomResolution < maxResolution ? maxResolution : zoomResolution;
 
   var duration = 1000;
   var start = +new Date();
