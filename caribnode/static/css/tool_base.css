@@ -46,6 +46,7 @@ h3.section-header {
     height: 290px;
     margin-top: 20px;
     overflow: scroll;
+    overflow-x: hidden;
 }
 
 .country-pa-unit-list {
