@@ -1,0 +1,363 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-21 16:23-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/about.html:4 templates/about.html.py:10
+msgid "About CaribNode"
+msgstr "Sobre CaribNode"
+
+#: templates/base.html:38
+msgid "About"
+msgstr "Acerca De"
+
+#: templates/base.html:41
+msgid "Tools"
+msgstr "Herramientas"
+
+#: templates/base.html:44
+msgid "Maps"
+msgstr "Mapas"
+
+#: templates/base.html:47
+msgid "Layers"
+msgstr "Capas"
+
+#: templates/base.html:52
+msgid "Documents"
+msgstr "Documentos"
+
+#: templates/base.html:56
+msgid "Search"
+msgstr "Buscar"
+
+#: templates/base.html:75
+msgid "Profile"
+msgstr "Perfil"
+
+#: templates/base.html:76
+msgid "Inbox"
+msgstr "Correo"
+
+#: templates/base.html:78
+msgid "Admin"
+msgstr ""
+
+#: templates/base.html:81
+msgid "Announcements"
+msgstr ""
+
+#: templates/base.html:84
+msgid "GeoServer"
+msgstr ""
+
+#: templates/base.html:86
+msgid "Recent Activity"
+msgstr ""
+
+#: templates/base.html:88
+msgid "Log out"
+msgstr ""
+
+#: templates/base.html:93
+msgid "Notifications"
+msgstr ""
+
+#: templates/base.html:94
+msgid "Messages"
+msgstr ""
+
+#: templates/base.html:95
+msgid "Upload"
+msgstr ""
+
+#: templates/base.html:96
+msgid "Help"
+msgstr ""
+
+#: templates/base.html:100 templates/base.html.py:113
+msgid "Sign in"
+msgstr ""
+
+#: templates/base.html:105
+msgid "Username"
+msgstr ""
+
+#: templates/base.html:107
+msgid "Password"
+msgstr ""
+
+#: templates/base.html:111
+msgid "Remember Me"
+msgstr ""
+
+#: templates/base.html:119
+msgid "or"
+msgstr ""
+
+#: templates/base.html:120
+msgid "Register"
+msgstr ""
+
+#: templates/base.html:172
+msgid "Feedback? email "
+msgstr ""
+
+#: templates/base.html:179
+msgid "Language"
+msgstr ""
+
+#: templates/base.html:188
+msgid "API ACCESS"
+msgstr "API ACCESO"
+
+#: templates/index.html:12
+msgid "Welcome!"
+msgstr "Bienvenido!"
+
+#: templates/index.html:22
+msgid "WELCOME"
+msgstr "BIENVENIDO"
+
+#: templates/index.html:24
+msgid ""
+"Discover valuable resources for marine management in the Eastern Caribbean"
+msgstr "Descubrir valiosos recursos de gestión marina en el Caribe Oriental"
+
+#: templates/index.html:41
+msgid "FEATURED TOOLS"
+msgstr "ÚLTIMOS HERRAMIENTAS"
+
+#: templates/index.html:56
+msgid "No tools found"
+msgstr "No hay ningún herramientas"
+
+#: templates/index.html:60 templates/index.html.py:82 templates/index.html:106
+#: templates/index.html.py:128
+msgid "View all "
+msgstr "Ver todos"
+
+#: templates/index.html:65
+msgid "LATEST MAPS"
+msgstr "ÚLTIMOS MAPAS"
+
+#: templates/index.html:78
+msgid "No maps found"
+msgstr "No hay ningún mapas"
+
+#: templates/index.html:89
+msgid "LATEST LAYERS"
+msgstr "ÚLTIMAS CAPAS"
+
+#: templates/index.html:102
+msgid "No layers found"
+msgstr "No hay ningún capas"
+
+#: templates/index.html:111
+msgid "LATEST DOCUMENTS"
+msgstr "ÚLTIMAS DOCUMENTOS"
+
+#: templates/index.html:124
+msgid "No docs found"
+msgstr "ÚLTIMAS DOCUMENTOS"
+
+#: templates/index.html:136
+msgid "Regional partners - see who is contributing their data"
+msgstr "Socios regionales - ver quién está aportando sus datos"
+
+#: tools/templates/tools/reef_assess.html:6
+msgid "Reef Assessment"
+msgstr "Evaluación del arrecife"
+
+#: tools/templates/tools/reef_assess.html:20
+msgid "OVERVIEW"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:23
+msgid ""
+"The following countries are included in this regional assessment.  Select a "
+"country below to view a national assessment."
+msgstr ""
+"Los siguientes países están incluidos en la presente evaluación regional. "
+"Seleccione un país de abajo para ver una evaluación nacional."
+
+#: tools/templates/tools/reef_assess.html:37
+msgid "PARTICIPATING COUNTRIES"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:38
+#: tools/templates/tools/reef_assess.html:116
+#: tools/templates/tools/reef_assess.html:212
+#: tools/templates/tools/reef_assess.html:244
+msgid "SQUARE KM OF OCEAN"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:58
+#: tools/templates/tools/reef_assess.html:175
+#: tools/templates/tools/reef_assess.html:290
+msgid "Exclusive Economic Zone (EEZ)"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:69
+msgid "Overview"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:86
+msgid "CURRENT STATUS"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:117
+#, fuzzy
+msgid "OF NATIONAL WATERS (EEZ)"
+msgstr "HERRAMIENTAS SOCIO NACIONAL"
+
+#: tools/templates/tools/reef_assess.html:132
+msgid "DATE DESIGNATED"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:135
+msgid "BOUNDARY LAST UPDATED"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:143
+msgid "Boundary Data Layer"
+msgstr "Capa de Límite de Datos"
+
+#: tools/templates/tools/reef_assess.html:149
+msgid "CaMPAM Report"
+msgstr "CaMPAM Informe"
+
+#: tools/templates/tools/reef_assess.html:156
+msgid "IUCN World Database Record"
+msgstr "IUCN Registro de Base de Datos Global"
+
+#: tools/templates/tools/reef_assess.html:169
+#: tools/templates/tools/reef_assess.html:284
+msgid "Managed Areas"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:172
+#: tools/templates/tools/reef_assess.html:287
+msgid "Continental Shelf"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:188
+msgid "MARINE MANAGED AREAS"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:207
+msgid "AREAS DESIGNATED"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:209
+msgid "AREAS DESIGNATED SINCE"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:243
+msgid "AREAS PROPOSED AND AWAITING DESIGNATION"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:265
+msgid "Ocean Managed"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:267
+#: tools/templates/tools/reef_assess.html:302
+#: tools/templates/tools/reef_assess.html:307
+msgid "Goal - "
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:267
+#: tools/templates/tools/reef_assess.html:302
+#, python-format
+msgid "%% of EEZ (Convention for Biological Diversity)"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:270
+msgid "Shelf Managed"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:272
+msgid "Goal -"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:272
+#: tools/templates/tools/reef_assess.html:307
+#, python-format
+msgid "%% of continental shelf (Caribbean Challenge)"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:300
+msgid "Ocean Protected"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:305
+msgid "Shelf Protected"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:316
+#: tools/templates/tools/reef_assess.html:329
+msgid "INDICATORS"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:333
+msgid ""
+"These indicators characterize the status and trends of the marine "
+"environment as well as the socio-economic and management conditions around "
+"it.  The most recent available year is shown."
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:379
+msgid "Name of Indicator"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:380
+msgid "Year"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:381
+msgid "Value"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:382
+msgid "Trend"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:383
+msgid "Grade"
+msgstr ""
+
+#: tools/templates/tools/reef_assess.html:384
+msgid "Data"
+msgstr ""
+
+#: tools/templates/tools/tool_list.html:4
+msgid "Explore Tools"
+msgstr "Explorar Herramientas"
+
+#: tools/templates/tools/tool_list.html:11
+msgid "CaribNode Tools"
+msgstr "CaribNode Herramientas"
+
+#: tools/templates/tools/tool_list.html:39
+msgid "NATIONAL PARTNER TOOLS"
+msgstr "HERRAMIENTAS SOCIO NACIONAL"
+
+#: tools/templates/tools/tool_list.html:52
+msgid "REGIONAL PARTNER TOOLS"
+msgstr "HERRAMIENTAS SOCIO REGIONAL"
