@@ -344,6 +344,10 @@ td.small-num {
     width: 72%;
 }
 
+.indi-highlight {
+    color: #00CCAA;
+}
+
 .big-indi-num {
     font-family: 'OswaldBold';
     font-size: 50px !important;

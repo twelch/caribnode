@@ -36,7 +36,7 @@
           {% endfor %}
         </div>
 
-        <h2>NATIONAL PARTNER TOOLS</h2>
+        <h2>{% trans "NATIONAL PARTNER TOOLS" %}</h2>
         <div class='tool-list'>
           {% for tool in tool_list %}
           {% if tool.external and tool.scale.name == "country" %}
@@ -49,7 +49,7 @@
           {% endfor %}
         </div>        
 
-        <h2>REGIONAL PARTNER TOOLS</h2>
+        <h2>{% trans "REGIONAL PARTNER TOOLS" %}</h2>
         <div class='tool-list'>
           {% for tool in tool_list %}
           {% if tool.external and tool.scale.name == "region" %}

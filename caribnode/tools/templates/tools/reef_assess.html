@@ -17,10 +17,10 @@
 <!-------- OVERVIEW SECTION -------->
     
   {% if scale.name == "region" %}
-    <h3 class='section-header'>OVERVIEW</h3>
+    <h3 class='section-header'>{% trans "OVERVIEW" %}</h3>
     <div class="row-fluid section-body">
         <div class="span6 overview-left">
-          <p class='stats-intro'>The following countries are included in this regional assessment.  Select a country below to view a national assessment.</p>
+          <p class='stats-intro'>{% trans "The following countries are included in this regional assessment.  Select a country below to view a national assessment." %}</p>
           <table class="stats-table">
             <colgroup>
                <col class="stat-col col1">
@@ -34,8 +34,8 @@
             </tr>
             <tr>
               <td></td>
-              <td class="big-label">PARTICIPATING COUNTRIES</td>
-              <td class="small-label">SQUARE KM OF OCEAN</td>
+              <td class="big-label">{% trans "PARTICIPATING COUNTRIES" %}</td>
+              <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
             </tr>        
           </table>  
 
@@ -55,7 +55,7 @@
           <div class="legend">
           <table>
             <tr>        
-              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&_OLSALT=0.07123626442626119&SCALE=17471285.8058239">
               </td>              
             </tr>
@@ -66,7 +66,7 @@
   {% endif %}
 
   {% if scale.name == "mpa" %}
-    <h3 class='section-header'>Overview</h3>
+    <h3 class='section-header'>{% trans "Overview" %}</h3>
     <div class="row-fluid section-body">
 
       <div class="span6 mpa-left">
@@ -83,7 +83,7 @@
           </tr>
           <tr class="label-row">
             <td></td>
-            <td class="small-label">CURRENT STATUS</td>
+            <td class="small-label">{% trans "CURRENT STATUS" %}</td>
           </tr>
         </table>
 
@@ -113,8 +113,8 @@
           </tr>
           <tr>
             <td class="label-row"></td>
-            <td class="small-label">SQUARE KM OF OCEAN</td>
-            <td class="small-label">OF NATIONAL WATERS (EEZ)</td>
+            <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
+            <td class="small-label">{% trans "OF NATIONAL WATERS (EEZ)" %}</td>
           </tr>            
           <tr class="num-row">
             <td></td>
@@ -129,10 +129,10 @@
             <td class="label-row"></td>
             <td class="small-label">
               {% if stats.pa_protdate != None %}
-                DATE DESIGNATED
+                {% trans "DATE DESIGNATED" %}
               {% endif %}
             </td>
-            <td class="small-label">BOUNDARY LAST UPDATED</td>
+            <td class="small-label">{% trans "BOUNDARY LAST UPDATED" %}</td>
           </tr>                  
         </table>
 
@@ -166,13 +166,13 @@
         <div class="legend">
           <table>
             <tr>        
-              <td><p>Managed Areas</p>
+              <td><p>{% trans "Managed Areas" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>Continental Shelf</p>
+              <td><p>{% trans "Continental Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
-              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
               </td>
             </tr>
@@ -185,7 +185,7 @@
 <!-------- MARINE MANAGED AREAS SECTION -------->
 
   {% if scale.name == "region" or scale.name == "country" %}
-    <h3 class='section-header'>MARINE MANAGED AREAS</h3>
+    <h3 class='section-header'>{% trans "MARINE MANAGED AREAS" %}</h3>
     <div class="row-fluid section-body">
 
       <div class="span6 mpa-left">
@@ -204,12 +204,12 @@
             <td></td>
             <td class="big-label">
               {% if stats.pa_num_designated == 0 %}
-              AREAS DESIGNATED
+              {% trans "AREAS DESIGNATED" %}
               {% else %} 
-              AREAS DESIGNATED SINCE {{stats.pa_year_first_designated}}
+              {% trans "AREAS DESIGNATED SINCE" %} {{stats.pa_year_first_designated}}
               {% endif %}
             </td>
-            <td class="small-label">SQUARE KM OF OCEAN</td>
+            <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
           </tr>
         </table>
 
@@ -240,8 +240,8 @@
           </tr>
           <tr>
             <td></td>
-            <td class="big-label">AREAS PROPOSED AND AWAITING DESIGNATION</td>
-            <td class="small-label">SQUARE KM OF OCEAN</td>
+            <td class="big-label">{% trans "AREAS PROPOSED AND AWAITING DESIGNATION" %}</td>
+            <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
           </tr>        
         </table> 
 
@@ -262,14 +262,14 @@
         {% if scale.name == 'region' %}
         <div class="row">
           <div class='span6'>
-            <div class='donut-header'>Ocean Managed</div>
+            <div class='donut-header'>{% trans "Ocean Managed" %}</div>
             <div id="ocean-donut"></div>
-            <div class='donut-footer'>Goal - {{settings.oceanGoal}}% of EEZ (Convention for Biological Diversity)</div>
+            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity)" %}</div>
           </div>
           <div class='span6'>
-            <div class='donut-header'>Shelf Managed</div>
+            <div class='donut-header'>{% trans "Shelf Managed" %}</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>Goal - {{settings.shelfGoal}}% of continental shelf (Caribbean Challenge)</div>
+            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge)" %}</div>
           </div>
         </div>        
         {% endif %}
@@ -281,13 +281,13 @@
         <div class="legend">
           <table>
             <tr>        
-              <td><p>Managed Areas</p>
+              <td><p>{% trans "Managed Areas" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>Continental Shelf</p>
+              <td><p>{% trans "Continental Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
-              <td class='last'><p>Exclusive Economic Zone (EEZ)</p>
+              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
               </td>
             </tr>
@@ -297,14 +297,14 @@
         {% if scale.name != 'region' %}
         <div class="row">
           <div class='span6'>
-            <div class='donut-header'>Ocean Protected</div>
+            <div class='donut-header'>{% trans "Ocean Protected" %}</div>
             <div id="ocean-donut"></div>
-            <div class='donut-footer'>Goal - {{settings.oceanGoal}}% of EEZ (Convention for Biological Diversity)</div>
+            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity)" %}</div>
           </div>
           <div class='span6'>
-            <div class='donut-header'>Shelf Protected</div>
+            <div class='donut-header'>{% trans "Shelf Protected" %}</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>Goal - {{settings.shelfGoal}}% of continental shelf (Caribbean Challenge)</div>
+            <div class='donut-footer'>{% trans "Goal - " %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge)" %}</div>
           </div>
         </div>        
         {% endif %}
@@ -313,7 +313,7 @@
     </div>
   {% endif %}
 
-    <h3 class='section-header'>{{ scale.alt_name|upper }} INDICATORS</h3>
+    <h3 class='section-header'>{{ scale.alt_name|upper }} {% trans "INDICATORS" %}</h3>
 
     <div class="section-body">
 
@@ -326,11 +326,13 @@
             <div class="indi-icon pull-left"></div>
             <div>
               <div class="big-indi-num">{{indis|length}}</div>
-              <div class="big-indi-label">INDICATORS</div>
+              <div class="big-indi-label">{% trans "INDICATORS" %}</div>
             </div>              
           </div>
           <div class="span9">
-            <p>These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  The most recent available year is shown.</p>
+            <p>{% trans "These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  Only the most recent available year is shown." %}</p>
+
+            <p>The indicator data in this section is <span class="indi-highlight">SAMPLE</span> data and for <span class="indi-highlight">DEMONSTRATION PURPOSES ONLY!</span></p>
           </div>        
         </section>
 
@@ -376,12 +378,12 @@ $( document ).ready(function() {
           <table class="table table-hover table-indi">
             <thead>
               <tr>
-                <th class="name">Name of Indicator</th>
-                <th class="year">Year</th>
-                <th class="value">Value</th>
-                <th class="trend">Trend</th>
-                <th class="grade">Grade</th>
-                <th class="data">Data</th>
+                <th class="name">{% trans "Name of Indicator" %}</th>
+                <th class="year">{% trans "Year" %}</th>
+                <th class="value">{% trans "Value" %}</th>
+                <th class="trend">{% trans "Trend" %}</th>
+                <th class="grade">{% trans "Grade" %}</th>
+                <th class="data">{% trans "Data" %}</th>
               </tr>
             </thead>
             <colgroup>

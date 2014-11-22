@@ -56,7 +56,7 @@ ROOT_URLCONF = 'caribnode.urls'
 
 # Location of locale files
 LOCALE_PATHS = (
-    os.path.join(LOCAL_ROOT, 'locale'),
+    os.path.join(LOCAL_ROOT, 'locale/'),
     ) + LOCALE_PATHS
 
 INSTALLED_APPS = (

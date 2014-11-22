@@ -270,7 +270,7 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** Base Layers ********/
 
-    if (this.options.config.scale.name == 'country') {
+    if (this.options.config.scale.name == 'region' || this.options.config.scale.name == 'country') {
       this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.XYZ({          
           url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
