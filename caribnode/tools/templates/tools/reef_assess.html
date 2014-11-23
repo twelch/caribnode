@@ -333,9 +333,9 @@
             </div>              
           </div>
           <div class="span9">
-            <p>{% trans "These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  Only the most recent available year is shown. The indicator data in this section is" %} <span class="indi-highlight">{% trans "SAMPLE" %}</span> {% trans "data and for"%} <span class="indi-highlight">{% trans "DEMONSTRATION PURPOSES ONLY!" %}</span></p>
+            <p>{% trans "These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  Only the most recent available year is shown." %}</p>
 
-            <p class="pull-right indi-learn-link"><a href="/indicator_help" target="_window">LEARN MORE ABOUT EACH INDICATOR</a></p>
+            <p class="indi-warn">{% trans "THE INDICATOR DATA IN THIS SECTION IS SAMPLE DATA AND FOR DEMONSTRATION PURPOSES ONLY. DO NOT USE OR REPUBLISH UNTIL FURTHER NOTICE." %}</p>
           </div>        
         </section>
 
@@ -438,6 +438,7 @@ $( document ).ready(function() {
               <% }); %>              
             </tbody>
           </table>
+          <p class="pull-right indi-learn-link"><a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">LEARN MORE ABOUT EACH INDICATOR</a></p>
         </section>                              
 </script>
 {% endblock extra_script %}

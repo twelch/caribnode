@@ -380,8 +380,10 @@ td.small-num {
     line-height: 46px;
 }
 
-.indi-learn-link {
-    padding-right: 25px;
+p.indi-warn {
+    font-size: 20px;
+    color: #FF6D24;
+    max-width: 500px;
 }
 
 .BIO-indi-icon {
