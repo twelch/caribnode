@@ -159,6 +159,8 @@ td.small-num {
     font-weight: 300;
     font-size: 17px;
     vertical-align: top;
+    line-height: 20px;
+    padding-right: 10px;
 }
 
 .small-num {
