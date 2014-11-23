@@ -429,13 +429,13 @@ p.indi-warn {
     width: 10%;
 }
 .table-indi .col3 {
-    width: 20%;
+    width: 14%;
 }
 .table-indi .col4 {
     width: 10%;
 }
 .table-indi .col5 {
-    width: 14%;
+    width: 20%;
 }
 .table-indi .col6 {
     width: 6%;
@@ -472,7 +472,7 @@ p.indi-warn {
     font-size: 14px;
     font-family: 'Lato-Bold'; 
     height: 25px;
-    width: 80px; 
+    width: 100px; 
     padding-top: 5px;  
     margin-left: auto;
     margin-right: auto;
@@ -491,6 +491,22 @@ p.indi-warn {
 }
 
 .grade-poor {
+    background-color: #EB8034;
+}
+
+.grade-definitely-yes {
+    background-color: #247729;
+}
+
+.grade-mostly-yes {
+    background-color: #7DBC3D;
+}
+
+.grade-mostly-no {
+    background-color: #FEE333;
+}
+
+.grade-definitely-no {
     background-color: #EB8034;
 }
 

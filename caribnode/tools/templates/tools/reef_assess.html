@@ -335,7 +335,7 @@
           <div class="span9">
             <p>{% trans "These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  Only the most recent available year is shown." %}</p>
 
-            <p class="indi-warn">{% trans "THE INDICATOR DATA IN THIS SECTION IS SAMPLE DATA AND FOR DEMONSTRATION PURPOSES ONLY. DO NOT USE OR REPUBLISH UNTIL FURTHER NOTICE." %}</p>
+            <p class="indi-warn">{% trans "THE INDICATOR DATA IN THIS SECTION IS SAMPLE DATA AND FOR DEMONSTRATION PURPOSES ONLY. DO NOT USE OR REPUBLISH." %}</p>
           </div>        
         </section>
 
@@ -383,9 +383,9 @@ $( document ).ready(function() {
               <tr>
                 <th class="name">{% trans "Name of Indicator" %}</th>
                 <th class="year">{% trans "Year" %}</th>
-                <th class="value">{% trans "Value" %}</th>
-                <th class="trend">{% trans "Trend" %}</th>
                 <th class="grade">{% trans "Grade" %}</th>
+                <th class="trend">{% trans "Trend" %}</th>
+                <th class="value">{% trans "Value" %}</th>
                 <th class="data">{% trans "Data" %}</th>
               </tr>
             </thead>
@@ -402,7 +402,26 @@ $( document ).ready(function() {
               <tr>
                 <td class="name"><%= indi.name %></td>
                 <td class="year"><%= indi.display.year %></td>
-                <td class="value"><%= indi.display.value %></td>
+
+                <td class="grade">
+                <% if (indi.display.grade == 'Very Good') { %>
+                  <div class="grade-very-good">
+                <% } else if (indi.display.grade == 'Good') { %>
+                  <div class="grade-good">
+                <% } else if (indi.display.grade == 'Fair') { %>
+                  <div class="grade-fair">
+                <% } else if (indi.display.grade == 'Poor') { %>
+                  <div class="grade-poor">
+                <% } else if (indi.display.grade == 'Definitely Yes') { %>
+                  <div class="grade-definitely-yes">
+                <% } else if (indi.display.grade == 'Mostly Yes') { %>
+                  <div class="grade-mostly-yes">
+                <% } else if (indi.display.grade == 'Mostly No') { %>
+                  <div class="grade-mostly-no">
+                <% } else if (indi.display.grade == 'Definitely No') { %>
+                  <div class="grade-definitely-no">
+                <% } %>                
+                <%= indi.display.grade %></div></td>        
 
                 <td class="trend">
                 <% if (indi.display.trend == 'up') { %>
@@ -416,24 +435,13 @@ $( document ).ready(function() {
                 <% } %>
                 </td>
 
-                <td class="grade">
-                <% if (indi.display.grade == 'Very Good') { %>
-                  <div class="grade-very-good">
-                <% } else if (indi.display.grade == 'Good') { %>
-                  <div class="grade-good">
-                <% } else if (indi.display.grade == 'Fair') { %>
-                  <div class="grade-fair">
-                <% } else if (indi.display.grade == 'Poor') { %>
-                  <div class="grade-poor">                  
-                <% } else { %>
-                  N/A
-                <% } %>                
-                <%= indi.display.grade %></div></td>
+                <td class="value"><%= indi.display.value %></td>
                 <% if (indi.display.doc_link) { %>
                   <td class="data"><a href="<%= indi.display.doc_link %>"><i class="icon-table doc-data-icon"></a></td>
                 <% } else { %>
                   <td></td>
                 <% } %>
+
               </tr>              
               <% }); %>              
             </tbody>

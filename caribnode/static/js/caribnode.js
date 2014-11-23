@@ -689,6 +689,15 @@ $.widget( "geonode.IndiSection", {
       indis: []
   },
 
+  _create: function() {
+      this._genRows();
+
+      //Compile and render template
+      var compiled = _.template($(".indiSection").html());
+      var html = compiled(this.options);
+      this.element.append(html);
+  },
+
   //Generate the table values for each indi
   _genRows: function() {
     _.each(this.options.indis, function(indi){
@@ -730,15 +739,32 @@ $.widget( "geonode.IndiSection", {
         indi.display.doc_link = indi.document.link;
 
         if (yearTwo) {
-          if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
-            indi.display.trend = 'same';
-          } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
-            indi.display.trend = 'up';
+          yearOneValue = yearOne[indi.value_field];
+          yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
+          yearTwoValue = yearTwo[indi.value_field];
+          yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
+          
+          if (yearOneValue) {
+            //If value then base trend on that
+            if (yearOneValue == yearTwoValue) {
+              indi.display.trend = 'same';
+            } else if (yearOneValue >= yearTwoValue) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';              
+            }
+          } else if (yearOneGradeValue) {
+            //If no value but grade then base trend on that
+            if (yearOneGradeValue == yearTwoGradeValue) {
+              indi.display.trend = 'same';
+            } else if (yearOneGradeValue >= yearTwoGradeValue) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';
+            }
           } else {
-            indi.display.trend = 'down';
+            indi.display.trend = false;
           }
-        } else {
-          indi.display.trend = false;
         }
 
         if (indi.name == 'Average Coral Cover') {          
@@ -749,16 +775,26 @@ $.widget( "geonode.IndiSection", {
       }
 
       
-    });
+    }, this);
   },
 
-  _create: function() {
-      this._genRows();
-
-      //Compile and render template
-      var compiled = _.template($(".indiSection").html());
-      var html = compiled(this.options);
-      this.element.append(html);
+  _getOrdinalValue: function(qual_value) {
+    switch(qual_value) {
+      case 'Definitely Yes':
+        return 4;
+        break;
+      case 'Mostly Yes':
+        return 3;
+        break;
+      case 'Mostly No':
+        return 2;
+        break;
+      case 'Definitely No':
+        return 1;
+        break;
+      default:
+        return 1;
+    }
   }
 });
 
