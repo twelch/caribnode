@@ -16,11 +16,32 @@
           <h2>{{group.name}}</h2>
             {% for indi in group.indis %}
             <h3>{{indi.name}}</h3>
-              <p>Description: {{indi.description}}</p>
-              <p>Geographic scales available: {{indi.myscales}}              
-              {% for grade in indi.grades %}
-                grade.name
-              {% endfor %}
+              <div class="row-fluid">
+                <div class="span6">
+                  <p>Description: <span class='light'>{{indi.description}}</span></p>
+                  <p>Geographic scales available: <span class='light'>{{indi.myscales}}</span></p>
+                </div>
+                <div class="span6">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th class="grade">{% trans "Grade" %}</th>
+                        <th class="desc">{% trans "Description" %}</th>
+                      </tr>
+                    </thead>
+                    <colgroup>
+                       <col class="indi-col col1">
+                       <col class="indi-col col2">
+                    </colgroup>
+                    {% for indiGrade in indi.mygrades %}
+                        <tr>
+                            <td class="grade"><div style='background-color: {{indiGrade.grade.color}}'>{{indiGrade.grade.name}}</div></td>
+                            <td class="desc">{{indiGrade.description}}</td>
+                        </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>                                        
             {% endfor %}
           {% endfor %}
         </div>

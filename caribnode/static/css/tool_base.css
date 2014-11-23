@@ -447,26 +447,26 @@ p.indi-warn {
     vertical-align: middle;
 }
 
-.table td.name, .table td.year {
+.table-indi td.name, .table td.year {
     font-size: 20px;
     color: #666666;
 }
 
-.table td.value {
+.table-indi td.value {
     font-family: 'OswaldBold';
     font-size: 20px;
     color: #333333;
 }
 
-.table th.year, .table th.value, .table th.trend, .table th.grade, .table th.data {
+.table-indi th.year, .table th.value, .table th.trend, .table th.grade, .table th.data {
     text-align: center;
 }
 
-.table td.year, .table td.value, .table td.trend, .table td.grade, .table td.data {
+.table-indi td.year, .table td.value, .table td.trend, .table td.grade, .table td.data {
     text-align: center;
 }
 
-.table td.name {
+.table-indi td.name {
     line-height: 24px;
 }
 

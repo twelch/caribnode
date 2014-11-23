@@ -25,18 +25,18 @@ class ToolAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'scale', 'external', 'featured', 'name', 'display_name', 'description', 'url', 'org', 'org_url', 'layers', 'settings')
     search_fields = ('name','description', 'org', )
 
-class GradeInline(admin.TabularInline):
-    model = Grade
+class IndiGradeInline(admin.TabularInline):
+    model = IndiGrade
 
 class IndicatorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'myscales', 'indi_type', 'document', 'description', 'unit_field', 'year_field', 'value_field', 'grade_field')
     search_fields = ('name','description')
     inlines = [
-        GradeInline,
+        IndiGradeInline,
     ]
 
 class GradeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'indicator', 'order')
+    list_display = ('id', 'name', 'order', 'color')
     search_fields = ('name', 'description', 'indicator')
 
 class ScaleAdmin(admin.ModelAdmin):

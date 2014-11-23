@@ -72,6 +72,9 @@ class Indicator(models.Model):
     def __unicode__(self):
         return self.name
 
+    def mygrades(self):
+        return IndiGrade.objects.filter(indicator=self)
+
     def myscales(self):
         scale_names = ''
         for i, scale in enumerate(self.scales.all()):
@@ -81,14 +84,17 @@ class Indicator(models.Model):
                 scale_names += scale.display_name
         return scale_names
 
-# Grades for a given indicator value.  The grades are expected to be provided with the data so this
-# is not meant to be used to figure out the grade, but rather as metadata
 class Grade(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    indicator = models.ForeignKey(Indicator, related_name='indicator_grade')
     order = models.IntegerField(default=1)
     color = models.CharField(max_length=20, default="#000000")
 
     def __unicode__(self):
-        return self.name    
+        return self.name
+
+# Grades for a given indicator value.  The grades are expected to be provided with the data so this
+# is not meant to be used to figure out the grade, but rather as metadata
+class IndiGrade(models.Model):
+    description = models.CharField(max_length=100)
+    indicator = models.ForeignKey(Indicator, related_name='indicator_grade')
+    grade = models.ForeignKey(Grade, related_name="")  
