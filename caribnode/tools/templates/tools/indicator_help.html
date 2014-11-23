@@ -1,0 +1,33 @@
+{% extends "tools/tool_base.html" %}
+{% load i18n %}
+
+{% block title %} {% trans "Indicators" %} - {{ block.super }} {% endblock %}
+
+{% block body_class %}tools{% endblock %}
+
+{% block middle %}
+
+  <div class="container content-back">
+    <h2 class="page-title">{% trans "Indicators" %}</h2>
+    <div class="row-fluid">
+      <div class="span8">
+        <div class='tool-list'>
+          {% for group in indi_groups %}
+          <h2>{{group.name}}</h2>
+            {% for indi in group.indis %}
+            <h3>{{indi.name}}</h3>
+              <p>Description: {{indi.description}}</p>
+              <p>Geographic scales available: {{indi.myscales}}              
+              {% for grade in indi.grades %}
+                grade.name
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_script %}
+{% endblock extra_script %}

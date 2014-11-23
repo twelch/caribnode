@@ -54,14 +54,13 @@ class Unit(models.Model):
 # a database table for each row with a unit, year, value, and grade at a minimum
 class Indicator(models.Model):
     INDICATOR_TYPES = (
-        ('NONE', 'None'),
         ('BIO', 'Biophysical'),
         ('SOC', 'Socioeconomic'),
         ('ME', 'Management Effectiveness'),
     )
 
     name = models.CharField(max_length=100)
-    indi_type = models.CharField(max_length=100, choices=INDICATOR_TYPES, default='None')
+    indi_type = models.CharField(max_length=100, choices=INDICATOR_TYPES, default='Biophysical')
     description = models.TextField(null=True, blank=True)
     document = models.ForeignKey(Document, related_name='document_indicator')    
     scales = models.ManyToManyField(Scale)
@@ -75,8 +74,11 @@ class Indicator(models.Model):
 
     def myscales(self):
         scale_names = ''
-        for scale in self.scales.all():
-            scale_names += scale.name+', '
+        for i, scale in enumerate(self.scales.all()):
+            if i > 0:
+                scale_names += ', '+scale.display_name
+            else:
+                scale_names += scale.display_name
         return scale_names
 
 # Grades for a given indicator value.  The grades are expected to be provided with the data so this

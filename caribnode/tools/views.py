@@ -16,6 +16,20 @@ def tool_browse(request, template='tools/tool_list.html'):
     context = {'tool_list': tool_list}
     return render(request, template, context)
 
+def indicator_help(request, template="tools/indicator_help.html"):
+    #indis = Indicator.objects.all()
+    indi_groups = []
+    for indi_type in Indicator.INDICATOR_TYPES:        
+        indis = Indicator.objects.filter(indi_type=indi_type[0])
+        indi_group = {
+            'name': indi_type[1],
+            'indis': indis
+        }
+        indi_groups.append(indi_group)
+    
+    context = {'indi_groups': indi_groups}    
+    return render(request, template, context)
+
 def reef_assess(request, scale_name, unit_id, template=''):
 
     #Database cursor
