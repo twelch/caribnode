@@ -19,6 +19,7 @@ $.widget( "geonode.ReefAssessment", {
   paEEZLayer: null, //protected area eez ol.layer
   paOverlay: null,  //protected area overlay ol.layer
   paLayer: null,    //protected area ol.layer
+  coralLayer: null, //coral reef mosaic ol.layer
 
   highName: null,
   highFeature: null,
@@ -306,6 +307,19 @@ $.widget( "geonode.ReefAssessment", {
         serverType: 'geoserver'
       })
     }));
+
+    /******** Cora Reef Mosaic Layer ********/
+
+    if (config.scale.name == 'mpa') {
+      this.coralLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.car_mar_coralreefmosaic_2013_wgs84.links.WMS,
+          params: {'LAYERS': 'car_mar_coralreefmosaic_2013_wgs84', 'STYLES': 'car_mar_coralreefmosaic_2013_wgs84_d3a29fb1', 'TILED': true},
+          serverType: 'geoserver'
+        })
+      });
+      this.paMap.addLayer(this.coralLayer);
+    }
 
     /******** PA Layer ********/
 
