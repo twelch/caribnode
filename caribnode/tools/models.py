@@ -73,6 +73,12 @@ class Indicator(models.Model):
     def __unicode__(self):
         return self.name
 
+    def myscales(self):
+        scale_names = ''
+        for scale in self.scales.all():
+            scale_names += scale.name+', '
+        return scale_names
+
 # Grades for a given indicator value.  The grades are expected to be provided with the data so this
 # is not meant to be used to figure out the grade, but rather as metadata
 class Grade(models.Model):
@@ -80,6 +86,7 @@ class Grade(models.Model):
     description = models.TextField(null=True, blank=True)
     indicator = models.ForeignKey(Indicator, related_name='indicator_grade')
     order = models.IntegerField(default=1)
+    color = models.CharField(max_length=20, default="#000000")
 
     def __unicode__(self):
         return self.name    

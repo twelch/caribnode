@@ -180,6 +180,15 @@ $.widget( "geonode.ReefAssessment", {
         var dataSubset = _.filter(indi.document.data, function(row) {
           return row[indi.unit_field] == config.unit.name;
         });
+
+        if (dataSubset.length == 0) {
+          //If no data, do one more pass looking for rows with the 
+          //unit name "ALL". Insert in place for the current geographic unit
+          var dataSubset = _.filter(indi.document.data, function(row) {
+            return row[indi.unit_field] == 'ALL';
+          });
+        }
+
         indi.document.data = dataSubset;
       });
 
@@ -669,51 +678,63 @@ $.widget( "geonode.IndiSection", {
   //Generate the table values for each indi
   _genRows: function() {
     _.each(this.options.indis, function(indi){
-      //Get most recent two years data
-      var lastTwo = _.sortBy(indi.document.data, function(row){
-        //Use negative in test to sort descending, as it will sort ascending value by default
-        return -row[indi.year_field];
-      }).slice(0,2);
-
-      var yearOne = null
-      var yearTwo = null;
-
-      if (lastTwo.length == 0) {
-        //No data to show
-      } else if(lastTwo.length == 1) {
-        //One year of data to show
-        yearOne = lastTwo[0];
-      } else {
-        //Two years of data to show
-        yearOne = lastTwo[0];
-        yearTwo = lastTwo[1];
-      }
-      
-      //Handle each indicator, appending display object with prepped values
+      //Object containing all of the display values
       indi.display = {};
 
-      indi.display.year = yearOne[indi.year_field];
-      indi.display.value = yearOne[indi.value_field];
-      indi.display.grade = yearOne[indi.grade_field];
-      indi.display.doc_link = indi.document.link;
-
-      if (yearTwo) {
-        if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
-          indi.display.trend = 'same';
-        } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
-          indi.display.trend = 'up';
-        } else {
-          indi.display.trend = 'down';
-        }
+      //Check if any data available for this unit
+      if (indi.document.data.length == 0) {
+        indi.display.year = "-";
+        indi.display.value = "-";
+        indi.display.grade = null;
+        indi.display.doc_link = null;
+        indi.display.trend = null;
       } else {
-        indi.display.trend = false;
+        //Get most recent two years data
+        var lastTwo = _.sortBy(indi.document.data, function(row){
+          //Use negative in test to sort descending, as it will sort ascending value by default
+          return -row[indi.year_field];
+        }).slice(0,2);
+
+        var yearOne = null
+        var yearTwo = null;
+
+        if (lastTwo.length == 0) {
+          //No data to show
+        } else if(lastTwo.length == 1) {
+          //One year of data to show
+          yearOne = lastTwo[0];
+        } else {
+          //Two years of data to show
+          yearOne = lastTwo[0];
+          yearTwo = lastTwo[1];
+        }
+        
+        //Handle each indicator, appending display object with prepped values
+        indi.display.year = yearOne[indi.year_field];
+        indi.display.value = yearOne[indi.value_field];
+        indi.display.grade = yearOne[indi.grade_field];
+        indi.display.doc_link = indi.document.link;
+
+        if (yearTwo) {
+          if (yearOne[indi.value_field] == yearTwo[indi.value_field]) {
+            indi.display.trend = 'same';
+          } else if (yearOne[indi.value_field] >= yearTwo[indi.value_field]) {
+            indi.display.trend = 'up';
+          } else {
+            indi.display.trend = 'down';
+          }
+        } else {
+          indi.display.trend = false;
+        }
+
+        if (indi.name == 'Average Coral Cover') {          
+          indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
+        } else if (indi.name == 'Key Commercial Species') {
+          indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
+        }        
       }
 
-      if (indi.name == 'Average Coral Cover') {          
-        indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
-      } else if (indi.name == 'Key Commercial Species') {
-        indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
-      }
+      
     });
   },
 

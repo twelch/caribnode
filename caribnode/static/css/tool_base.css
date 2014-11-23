@@ -376,7 +376,12 @@ td.small-num {
     color: #666666;
     font-family: 'FrancoisOne';
     font-size: 24px;
-    padding-top: 15px;
+    padding-top: 0px;
+    line-height: 46px;
+}
+
+.indi-learn-link {
+    padding-right: 25px;
 }
 
 .BIO-indi-icon {
