@@ -830,7 +830,7 @@ function loadMpaCharts(chartConfig) {
             'color':'#333333'
           }
       },
-      colors: ['#7ED321','#B8E986','#D8D8D8'],
+      colors: ['#3366FF','#CBE2F9','#D8D8D8'],
       yAxis: {
           title: {
               text: 'Total percent market share'
@@ -879,7 +879,7 @@ function loadMpaCharts(chartConfig) {
             'color':'#333333'
           }
       },
-      colors: ['#7ED321','#B8E986','#D8D8D8'],
+      colors: ['#3366FF','#CBE2F9','#D8D8D8'],
       yAxis: {
           title: {
               text: 'Total percent market share'
