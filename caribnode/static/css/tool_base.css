@@ -92,8 +92,8 @@ h3.section-header {
     display: none;
 }
 
-.stats-table:nth-child(2) {
-    margin-top: 30px;
+.stats-table:nth-child(n+2) {
+    margin-top: 20px;
 }
 
 .stat-col {
@@ -273,6 +273,38 @@ td.small-num {
     display: none !important;
 }
 
+/**** Habitat ****/
+
+.coral-icon {
+    background: url('/static/img/icon_38430_coral.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #FFAEE3;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
+
+.mangrove-icon {
+    background: url('/static/img/mangrove_white.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #F5AA23;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
+
+.seagrass-icon {
+    background: url('/static/img/seagrass_white.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #0A9C43;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;     
+}
+
 /**** MPA ****/
 
 .mpa-left {
@@ -281,6 +313,10 @@ td.small-num {
 
 .mpa-right {
     padding: 20px 20px 20px 0px;
+}
+
+#hab-map {
+    height: 510px;
 }
 
 #mpa-map {

@@ -36,6 +36,7 @@ $.widget( "geonode.ReefAssessment", {
       //Selective loading depending on view
       if (config.scale.name == 'region') {      
         this._loadCountryMap('country-map');
+        this._loadHabitatMap('hab-map');
         this._loadMpaMap('mpa-map');
         
         var clickZoomConfig = null;
@@ -59,6 +60,7 @@ $.widget( "geonode.ReefAssessment", {
       
       if (config.scale.name == 'country') {
         this._loadCountryMap('country-map');
+        this._loadHabitatMap('hab-map');        
         this._loadMpaMap('mpa-map');
 
         var clickZoomConfig = null;
@@ -265,8 +267,122 @@ $.widget( "geonode.ReefAssessment", {
     this._highlightListItem(this.listItemClass, countryName);
   },
 
-  _loadMpaMap: function(mapEl) {  
+  _loadHabitatMap: function(mapEl) {  
+    this.habMap = new ol.Map({
+      controls: ol.control.defaults().extend([
+        new ol.control.FullScreen()
+      ]),
+      target: mapEl,
+      view: new ol.View({
+        center: [-6786385.11927109, 1836323.167523076],
+        zoom: 6
+      })
+    });
 
+    /******** Base Layers ********/
+
+    if (this.options.config.scale.name == 'region' || this.options.config.scale.name == 'country') {
+      this.habMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.XYZ({          
+          url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        })
+      }));
+    }
+
+    /******* Shelf Layer ********/
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******* Habitat Layers ********/
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'mangrove_country', 'STYLES': 'mangrove_country', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'seagrass_country', 'STYLES': 'seagrass_country', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'coralreef_country', 'STYLES': 'coralreef_country', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** EEZ Layer ********/
+
+    //Get base URL and switch to web mercator projection
+    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
+    //Switch from JSON to JSONP
+    eezUrl = eezUrl.replace('json','text/javascript');
+    //Filter to include only current country
+    eezUrl += '&format_options=callback:loadEEZFeatures';
+    if (config.scale.name == 'country') {
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    } else if (config.scale.name == 'mpa') {
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
+    }
+
+    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+    function habEEZLoad(extent, resolution, projection) {
+      $.ajax({
+        url: eezUrl,
+        dataType: 'jsonp',
+        jsonp: null,
+        jsonpCallback: 'loadEEZFeatures',
+        context: this
+      });
+    }
+
+    //OL3 ServerVector source that uses custom loader
+    this.habEEZSource = new ol.source.ServerVector({
+      format: new ol.format.GeoJSON(),
+      projection: 'EPSG:3857',
+      loader: $.proxy(habEEZLoad, this)
+    });
+
+    this.habEEZLayer = new ol.layer.Vector({
+      source: this.habEEZSource,
+      style: $.proxy(this._getEEZStyle, this)
+    });
+
+    function zoomToEEZ(event) {
+      var eezFeat = this.habEEZLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
+      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
+      flyToExtent(this.habMap, bufExtent);        
+    }
+
+    if (config.scale.name == 'country') {
+      //Zoom in to the EEZ feature after a few seconds
+      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
+    }    
+
+    this.habMap.addLayer(this.habEEZLayer);
+  },
+
+  _loadMpaMap: function(mapEl) {  
     this.paMap = new ol.Map({
       controls: ol.control.defaults().extend([
         new ol.control.FullScreen()
@@ -555,6 +671,7 @@ $.widget( "geonode.ReefAssessment", {
 
   loadEEZFeatures: function(features) {
     this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(features));
+    this.habEEZSource.addFeatures(this.habEEZSource.readFeatures(features));
   },
 
 /******** UI EVENT LOADERS ********/

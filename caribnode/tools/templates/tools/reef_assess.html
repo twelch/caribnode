@@ -185,6 +185,109 @@
     </div>
   {% endif %}
 
+<!-------- KEY HABITATS SECTION -------->
+
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>{% trans "KEY HABITATS" %}</h3>
+    <div class="row-fluid section-body">
+
+      <div class="span6 mpa-left">
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>
+          <tr class="num-row">
+            <td><div class="coral-icon"></div></td>
+            <td class="big-num">{{stats.pa_num_designated}}</td>
+            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>                
+          </tr>
+          <tr>
+            <td></td>
+            <td class="big-label">
+              {% trans "SQUARE KM OF CORAL REEF" %}
+            </td>            
+          </tr>
+        </table>
+
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>
+          <tr class="num-row">
+            <td><div class="mangrove-icon"></div></td>
+            <td class="big-num">{{stats.pa_num_designated}}</td>
+            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="big-label">
+              {% trans "SQUARE KM OF MANGROVE" %}
+            </td>            
+          </tr>
+        </table>
+
+        <table class="stats-table">
+          <colgroup>
+             <col class="stat-col col1">
+             <col class="stat-col col2">
+             <col class="stat-col col3">
+          </colgroup>
+          <tr class="num-row">
+            <td><div class="seagrass-icon"></div></td>
+            <td class="big-num">{{stats.pa_num_designated}}</td>
+            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="big-label">
+              {% trans "SQUARE KM OF SEAGRASS" %}
+            </td>            
+          </tr>
+        </table>
+
+        {% if scale.name == 'region' or scale.name == "country" %}
+        <div class="row">
+          <div class='span6'>
+            <div class='donut-header'>{% trans "Ocean Managed" %}</div>
+            <div id="ocean-donut"></div>
+            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity). Only designated areas count towards goal" %}</div>
+          </div>
+          <div class='span6'>
+            <div class='donut-header'>{% trans "Shelf Managed" %}</div>
+            <div id="shelf-donut"></div>
+            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
+          </div>
+        </div>        
+        {% endif %}
+
+      </div>
+      <div class="span6 mpa-right">
+        <div id="hab-map">
+        </div>
+        <div class="legend">
+          <table>
+            <tr>        
+              <td><p>{% trans "Managed Area Boundary" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
+              </td>
+              <td><p>{% trans "Continental Shelf" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
+              </td>
+              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  {% endif %}
+
 <!-------- MARINE MANAGED AREAS SECTION -------->
 
   {% if scale.name == "region" or scale.name == "country" %}
@@ -267,12 +370,12 @@
           <div class='span6'>
             <div class='donut-header'>{% trans "Ocean Managed" %}</div>
             <div id="ocean-donut"></div>
-            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity)" %}</div>
+            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity). Only designated areas count towards goal" %}</div>
           </div>
           <div class='span6'>
             <div class='donut-header'>{% trans "Shelf Managed" %}</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge)" %}</div>
+            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
           </div>
         </div>        
         {% endif %}
@@ -300,6 +403,8 @@
       </div>
     </div>
   {% endif %}
+
+<!-------- INDICATORS SECTION -------->
 
     <h3 class='section-header'>{{ scale.alt_name|upper }} {% trans "INDICATORS" %}</h3>
 
