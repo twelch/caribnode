@@ -138,6 +138,48 @@ def reef_assess(request, scale_name, unit_id, template=''):
             pa_perc_shelf_protected = row[3]/shelf_total_km*100
             pa_perc_shelf_proposed = row[4]/shelf_total_km*100
 
+        #coral habitat
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM coralreef_country'.format(layers['coral']['areaname'],layers['coral']['percentdesigname'],layers['coral']['percentproposedname'],layers['coral']['areadesigname'],layers['coral']['areaproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['coral']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        coral_total_km = row[0]
+        if scale.name == 'country':
+            coral_perc_designated = row[1]
+            coral_perc_proposed = row[2]
+        elif scale.name == 'region':
+            coral_perc_designated = row[3]/coral_total_km*100
+            coral_perc_proposed = row[4]/coral_total_km*100
+
+        #seagrass habitat
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM seagrass_country'.format(layers['seagrass']['areaname'],layers['seagrass']['percentdesigname'],layers['seagrass']['percentproposedname'],layers['seagrass']['areadesigname'],layers['seagrass']['areaproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['seagrass']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        seagrass_total_km = row[0]
+        if scale.name == 'country':
+            seagrass_perc_designated = row[1]
+            seagrass_perc_proposed = row[2]
+        elif scale.name == 'region':
+            seagrass_perc_designated = row[3]/seagrass_total_km*100
+            seagrass_perc_proposed = row[4]/seagrass_total_km*100            
+
+        #mangrove habitat
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM mangrove_country'.format(layers['mangrove']['areaname'],layers['mangrove']['percentdesigname'],layers['mangrove']['percentproposedname'],layers['mangrove']['areadesigname'],layers['mangrove']['areaproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['mangrove']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+        mangrove_total_km = row[0]
+        if scale.name == 'country':
+            mangrove_perc_designated = row[1]
+            mangrove_perc_proposed = row[2]
+        elif scale.name == 'region':
+            mangrove_perc_designated = row[3]/mangrove_total_km*100
+            mangrove_perc_proposed = row[4]/mangrove_total_km*100
+
         config['stats'] = {
             'eez_total_km': eez_total_km,
             'pa_num_designated': pa_num_designated,
@@ -148,7 +190,16 @@ def reef_assess(request, scale_name, unit_id, template=''):
             'pa_perc_ocean_protected': round(pa_perc_ocean_protected,2),
             'pa_perc_ocean_proposed': round(pa_perc_ocean_proposed,2),
             'pa_perc_shelf_protected': round(pa_perc_shelf_protected,2),
-            'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,2)
+            'pa_perc_shelf_proposed': round(pa_perc_shelf_proposed,2),
+            'coral_perc_designated': round(coral_perc_designated,2),
+            'coral_perc_proposed': round(coral_perc_proposed,2),
+            'coral_total_km': round(coral_total_km,1),
+            'seagrass_perc_designated': round(seagrass_perc_designated,2),
+            'seagrass_perc_proposed': round(seagrass_perc_proposed,2),
+            'seagrass_total_km': round(seagrass_total_km,1),
+            'mangrove_perc_designated': round(mangrove_perc_designated,2),
+            'mangrove_perc_proposed': round(mangrove_perc_proposed,2),
+            'mangrove_total_km': round(mangrove_total_km,1)
         }
 
     #### Add MPA Stats ####

@@ -82,6 +82,20 @@ $.widget( "geonode.ReefAssessment", {
       } 
 
       if (config.scale.name == 'region' || config.scale.name == 'country') {
+        loadHabCharts({
+          'coral_target':'coral-donut',
+          'coral_perc_designated':this.options.config.stats.coral_perc_designated,
+          'coral_perc_proposed':this.options.config.stats.coral_perc_proposed,
+          'coralGoal': 100,
+          'seagrass_target':'seagrass-donut',
+          'seagrass_perc_designated':this.options.config.stats.seagrass_perc_designated,
+          'seagrass_perc_proposed':this.options.config.stats.seagrass_perc_proposed,
+          'seagrassGoal': 100,
+          'mangrove_target':'mangrove-donut',
+          'mangrove_perc_designated':this.options.config.stats.mangrove_perc_designated,
+          'mangrove_perc_proposed':this.options.config.stats.mangrove_perc_proposed,
+          'mangroveGoal': 100
+        });
         loadMpaCharts({
           'ocean_target':'ocean-donut',
           'perc_ocean_protected':this.options.config.stats.pa_perc_ocean_protected,
@@ -915,8 +929,185 @@ $.widget( "geonode.IndiSection", {
   }
 });
 
-function loadMpaCharts(chartConfig) {
+function loadHabCharts(chartConfig) {
+  //Check if value is less than one and set formatter for display accordingly
+  var less_coral_designated = chartConfig.coral_perc_designated < 1 ? '< ' : ''
+  var less_mangrove_designated = chartConfig.mangrove_perc_designated < 1 ? '< ' : ''
+  var less_seagrass_designated = chartConfig.seagrass_perc_designated < 1 ? '< ' : ''
 
+  //Format values for display by rounding up
+  chartConfig.coral_perc_designated = Math.ceil(chartConfig.coral_perc_designated);
+  chartConfig.coral_perc_proposed = Math.ceil(chartConfig.coral_perc_proposed);
+  chartConfig.mangrove_perc_designated = Math.ceil(chartConfig.mangrove_perc_designated);
+  chartConfig.mangrove_perc_proposed = Math.ceil(chartConfig.mangrove_perc_proposed);
+  chartConfig.seagrass_perc_designated = Math.ceil(chartConfig.seagrass_perc_designated);
+  chartConfig.seagrass_perc_proposed = Math.ceil(chartConfig.seagrass_perc_proposed);    
+
+  // Create the chart
+  coralDonut = new Highcharts.Chart({
+      chart: {
+          renderTo: chartConfig.coral_target,
+          type: 'pie',
+          margin: [0, 0, 0, 0],
+          spacingTop: 0,
+          spacingBottom: 0,
+          spacingLeft: 0,
+          spacingRight: 0
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: less_coral_designated+chartConfig.coral_perc_designated+'%',
+          align: 'center',
+          verticalAlign: 'middle',
+          y: 15,
+          style: {
+            'font-family':'OswaldBold',
+            'font-size':'24px',
+            'color':'#333333'
+          }
+      },
+      colors: ['#FFAEE3','#F8E6F2','#D8D8D8'],
+      yAxis: {
+          title: {
+              text: 'Total percent market share'
+          }
+      },
+      plotOptions: {
+          pie: {
+              shadow: false
+          }
+      },
+      tooltip: {
+          formatter: function() {
+            var less_than_one_indicator = this.y == 1 ? '< ' : '';
+            return '<b>'+this.point.name+'</b>: '+less_than_one_indicator+this.y+' %';
+          }
+      },
+      series: [{
+          name: '',
+          data: [["Designated",chartConfig.coral_perc_designated],["Proposed",chartConfig.coral_perc_proposed],["Unproposed",chartConfig.coralGoal-chartConfig.coral_perc_designated-chartConfig.coral_perc_proposed]],
+          size: '100%',
+          innerSize: '75%',
+          showInLegend:false,
+          dataLabels: {
+              enabled: false
+          }
+      }]
+  });
+
+  // Create the chart
+  mangroveDonut = new Highcharts.Chart({
+      chart: {
+          renderTo: chartConfig.mangrove_target,
+          type: 'pie',
+          margin: [0, 0, 0, 0],
+          spacingTop: 0,
+          spacingBottom: 0,
+          spacingLeft: 0,
+          spacingRight: 0
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: less_mangrove_designated+chartConfig.mangrove_perc_designated+'%',
+          align: 'center',
+          verticalAlign: 'middle',
+          y: 15,
+          style: {
+            'font-family':'OswaldBold',
+            'font-size':'24px',
+            'color':'#333333'
+          }
+      },
+      colors: ['#F5AA23','#FAE6C2','#D8D8D8'],
+      yAxis: {
+          title: {
+              text: 'Total percent market share'
+          }
+      },
+      plotOptions: {
+          pie: {
+              shadow: false
+          }
+      },
+      tooltip: {
+          formatter: function() {
+            var less_than_one_indicator = this.y == 1 ? '< ' : '';
+            return '<b>'+this.point.name+'</b>: '+less_than_one_indicator+this.y+' %';
+          }
+      },
+      series: [{
+          name: '',
+          data: [["Designated",chartConfig.mangrove_perc_designated],["Proposed",chartConfig.mangrove_perc_proposed],["Unproposed",chartConfig.mangroveGoal-chartConfig.mangrove_perc_designated-chartConfig.mangrove_perc_proposed]],
+          size: '100%',
+          innerSize: '75%',
+          showInLegend:false,
+          dataLabels: {
+              enabled: false
+          }
+      }]
+  });
+
+  // Create the chart
+  seagrassDonut = new Highcharts.Chart({
+      chart: {
+          renderTo: chartConfig.seagrass_target,
+          type: 'pie',
+          margin: [0, 0, 0, 0],
+          spacingTop: 0,
+          spacingBottom: 0,
+          spacingLeft: 0,
+          spacingRight: 0
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: less_seagrass_designated+chartConfig.seagrass_perc_designated+'%',
+          align: 'center',
+          verticalAlign: 'middle',
+          y: 15,
+          style: {
+            'font-family':'OswaldBold',
+            'font-size':'24px',
+            'color':'#333333'
+          }
+      },
+      colors: ['#0A9C43','#E6F8DC','#D8D8D8'],
+      yAxis: {
+          title: {
+              text: 'Total percent market share'
+          }
+      },
+      plotOptions: {
+          pie: {
+              shadow: false
+          }
+      },
+      tooltip: {
+          formatter: function() {
+            var less_than_one_indicator = this.y == 1 ? '< ' : '';
+            return '<b>'+this.point.name+'</b>: '+less_than_one_indicator+this.y+' %';
+          }
+      },
+      series: [{
+          name: '',
+          data: [["Designated",chartConfig.seagrass_perc_designated],["Proposed",chartConfig.seagrass_perc_proposed],["Unproposed",chartConfig.seagrassGoal-chartConfig.seagrass_perc_designated-chartConfig.seagrass_perc_proposed]],
+          size: '100%',
+          innerSize: '75%',
+          showInLegend:false,
+          dataLabels: {
+              enabled: false
+          }
+      }]
+  });
+
+}
+
+function loadMpaCharts(chartConfig) {
   //Check if value is less than one and set formatter for display accordingly
   var less_ocean_protected = chartConfig.perc_ocean_protected < 1 ? '< ' : ''
   var less_shelf_protected = chartConfig.perc_shelf_protected < 1 ? '< ' : ''  

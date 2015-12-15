@@ -200,8 +200,10 @@
           </colgroup>
           <tr class="num-row">
             <td><div class="coral-icon"></div></td>
-            <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>                
+            <td class="big-num">{{stats.coral_total_km}}</td>
+            <td rowspan='2'>
+              <div id="coral-donut" class="hab-donut"></div>
+            </td>                
           </tr>
           <tr>
             <td></td>
@@ -219,8 +221,11 @@
           </colgroup>
           <tr class="num-row">
             <td><div class="mangrove-icon"></div></td>
-            <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>
+            <td class="big-num">{{stats.mangrove_total_km}}</td>
+            <td rowspan='2'>
+              <div id="mangrove-donut" class="hab-donut">
+              </div>
+            </td>
           </tr>
           <tr>
             <td></td>
@@ -238,8 +243,11 @@
           </colgroup>
           <tr class="num-row">
             <td><div class="seagrass-icon"></div></td>
-            <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td rowspan='2'>Donut chart goes in here and it'll fill up this whole darn space okay now</td>
+            <td class="big-num">{{stats.seagrass_total_km}}</td>
+            <td rowspan='2'>
+              <div id="seagrass-donut" class="hab-donut">
+              </div>
+            </td>
           </tr>
           <tr>
             <td></td>
@@ -249,21 +257,6 @@
           </tr>
         </table>
 
-        {% if scale.name == 'region' or scale.name == "country" %}
-        <div class="row">
-          <div class='span6'>
-            <div class='donut-header'>{% trans "Ocean Managed" %}</div>
-            <div id="ocean-donut"></div>
-            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity). Only designated areas count towards goal" %}</div>
-          </div>
-          <div class='span6'>
-            <div class='donut-header'>{% trans "Shelf Managed" %}</div>
-            <div id="shelf-donut"></div>
-            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
-          </div>
-        </div>        
-        {% endif %}
-
       </div>
       <div class="span6 mpa-right">
         <div id="hab-map">
@@ -271,14 +264,14 @@
         <div class="legend">
           <table>
             <tr>        
-              <td><p>{% trans "Managed Area Boundary" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
+              <td><p>{% trans "Coral Reef" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=coralreef_country&SCALE=8735642.90291195"/>
               </td>
-              <td><p>{% trans "Continental Shelf" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
+              <td><p>{% trans "Mangrove" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=mangrove_country&SCALE=8735642.90291195"/>
               </td>
-              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
+              <td class='last'><p>{% trans "Seagrass" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
               </td>
             </tr>
           </table>

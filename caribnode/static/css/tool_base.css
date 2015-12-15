@@ -343,6 +343,10 @@ td.small-num {
     moz-border-radius: 5px;     
 }
 
+.hab-donut {
+    width: 130px; height: 130px; margin: 0 auto
+}
+
 #ocean-donut {
     width: 90%; height: 200px; margin: 0 auto
 }
