@@ -73,7 +73,7 @@ class Indicator(models.Model):
         return self.name
 
     def mygrades(self):
-        return IndiGrade.objects.filter(indicator=self)
+        return IndiGrade.objects.filter(indicator=self).order_by('grade__order')
 
     def myscales(self):
         scale_names = ''

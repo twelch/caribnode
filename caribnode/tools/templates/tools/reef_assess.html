@@ -379,7 +379,7 @@
           <div class='span6'>
             <div class='donut-header'>{% trans "Shelf Managed" %}</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
+            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of marine shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
           </div>
         </div>        
         {% endif %}
@@ -394,7 +394,7 @@
               <td><p>{% trans "Managed Area Boundary" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>{% trans "Continental Shelf" %}</p>
+              <td><p>{% trans "Marine Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
               <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
