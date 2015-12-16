@@ -17,7 +17,7 @@ import os
 import sys
 
 #Add custom geonode to pythonpath
-sys.path.insert(0, "/vagrant/geonode")
+sys.path.insert(0, "/etc/geonode20x")
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "caribnode.settings")
 
