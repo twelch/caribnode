@@ -192,15 +192,7 @@ td.small-num {
     moz-border-radius: 5px;     
 }
 
-/**** OVERVIEW ****/
-
-.overview-left {
-    padding: 20px 0px 20px 20px;
-}
-
-.overview-right {
-    padding: 20px 20px 20px 0px;
-}
+/**** ALL SECTIONS ****/
 
 .legend {
     float: right;
@@ -219,6 +211,26 @@ td.small-num {
 
 .legend td.last {
     border-right: none;
+}
+
+.map-links {
+    list-style-type: none;
+    margin: 0;
+    min-width: 100px;
+}
+
+.map-links li {
+    padding-top: 5px;
+}
+
+/**** OVERVIEW ****/
+
+.overview-left {
+    padding: 20px 0px 20px 20px;
+}
+
+.overview-right {
+    padding: 20px 20px 20px 0px;
 }
 
 #country-map {
@@ -316,7 +328,7 @@ td.small-num {
 }
 
 #hab-map {
-    height: 510px;
+    height: 480px;
 }
 
 #mpa-map {

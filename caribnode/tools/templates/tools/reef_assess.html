@@ -198,6 +198,11 @@
              <col class="stat-col col2">
              <col class="stat-col col3">
           </colgroup>
+          <tr>
+            <td></td>
+            <td></td>
+            <td class='donut-header'>Managed</td>
+          </tr>
           <tr class="num-row">
             <td><div class="coral-icon"></div></td>
             <td class="big-num">{{stats.coral_total_km}}</td>
@@ -270,8 +275,14 @@
               <td><p>{% trans "Mangrove" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=mangrove_country&SCALE=8735642.90291195"/>
               </td>
-              <td class='last'><p>{% trans "Seagrass" %}</p>
+              <td><p>{% trans "Seagrass" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
+              </td>
+              <td class='last'>
+              <ul class='map-links'>
+                <li><a href='/maps?category=biota'>VIEW MAP</a></li>
+                <li><a href='/layers?category=biota'>VIEW MAP DATA</a></li>
+              </ul>
               </td>
             </tr>
           </table>
@@ -386,8 +397,14 @@
               <td><p>{% trans "Continental Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
-              <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
+              <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
+              </td>
+              <td class='last'>
+                <ul class='map-links'>
+                  <li><a href='/maps?category=biota'>VIEW MAP</a></li>
+                  <li><a href='/layers?category=biota'>VIEW MAP DATA</a></li>
+                </ul>
               </td>
             </tr>
           </table>
