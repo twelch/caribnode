@@ -656,13 +656,13 @@ $.widget( "geonode.ReefAssessment", {
 
     //Style based on mpa status
     if (status == "Proposed") {
-      strokeColor = 'rgba(184,233,134,1.0)';
+      strokeColor = 'rgba(153,204,255,1.0)';
       strokeWidth = 1.5;
-      fillColor = 'rgba(184,233,134,0)';
+      fillColor = 'rgba(153,204,255,0)';
     } else if (status == "Designated") {
-      strokeColor = 'rgba(126,211,33,1.0)';
+      strokeColor = 'rgba(51,102,255,1.0)';
       strokeWidth = 1.5;
-      fillColor = 'rgba(126,211,33,0)';
+      fillColor = 'rgba(51,102,255,0)';
     }
 
     return [new ol.style.Style({
