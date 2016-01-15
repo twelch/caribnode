@@ -417,3 +417,19 @@ footer.footer form select {
 .text-center {
     text-align: center;
 }
+
+.caps {
+    text-transform: uppercase;
+}
+
+.width65 {
+    width: 65%;
+}
+
+.width25 {
+    width: 25%;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
+}

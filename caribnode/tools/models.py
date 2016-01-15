@@ -54,7 +54,7 @@ class Unit(models.Model):
 # a database table for each row with a unit, year, value, and grade at a minimum
 class Indicator(models.Model):
     INDICATOR_TYPES = (
-        ('BIO', 'Biophysical'),
+        ('BIO', 'Coral Reef Health'),
         ('SOC', 'Socioeconomic'),
         ('ME', 'Management Effectiveness'),
     )
