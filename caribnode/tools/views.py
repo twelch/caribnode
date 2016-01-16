@@ -20,7 +20,7 @@ def indicator_help(request, template="tools/indicator_help.html"):
     #indis = Indicator.objects.all()
     indi_groups = []
     for indi_type in Indicator.INDICATOR_TYPES:        
-        indis = Indicator.objects.filter(indi_type=indi_type[0])
+        indis = Indicator.objects.filter(indi_type=indi_type[0]).order_by('order')
         indi_group = {
             'name': indi_type[1],
             'indis': indis
