@@ -240,7 +240,7 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     #### Add Indicators ####
 
-    indiRows = Indicator.objects.filter(scales__name=scale)
+    indiRows = Indicator.objects.filter(scales__name=scale).order_by('order')
     indiDicts = []
     for row in indiRows:
         indiDict = model_to_dict(row)

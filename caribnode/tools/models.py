@@ -68,6 +68,9 @@ class Indicator(models.Model):
     year_field = models.CharField(max_length=100, default='YEAR')
     value_field = models.CharField(max_length=100, default='VALUE')
     grade_field = models.CharField(max_length=100, default='GRADE')
+    score_field = models.CharField(max_length=100, default='SCORE')
+    sample_field = models.CharField(max_length=100, default='SAMPLE_SIZE')
+    order = models.PositiveIntegerField(default=100)
 
     def __unicode__(self):
         return self.name

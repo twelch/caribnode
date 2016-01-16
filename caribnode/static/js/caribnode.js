@@ -963,9 +963,11 @@ $.widget( "geonode.IndiList", {
       if (indi.document.data.length == 0) {
         indi.display.year = "-";
         indi.display.value = "-";
+        indi.display.score = "-";
         indi.display.grade = null;
         indi.display.doc_link = null;
         indi.display.trend = null;
+        indi.display.sample = '-';
       } else {
         //Get most recent two years data
         var lastTwo = _.sortBy(indi.document.data, function(row){
@@ -990,20 +992,24 @@ $.widget( "geonode.IndiList", {
         //Handle each indicator, appending display object with prepped values
         indi.display.year = yearOne[indi.year_field];
         indi.display.value = yearOne[indi.value_field];
+        indi.display.score = yearOne[indi.score_field];
         indi.display.grade = yearOne[indi.grade_field];
+        indi.display.sample = yearOne[indi.sample_field];
         indi.display.doc_link = indi.document.link;
 
         if (yearTwo) {
           yearOneValue = yearOne[indi.value_field];
           yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
+          yearOneScore = yearOne[indi.score_field];
           yearTwoValue = yearTwo[indi.value_field];
           yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
+          yearTwoScore = yearTwo[indi.score_field];
           
-          if (yearOneValue) {
-            //If value then base trend on that
-            if (yearOneValue == yearTwoValue) {
+          if (yearOneScore) {
+            //If score then base trend on that
+            if (yearOneScore == yearTwoScore) {
               indi.display.trend = 'same';
-            } else if (yearOneValue >= yearTwoValue) {
+            } else if (yearOneScore >= yearTwoScore) {
               indi.display.trend = 'up';
             } else {
               indi.display.trend = 'down';              
@@ -1019,7 +1025,7 @@ $.widget( "geonode.IndiList", {
             }
           } else {
             indi.display.trend = false;
-          }
+          }          
         }
 
         if (indi.name == 'Average Coral Cover') {          
@@ -1082,6 +1088,7 @@ $.widget( "geonode.IndiSection", {
       if (indi.document.data.length == 0) {
         indi.display.year = "-";
         indi.display.value = "-";
+        indi.display.score = '-';
         indi.display.grade = null;
         indi.display.doc_link = null;
         indi.display.trend = null;
@@ -1109,20 +1116,23 @@ $.widget( "geonode.IndiSection", {
         //Handle each indicator, appending display object with prepped values
         indi.display.year = yearOne[indi.year_field];
         indi.display.value = yearOne[indi.value_field];
+        indi.display.score = yearOne[indi.score_field];
         indi.display.grade = yearOne[indi.grade_field];
         indi.display.doc_link = indi.document.link;
 
         if (yearTwo) {
           yearOneValue = yearOne[indi.value_field];
+          yearOneScore = yearOne[indi.score_field];
           yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
           yearTwoValue = yearTwo[indi.value_field];
+          yearTwoScore = yearTwo[indi.score_field];
           yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
           
-          if (yearOneValue) {
-            //If value then base trend on that
-            if (yearOneValue == yearTwoValue) {
+          if (yearOneScore) {
+            //If score then base trend on that
+            if (yearOneScore == yearTwoScore) {
               indi.display.trend = 'same';
-            } else if (yearOneValue >= yearTwoValue) {
+            } else if (yearOneScore >= yearTwoScore) {
               indi.display.trend = 'up';
             } else {
               indi.display.trend = 'down';              

@@ -533,11 +533,11 @@ p.indi-warn {
 }
 
 .grade-very-good {
-    background-color: #247729;    
+    background-color: #41AE48;    
 }
 
 .grade-good {
-    background-color: #7DBC3D;    
+    background-color: #A1DC65;    
 }
 
 .grade-fair {
@@ -545,7 +545,11 @@ p.indi-warn {
 }
 
 .grade-poor {
-    background-color: #EB8034;
+    background-color: #F6A213;
+}
+
+.grade-critical {
+    background-color: #F76A50;
 }
 
 .grade-definitely-yes {
@@ -638,8 +642,26 @@ a .doc-data-icon {
     min-width: 50px;  
 }
 
+@media only screen and (max-width : 979px) {
+    .indi-list-value div {
+        font-family: 'OswaldBold';
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+        min-width: 45px;  
+    }
+
+    .table-indi-list .indi-list-label div {
+        padding: 5px 0;
+        text-align: center;
+        width: 40px;
+        font-size: 12px;
+    }
+}
+
 .indi-list-icon {
     font-size: 22px;
+    color: #ccc;
 }
 
 .table-indi-list .grade div {

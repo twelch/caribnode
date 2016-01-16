@@ -304,7 +304,7 @@
             <div class="span12">
               <div class="BIO-indi-icon pull-left"></div>
               <div>
-                <p>{% trans "Coral reef health is measured using 4 main indicators including coral cover, fleshy microalgae, herbivorous fish, and commercial fish which are  then combined to produce the Coral Reef Health Index.  Each indicator is assessed at the site, country, and regional level and assigned a grade ranging from Very Good to Critical." %}</p>
+                <p>{% trans "Coral reef health is measured using five indicators: coral cover, fleshy microalgae, herbivorous fish, commercial fish, and the overall Coral Reef Health Index (RHI).  The RHI is the average of the other four indicators.  Each indicator is assessed at the country and regional level for a given year resulting in a score from 0 and 5 and a grade ranging from Very Good to Critical.  If an indicator has been assessed for at least two years then a trend is calculated for the two most recent years, otherwise it is listed as Not Available (N/A).  The number of sites sampled and source dataset are also provided for each indicator." %}</p>
               </div>
             </div>
           </section>
@@ -511,7 +511,7 @@ $( document ).ready(function() {
       <%= indi.name %>
     </div>
     <div class="indi-list-desc">
-      <p>Combined index of 4 indicators: coral cover, fleshy microalgae, herbivorous fish, and commercial fish.&nbsp; <a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">Learn More</a></p>
+      <p><%= indi.description %> &nbsp;&nbsp;<a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">Learn More</a></p>
     </div>
     <div class="indi-list-stats">
       <table class="table table-indi-list">
@@ -525,6 +525,8 @@ $( document ).ready(function() {
               <div class="grade-fair">
             <% } else if (indi.display.grade == 'Poor') { %>
               <div class="grade-poor">
+            <% } else if (indi.display.grade == 'Critical') { %>
+              <div class="grade-critical">
             <% } else if (indi.display.grade == 'Definitely Yes') { %>
               <div class="grade-definitely-yes">
             <% } else if (indi.display.grade == 'Mostly Yes') { %>
@@ -543,6 +545,9 @@ $( document ).ready(function() {
             <div><%= indi.display.value %></div>
           </td>
           <td>
+            <div><%= indi.display.score %></div>
+          </td>
+          <td>
             <div>
               <% if (indi.display.trend == 'up') { %>
                     <i class="icon-upload trend-icon"></i>
@@ -556,7 +561,7 @@ $( document ).ready(function() {
             </div>
           </td>
           <td>
-            <div>N/A</div>
+            <div><%= indi.display.sample %></div>
           </td>
           <td>
             <div>
@@ -577,12 +582,15 @@ $( document ).ready(function() {
             <div>Value</div>
           </td>
           <td>
+            <div>Score</div>
+          </td>
+          <td>
             <div>
               Trend
             </div>
           </td>
           <td>
-            <div>Sampled</div>
+            <div>Sites</div>
           </td>
           <td>
             <div>Source</div>
@@ -604,7 +612,7 @@ $( document ).ready(function() {
         <div class="span12">
           <div class="<%= indi_type %>-indi-icon pull-left"></div>
           <div>
-            <p>{% trans "Coral reef health is measured using 4 main indicators including coral cover, fleshy microalgae, herbivorous fish, and commercial fish which are  then combined to produce the Coral Reef Health Index.  Each indicator is assessed at the site, country, and regional level and assigned a grade ranging from Very Good to Critical." %}</p>
+            <p>{% trans "Coral reef health is measured using four indicators: coral cover, fleshy microalgae, herbivorous fish, and commercial fish.  The Coral Reef Health Index is the average of these four indicators.  Each indicator is assessed at the site, country, and regional level resulting in a score from 0 and 5 and a grade from Very Good to Critical." %}</p>
           </div>
 
           <section class="indi-section">        
