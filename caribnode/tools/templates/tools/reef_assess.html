@@ -316,7 +316,13 @@
           <div class="span6 section-right">
 
             <div class='margin-bottom-15'>
-              <div class="pull-left width65"><p>{% trans "In the map below each chart is a combination of all 5 indicators.  The 4 main indicators are around the outside and the Reef Health Index value is in the middle representing the average value." %}</p></div>
+              <div class="pull-left width65"><p>
+              {% if scale.name == "region" %}
+                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the regional and national level." %}
+              {% elif scale.name == 'country' %}
+                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the national and subregion level." %}
+              {% endif %}
+              </p></div>
               <div class='text-center'>
                 <img src='/static/img/simon-legend.png' />
               </div>
@@ -325,14 +331,8 @@
             <div class="legend">
               <table>
                 <tr>        
-                  <td><p>{% trans "Coral Reef" %}</p>
-                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=coralreef_country&SCALE=8735642.90291195"/>
-                  </td>
-                  <td><p>{% trans "Mangrove" %}</p>
-                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=mangrove_country&SCALE=8735642.90291195"/>
-                  </td>
-                  <td><p>{% trans "Seagrass" %}</p>
-                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
+                  <td><p>{% trans "Grade" %}</p>
+                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=:sub_merge_4326&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
                   </td>
                   <td class='last'>
                   <ul class='map-links'>

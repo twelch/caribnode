@@ -443,23 +443,7 @@ $.widget( "geonode.ReefAssessment", {
     this.habMap.addLayer(new ol.layer.Tile({
       source: new ol.source.TileWMS({
         url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': 'mangrove_country', 'STYLES': 'mangrove_country', 'TILED': true},
-        serverType: 'geoserver'
-      })
-    }));
-
-    this.habMap.addLayer(new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-        url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': 'seagrass_country', 'STYLES': 'seagrass_country', 'TILED': true},
-        serverType: 'geoserver'
-      })
-    }));
-
-    this.habMap.addLayer(new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-        url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': 'coralreef_country', 'STYLES': 'coralreef_country', 'TILED': true},
+        params: {'LAYERS': 'sub_merge_4326', 'STYLES': 'sub_merge_4326', 'TILED': true},
         serverType: 'geoserver'
       })
     }));
