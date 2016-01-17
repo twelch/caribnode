@@ -212,11 +212,13 @@ $.widget( "geonode.ReefAssessment", {
       });
 
       //Render new section for current type
+      /*
       $( "<div></div>" ).appendTo( "#indi-section" ).IndiSection({
         'indi_type': curType.indi_type,
         'indi_type_display': curType.indi_type_display,
         'indis': indiSubset
       });
+      */
 
       //Render new list for current indicator type
       $( "<div></div>" ).appendTo( "#indi-"+curType.indi_type+"-list" ).IndiList({

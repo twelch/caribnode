@@ -473,6 +473,50 @@
     </div>
   {% endif %}
 
+<!---- SOCIOECONOMIC ---->
+
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>SOCIOECONOMIC</h3>
+
+    <div class="row-fluid section-body">
+      <div class="span12">
+        <div class="row-fluid">
+          <section class="indi-top">
+            <div class="span12">
+              <div class="SOC-indi-icon pull-left"></div>
+              <div>
+                <p>Socioeconomic indicators assess the economic and social aspects of fisheries and the interaction with the pursuit of sustainability.</p>
+                <p class="unavailable">These indicators have not yet been collected.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  {% endif %}    
+
+<!---- MANAGEMENT EFFECTIVENESS ---->
+
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
+
+    <div class="row-fluid section-body">
+      <div class="span12">
+        <div class="row-fluid">
+          <section class="indi-top">
+            <div class="span12">
+              <div class="ME-indi-icon pull-left"></div>
+              <div>
+                <p>The declaration of a managed area does not always result in adequate protection.  It is important to evaluate the effectiveness of management.</p>
+                <p class="unavailable">These indicators have not yet been collected.</p>              
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  {% endif %}   
+
 <!-------- INDICATORS SECTION -------->
   <div class="row-fluid">
     <div id="indi-section" class="span12"></div>

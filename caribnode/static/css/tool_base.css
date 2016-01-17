@@ -444,6 +444,12 @@ p.indi-warn {
     max-width: 500px;
 }
 
+p.unavailable {
+    font-size: 18px;
+    color: #999;
+    text-transform: uppercase;
+}
+
 .BIO-indi-icon {
     background: url('/static/img/icon_2027_fish_white.png') no-repeat center;
     height: 50px;
