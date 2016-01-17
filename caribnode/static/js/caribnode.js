@@ -1014,9 +1014,9 @@ $.widget( "geonode.IndiList", {
           }          
         }
 
-        if (indi.name == 'Average Coral Cover') {          
+        if (indi.name == 'Coral Cover') {          
           indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
-        } else if (indi.name == 'Key Commercial Species') {
+        } else if (indi.name == 'Herbivorous Fish' || indi.name == 'Commercial Fish') {
           indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
         }        
       }
