@@ -214,6 +214,12 @@ td.small-num {
     border-right: none;
 }
 
+@media only screen and (max-width : 979px) {
+    .legend td {
+        display: inline-block; /*Allow column to wrap */
+    }
+}
+
 .map-links {
     list-style-type: none;
     margin: 0;

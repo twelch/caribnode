@@ -414,6 +414,10 @@ footer.footer form select {
 
 /**** HELPER CLASSES ****/
 
+.overflow {
+    overflow: auto;
+}
+
 .text-center {
     text-align: center;
 }
