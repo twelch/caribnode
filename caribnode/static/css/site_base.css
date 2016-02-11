@@ -110,27 +110,57 @@ nav.main-nav ul li a:hover {
     text-decoration: none;
 }
 
-.welcome {
-    background-color: #1588a2;
+.banner {
+    background-color: #999;
+    background-image: url("/static/img/reef-background.png");
     margin-top: 20px;
-    min-height: 180px !important;
+    min-height: 300px !important;
 }
 
-.welcome .welcome-header {
+.banner .banner-header {
     font-family: 'FrancoisOne';
     font-size: 16px;
-    text-shadow: #333 1px 1px 1px;
+    text-shadow: #111 1px 1px 1px;
     color: white;
     padding: 20px 0px 0px 25px;
 }
 
-.welcome .welcome-text {
+.banner .banner-text {
     font-family: 'Lato';
-    font-size: 32px;
-    text-shadow: #333 1px 1px 1px;
+    font-size: 44px;
+    text-shadow: #111 1.25px 1.25px 1.25px;
     color: white;
     padding: 15px 0px 10px 25px;
-    line-height: 40px;
+    line-height: 50px;
+}
+
+.banner .slide {
+    display: none;
+}
+
+@media only screen and (max-width : 979px) {
+    .banner .banner-text {
+        font-family: 'Lato';
+        font-size: 36px;
+        text-shadow: #111 1px 1px 1px;
+        color: white;
+        padding: 15px 0px 10px 25px;
+        line-height: 40px;
+    }
+}
+
+.slide img {
+    margin: 20px 0px 20px 0px;
+    border: 1px solid white;
+    max-width: 250px;
+    max-height: 220px;
+}
+
+.slide a {
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 200;
 }
 
 .searchbar {
@@ -380,4 +410,30 @@ footer.footer form label {
 
 footer.footer form select {
     font-size: 12px !important;
+}
+
+/**** HELPER CLASSES ****/
+
+.overflow {
+    overflow: auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.caps {
+    text-transform: uppercase;
+}
+
+.width65 {
+    width: 65%;
+}
+
+.width25 {
+    width: 25%;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
 }

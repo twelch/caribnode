@@ -69,7 +69,7 @@
     <h3 class='section-header'>{% trans "Overview" %}</h3>
     <div class="row-fluid section-body">
 
-      <div class="span6 mpa-left">
+      <div class="span6 section-left">
         <table class="stats-table">
           <colgroup>
              <col class="stat-col col1">
@@ -160,7 +160,7 @@
     </div>
 
       </div>
-      <div class="span6 mpa-right">
+      <div class="span6 section-right">
         <div id="mpa-map">
         </div>
         <div class="legend">
@@ -191,7 +191,7 @@
     <h3 class='section-header'>{% trans "KEY HABITATS" %}</h3>
     <div class="row-fluid section-body">
 
-      <div class="span6 mpa-left">
+      <div class="span6 section-left">
         <table class="stats-table">
           <colgroup>
              <col class="stat-col col1">
@@ -263,7 +263,7 @@
         </table>
 
       </div>
-      <div class="span6 mpa-right">
+      <div class="span6 section-right">
         <div id="hab-map">
         </div>
         <div class="legend">
@@ -281,7 +281,7 @@
               <td class='last'>
               <ul class='map-links'>
                 <li><a href='/maps?category=biota'>VIEW MAP</a></li>
-                <li><a href='/layers?category=biota'>VIEW MAP DATA</a></li>
+                <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
               </ul>
               </td>
             </tr>
@@ -292,13 +292,72 @@
     </div>
   {% endif %}
 
+<!-------- CORAL REEF HEALTH SECTION -------->
+
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>CORAL REEF HEALTH</h3>
+
+    <div class="row-fluid section-body">
+      <div class="span12">
+        <div class="row-fluid">
+          <section class="indi-top">
+            <div class="span12">
+              <div class="BIO-indi-icon pull-left"></div>
+              <div>
+                <p>{% trans "Coral reef health is measured using five indicators: coral cover, fleshy microalgae, herbivorous fish, commercial fish, and the overall Coral Reef Health Index (RHI).  The RHI is the average of the other four indicators.  Each indicator is assessed at the country and regional level for a given year resulting in a score from 0 and 5 and a grade ranging from Very Good to Critical.  If an indicator has been assessed for at least two years then a trend is calculated for the two most recent years, otherwise it is listed as Not Available (N/A).  The number of sites sampled and source dataset are also provided for each indicator." %}</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="row-fluid">
+          <div id="indi-BIO-list" class="span6 section-left"></div>
+
+          <div class="span6 section-right">
+
+            <div class='margin-bottom-15 overflow'>
+              <div class="pull-left width65"><p>
+              {% if scale.name == "region" %}
+                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the regional and national level." %}
+              {% elif scale.name == 'country' %}
+                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the national and subregion level." %}
+              {% endif %}
+              </p></div>
+              <div class='text-center'>
+                <img src='/static/img/simon-legend.png' />
+              </div>
+            </div>
+            <div id="BIO-map"></div>
+            <div class="legend">
+              <table>
+                <tr>        
+                  <td><p>{% trans "Grade" %}</p>
+                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=:sub_merge_4326&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+                  </td>
+                  <td class='last'>
+                  <ul class='map-links'>
+                    <li><a href='/maps?category=biota'>VIEW MAP</a></li>
+                    <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
+                  </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  {% endif %}    
+
 <!-------- MARINE MANAGED AREAS SECTION -------->
 
   {% if scale.name == "region" or scale.name == "country" %}
     <h3 class='section-header'>{% trans "MARINE MANAGED AREAS" %}</h3>
     <div class="row-fluid section-body">
 
-      <div class="span6 mpa-left">
+      <div class="span6 section-left">
         <table class="stats-table">
           <colgroup>
              <col class="stat-col col1">
@@ -379,13 +438,13 @@
           <div class='span6'>
             <div class='donut-header'>{% trans "Shelf Managed" %}</div>
             <div id="shelf-donut"></div>
-            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of continental shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
+            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of marine shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
           </div>
         </div>        
         {% endif %}
 
       </div>
-      <div class="span6 mpa-right">
+      <div class="span6 section-right">
         <div id="mpa-map">
         </div>
         <div class="legend">
@@ -394,7 +453,7 @@
               <td><p>{% trans "Managed Area Boundary" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>{% trans "Continental Shelf" %}</p>
+              <td><p>{% trans "Marine Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
               <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
@@ -403,7 +462,7 @@
               <td class='last'>
                 <ul class='map-links'>
                   <li><a href='/maps?category=boundaries'>VIEW MAP</a></li>
-                  <li><a href='/layers?category=boundaries'>VIEW MAP DATA</a></li>
+                  <li><a href='/layers?category=boundaries'>VIEW LAYERS</a></li>
                 </ul>
               </td>
             </tr>
@@ -414,36 +473,55 @@
     </div>
   {% endif %}
 
-<!-------- INDICATORS SECTION -------->
+<!---- SOCIOECONOMIC ---->
 
-    <h3 class='section-header'>{{ scale.alt_name|upper }} {% trans "INDICATORS" %}</h3>
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>SOCIOECONOMIC</h3>
 
-    <div class="section-body">
-
-      <div class="row-fluid">
-
-      <div id="indi-section" class="span12">
-
-        <section class="indi-top">                    
-          <div class="span3 pull-left">
-            <div class="indi-icon pull-left"></div>
-            <div>
-              <div class="big-indi-num">{{indis|length}}</div>
-              <div class="big-indi-label">{% trans "INDICATORS" %}</div>
-            </div>              
-          </div>
-          <div class="span9">
-            <p>{% trans "These indicators characterize the status and trends of the marine environment as well as the socio-economic and management conditions around it.  Only the most recent available year is shown." %}</p>
-
-            <p class="indi-warn">{% trans "THIS IS SAMPLE INDICATOR DATA FOR DEMONSTRATION PURPOSES ONLY. DO NOT USE OR REPUBLISH." %}</p>
-          </div>        
-        </section>
-
+    <div class="row-fluid section-body">
+      <div class="span12">
+        <div class="row-fluid">
+          <section class="indi-top">
+            <div class="span12">
+              <div class="SOC-indi-icon pull-left"></div>
+              <div>
+                <p>Socioeconomic indicators assess the economic and social aspects of fisheries and the interaction with the pursuit of sustainability.</p>
+                <p class="unavailable">These indicators have not yet been collected.</p>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-
     </div>
+  {% endif %}    
 
-  </div>      
+<!---- MANAGEMENT EFFECTIVENESS ---->
+
+  {% if scale.name == "region" or scale.name == "country" %}
+    <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
+
+    <div class="row-fluid section-body">
+      <div class="span12">
+        <div class="row-fluid">
+          <section class="indi-top">
+            <div class="span12">
+              <div class="ME-indi-icon pull-left"></div>
+              <div>
+                <p>The declaration of a managed area does not always result in adequate protection.  It is important to evaluate the effectiveness of management.</p>
+                <p class="unavailable">These indicators have not yet been collected.</p>              
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  {% endif %}   
+
+<!-------- INDICATORS SECTION -------->
+  <div class="row-fluid">
+    <div id="indi-section" class="span12"></div>
+  </div>
+
 {% endblock %}
 
 {% block extra_script %}
@@ -467,86 +545,198 @@ $( document ).ready(function() {
 });
 </script>
 
-<script type="text/template" class="indiSection">
-        <section>
-          <div class="indi-header">
-            <div class="<%= indi_type %>-indi-icon pull-left"></div>                
-            <div class="indi-header-title">
-              <%= indi_type_display %>
+<script type="text/template" class="indiList">
+  <div class="indi-list-header caps">
+    Indicators
+  </div>
+  <% _.each(indis, function(indi) { %>
+  <div class="indi-list-item">
+    <div class="indi-list-title">
+      <%= indi.name %>
+    </div>
+    <div class="indi-list-desc">
+      <p><%= indi.description %> &nbsp;&nbsp;<a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">Learn More</a></p>
+    </div>
+    <div class="indi-list-stats">
+      <table class="table table-indi-list">
+        <tr class='indi-list-value'>
+          <td class='grade'>
+            <% if (indi.display.grade == 'Very Good') { %>
+                <div class="grade-very-good">
+            <% } else if (indi.display.grade == 'Good') { %>
+              <div class="grade-good">
+            <% } else if (indi.display.grade == 'Fair') { %>
+              <div class="grade-fair">
+            <% } else if (indi.display.grade == 'Poor') { %>
+              <div class="grade-poor">
+            <% } else if (indi.display.grade == 'Critical') { %>
+              <div class="grade-critical">
+            <% } else if (indi.display.grade == 'Definitely Yes') { %>
+              <div class="grade-definitely-yes">
+            <% } else if (indi.display.grade == 'Mostly Yes') { %>
+              <div class="grade-mostly-yes">
+            <% } else if (indi.display.grade == 'Mostly No') { %>
+              <div class="grade-mostly-no">
+            <% } else if (indi.display.grade == 'Definitely No') { %>
+              <div class="grade-definitely-no">
+            <% } %>                
+            <%= indi.display.grade %></div>
+          </td>
+          <td>
+            <div><%= indi.display.year %></div>
+          </td>
+          <td>
+            <div><%= indi.display.value %></div>
+          </td>
+          <td>
+            <div><%= indi.display.score %></div>
+          </td>
+          <td>
+            <div>
+              <% if (indi.display.trend == 'up') { %>
+                    <i class="icon-upload trend-icon"></i>
+              <% } else if (indi.display.trend == 'down') { %>
+                <i class="icon-download trend-icon"></i>
+              <% } else if (indi.display.trend == 'same') { %>
+                <i class="icon-circle trend-icon-small"></i>
+              <% } else { %>
+                N/A
+              <% } %>
             </div>
+          </td>
+          <td>
+            <div><%= indi.display.sample %></div>
+          </td>
+          <td>
+            <div>
+              <% if (indi.display.doc_link) { %>
+                <a href="<%= indi.display.doc_link %>"><i class="icon-table indi-list-icon"></i></a>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+        <tr class='indi-list-label'>
+          <td>
+            <div>Grade</div>
+          </td>
+          <td>
+            <div>Year</div>
+          </td>
+          <td>
+            <div>Value</div>
+          </td>
+          <td>
+            <div>Score</div>
+          </td>
+          <td>
+            <div>
+              Trend
+            </div>
+          </td>
+          <td>
+            <div>Sites</div>
+          </td>
+          <td>
+            <div>Source</div>
+          </td>                  
+        </tr>
+      </table>
+    </div>
+  </div>
+  <% }); %>
+</script>
+
+<script type="text/template" class="indiSection">
+  <!-- Template rendering one large section containing one table for each indicator group -->
+  <h3 class='section-header'><%= indi_type_display %></h3>
+  <div class="section-body">
+    <div class="row-fluid">
+
+      <section class="indi-top">
+        <div class="span12">
+          <div class="<%= indi_type %>-indi-icon pull-left"></div>
+          <div>
+            <p>{% trans "Coral reef health is measured using four indicators: coral cover, fleshy microalgae, herbivorous fish, and commercial fish.  The Coral Reef Health Index is the average of these four indicators.  Each indicator is assessed at the site, country, and regional level resulting in a score from 0 and 5 and a grade from Very Good to Critical." %}</p>
           </div>
-        </section>
 
-        <section class="indi-section">        
-          <table class="table table-hover table-indi">
-            <thead>
-              <tr>
-                <th class="name">{% trans "Name of Indicator" %}</th>
-                <th class="year">{% trans "Year" %}</th>
-                <th class="grade">{% trans "Grade" %}</th>
-                <th class="trend">{% trans "Trend" %}</th>
-                <th class="value">{% trans "Value" %}</th>
-                <th class="data">{% trans "Data" %}</th>
-              </tr>
-            </thead>
-            <colgroup>
-               <col class="indi-col col1">
-               <col class="indi-col col2">
-               <col class="indi-col col3">
-               <col class="indi-col col4">
-               <col class="indi-col col5">
-               <col class="indi-col col6">
-            </colgroup>
-            <tbody>
-              <% _.each(indis, function(indi) { %>
-              <tr>
-                <td class="name"><%= indi.name %></td>
-                <td class="year"><%= indi.display.year %></td>
+          <section class="indi-section">        
+            <table class="table table-hover table-indi">
+              <thead>
+                <tr>
+                  <th class="name">{% trans "Name of Indicator" %}</th>
+                  <th class="year">{% trans "Year" %}</th>
+                  <th class="grade">{% trans "Grade" %}</th>
+                  <th class="trend">{% trans "Trend" %}</th>
+                  <th class="value">{% trans "Value" %}</th>
+                  <th class="data">{% trans "Data" %}</th>
+                </tr>
+              </thead>
+              <colgroup>
+                 <col class="indi-col col1">
+                 <col class="indi-col col2">
+                 <col class="indi-col col3">
+                 <col class="indi-col col4">
+                 <col class="indi-col col5">
+                 <col class="indi-col col6">
+              </colgroup>
+              <tbody>
+                <% _.each(indis, function(indi) { %>
+                <tr>
+                  <td class="name"><%= indi.name %></td>
+                  <td class="year"><%= indi.display.year %></td>
 
-                <td class="grade">
-                <% if (indi.display.grade == 'Very Good') { %>
-                  <div class="grade-very-good">
-                <% } else if (indi.display.grade == 'Good') { %>
-                  <div class="grade-good">
-                <% } else if (indi.display.grade == 'Fair') { %>
-                  <div class="grade-fair">
-                <% } else if (indi.display.grade == 'Poor') { %>
-                  <div class="grade-poor">
-                <% } else if (indi.display.grade == 'Definitely Yes') { %>
-                  <div class="grade-definitely-yes">
-                <% } else if (indi.display.grade == 'Mostly Yes') { %>
-                  <div class="grade-mostly-yes">
-                <% } else if (indi.display.grade == 'Mostly No') { %>
-                  <div class="grade-mostly-no">
-                <% } else if (indi.display.grade == 'Definitely No') { %>
-                  <div class="grade-definitely-no">
-                <% } %>                
-                <%= indi.display.grade %></div></td>        
+                  <td class="grade">
+                  <% if (indi.display.grade == 'Very Good') { %>
+                    <div class="grade-very-good">
+                  <% } else if (indi.display.grade == 'Good') { %>
+                    <div class="grade-good">
+                  <% } else if (indi.display.grade == 'Fair') { %>
+                    <div class="grade-fair">
+                  <% } else if (indi.display.grade == 'Poor') { %>
+                    <div class="grade-poor">
+                  <% } else if (indi.display.grade == 'Definitely Yes') { %>
+                    <div class="grade-definitely-yes">
+                  <% } else if (indi.display.grade == 'Mostly Yes') { %>
+                    <div class="grade-mostly-yes">
+                  <% } else if (indi.display.grade == 'Mostly No') { %>
+                    <div class="grade-mostly-no">
+                  <% } else if (indi.display.grade == 'Definitely No') { %>
+                    <div class="grade-definitely-no">
+                  <% } %>                
+                  <%= indi.display.grade %></div></td>        
 
-                <td class="trend">
-                <% if (indi.display.trend == 'up') { %>
-                  <i class="icon-upload trend-icon">
-                <% } else if (indi.display.trend == 'down') { %>
-                  <i class="icon-download trend-icon">
-                <% } else if (indi.display.trend == 'same') { %>
-                  <i class="icon-circle trend-icon-small">
-                <% } else { %>
-                  N/A
-                <% } %>
-                </td>
+                  <td class="trend">
+                  <% if (indi.display.trend == 'up') { %>
+                    <i class="icon-upload trend-icon">
+                  <% } else if (indi.display.trend == 'down') { %>
+                    <i class="icon-download trend-icon">
+                  <% } else if (indi.display.trend == 'same') { %>
+                    <i class="icon-circle trend-icon-small">
+                  <% } else { %>
+                    N/A
+                  <% } %>
+                  </td>
 
-                <td class="value"><%= indi.display.value %></td>
-                <% if (indi.display.doc_link) { %>
-                  <td class="data"><a href="<%= indi.display.doc_link %>"><i class="icon-table doc-data-icon"></a></td>
-                <% } else { %>
-                  <td></td>
-                <% } %>
+                  <td class="value"><%= indi.display.value %></td>
+                  <% if (indi.display.doc_link) { %>
+                    <td class="data"><a href="<%= indi.display.doc_link %>"><i class="icon-table doc-data-icon"></a></td>
+                  <% } else { %>
+                    <td></td>
+                  <% } %>
 
-              </tr>              
-              <% }); %>              
-            </tbody>
-          </table>
-          <p class="pull-right indi-learn-link"><a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">LEARN MORE ABOUT EACH INDICATOR</a></p>
-        </section>                              
+                </tr>              
+                <% }); %>              
+              </tbody>
+            </table>
+            <p class="pull-right indi-learn-link"><a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">LEARN MORE ABOUT EACH INDICATOR</a></p>
+          </section>
+
+    </div>
+  </div>
+
+      
+
+        </div>      
+      </section>                                            
 </script>
 {% endblock extra_script %}

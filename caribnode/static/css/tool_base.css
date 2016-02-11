@@ -94,6 +94,7 @@ h3.section-header {
 
 .stats-table:nth-child(n+2) {
     margin-top: 20px;
+    width: 100%;
 }
 
 .stat-col {
@@ -213,6 +214,12 @@ td.small-num {
     border-right: none;
 }
 
+@media only screen and (max-width : 979px) {
+    .legend td {
+        display: inline-block; /*Allow column to wrap */
+    }
+}
+
 .map-links {
     list-style-type: none;
     margin: 0;
@@ -285,7 +292,21 @@ td.small-num {
     display: none !important;
 }
 
+/**** SECTION ****/
+
+.section-left {
+    padding: 20px 0px 20px 20px;
+}
+
+.section-right {
+    padding: 20px 20px 20px 0px;
+}
+
 /**** Habitat ****/
+
+#hab-map {
+    height: 480px;
+}
 
 .coral-icon {
     background: url('/static/img/icon_38430_coral.png') no-repeat center;
@@ -318,18 +339,6 @@ td.small-num {
 }
 
 /**** MPA ****/
-
-.mpa-left {
-    padding: 20px 0px 20px 20px;
-}
-
-.mpa-right {
-    padding: 20px 20px 20px 0px;
-}
-
-#hab-map {
-    height: 480px;
-}
 
 #mpa-map {
     height: 510px;
@@ -379,6 +388,12 @@ td.small-num {
     text-align: center;
 }
 
+/**** Coral Reef Health ****/
+
+#BIO-map {
+    height: 580px;
+}
+
 /******** INDICATORS ********/
 
 .indi-top {
@@ -415,17 +430,6 @@ td.small-num {
     vertical-align: top;
 }
 
-.indi-icon {
-    background: url('/static/img/icon_20073_indicator.png') no-repeat center;
-    height: 50px;
-    width: 50px;  
-    background-color: #00CCAA;
-    border-radius: 5px;
-    webkit-border-radius: 5px;
-    moz-border-radius: 5px;   
-    margin: 0px 10px 10px 0px;
-}
-
 .indi-header-title {
     color: #666666;
     font-family: 'FrancoisOne';
@@ -440,38 +444,46 @@ p.indi-warn {
     max-width: 500px;
 }
 
+p.unavailable {
+    font-size: 18px;
+    color: #999;
+    text-transform: uppercase;
+}
+
 .BIO-indi-icon {
-    background: url('/static/img/icon_2027_fish.png') no-repeat center;
-    height: 45px;
-    width: 45px;  
-    border-radius: 50px;
-    border: 1px solid #cccccc;
-    webkit-border-radius: 50px;
-    moz-border-radius: 50px;   
-    margin: 0px 20px 10px 0px;
+    background: url('/static/img/icon_2027_fish_white.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #00CCAA;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;   
+    margin: 7px 20px 10px 0px;
 }
 
 .SOC-indi-icon {
-    background: url('/static/img/icon_4272_socio.png') no-repeat center;
-    height: 45px;
-    width: 45px;  
-    border-radius: 50px;
-    border: 1px solid #cccccc;
-    webkit-border-radius: 50px;
-    moz-border-radius: 50px;   
-    margin: 0px 20px 10px 0px;
+    background: url('/static/img/icon_4272_socio_white.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #00CCAA;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;   
+    margin: 7px 20px 10px 0px;
 }
 
 .ME-indi-icon {
-    background: url('/static/img/icon_7728_scale.png') no-repeat center;
-    height: 45px;
-    width: 45px;  
-    border-radius: 50px;
-    border: 1px solid #cccccc;
-    webkit-border-radius: 50px;
-    moz-border-radius: 50px;   
-    margin: 0px 20px 10px 0px;
+    background: url('/static/img/icon_7728_scale_white.png') no-repeat center;
+    height: 50px;
+    width: 50px;  
+    background-color: #00CCAA;
+    border-radius: 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;   
+    margin: 7px 20px 10px 0px;
 }
+
+/* Indi Table */
 
 .indi-col {
     column-span: 1;
@@ -522,7 +534,7 @@ p.indi-warn {
     line-height: 24px;
 }
 
-.grade div {
+.table-indi .grade div {
     font-size: 14px;
     font-family: 'Lato-Bold'; 
     height: 25px;
@@ -533,11 +545,11 @@ p.indi-warn {
 }
 
 .grade-very-good {
-    background-color: #247729;    
+    background-color: #41AE48;    
 }
 
 .grade-good {
-    background-color: #7DBC3D;    
+    background-color: #A1DC65;    
 }
 
 .grade-fair {
@@ -545,7 +557,11 @@ p.indi-warn {
 }
 
 .grade-poor {
-    background-color: #EB8034;
+    background-color: #F6A213;
+}
+
+.grade-critical {
+    background-color: #F76A50;
 }
 
 .grade-definitely-yes {
@@ -564,17 +580,14 @@ p.indi-warn {
     background-color: #EB8034;
 }
 
-.indi-section .table thead {
-    background-color: #999999;
-    color: white;
-}
-
 .trend-icon {
     font-size: 26px;
+    vertical-align: middle;
 }
 
 .trend-icon-small {
     font-size: 12px;
+    vertical-align: middle;
 }
 
 .doc-data-icon {
@@ -584,4 +597,89 @@ p.indi-warn {
 a .doc-data-icon {
     text-decoration: none;
     color: #d8d8d8;
+}
+
+/* Indi List */
+
+.indi-list-header {
+    background-color: #999999;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.indi-list-item {
+    padding-left: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.indi-list-title {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.indi-list-desc p {
+    font-size: 14px;
+}
+
+.table-indi-list {
+    margin: 15px 0px 10px 0px;
+}
+
+.table-indi-list td {
+    border: 0;
+    padding: 0;
+}
+
+.table-indi-list td div {
+    margin: 0 auto;
+}
+
+.indi-section .table thead {
+    background-color: #999999;
+    color: white;
+}
+
+.table-indi-list .indi-list-label div {
+    padding: 5px 0;
+    text-align: center;
+    width: 50px;
+}
+
+.indi-list-value div {
+    font-family: 'OswaldBold';
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    min-width: 50px;  
+}
+
+@media only screen and (max-width : 979px) {
+    .indi-list-value div {
+        font-family: 'OswaldBold';
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+        min-width: 45px;  
+    }
+
+    .table-indi-list .indi-list-label div {
+        padding: 5px 0;
+        text-align: center;
+        width: 40px;
+        font-size: 12px;
+    }
+}
+
+.indi-list-icon {
+    font-size: 22px;
+    color: #ccc;
+}
+
+.table-indi-list .grade div {
+    font-size: 13px;
+    font-weight: bold;
+    font-family: 'Lato'; 
+    max-width: 64px;
+    padding-top: 2px;
 }

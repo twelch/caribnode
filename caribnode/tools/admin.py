@@ -29,7 +29,7 @@ class IndiGradeInline(admin.TabularInline):
     model = IndiGrade
 
 class IndicatorAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'myscales', 'indi_type', 'document', 'description', 'unit_field', 'year_field', 'value_field', 'grade_field')
+    list_display = ('id', 'name', 'order', 'myscales', 'indi_type', 'document', 'description', 'unit_field', 'year_field', 'value_field', 'score_field', 'grade_field', 'sample_field')
     search_fields = ('name','description')
     inlines = [
         IndiGradeInline,

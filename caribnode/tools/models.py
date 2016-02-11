@@ -54,7 +54,7 @@ class Unit(models.Model):
 # a database table for each row with a unit, year, value, and grade at a minimum
 class Indicator(models.Model):
     INDICATOR_TYPES = (
-        ('BIO', 'Biophysical'),
+        ('BIO', 'Coral Reef Health'),
         ('SOC', 'Socioeconomic'),
         ('ME', 'Management Effectiveness'),
     )
@@ -68,12 +68,15 @@ class Indicator(models.Model):
     year_field = models.CharField(max_length=100, default='YEAR')
     value_field = models.CharField(max_length=100, default='VALUE')
     grade_field = models.CharField(max_length=100, default='GRADE')
+    score_field = models.CharField(max_length=100, default='SCORE')
+    sample_field = models.CharField(max_length=100, default='SAMPLE_SIZE')
+    order = models.PositiveIntegerField(default=100)
 
     def __unicode__(self):
         return self.name
 
     def mygrades(self):
-        return IndiGrade.objects.filter(indicator=self)
+        return IndiGrade.objects.filter(indicator=self).order_by('grade__order')
 
     def myscales(self):
         scale_names = ''

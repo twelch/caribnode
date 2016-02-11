@@ -31,12 +31,13 @@ $.widget( "geonode.ReefAssessment", {
 
       //Load for all views
       this._boilerplate();
-      this._loadIndiData();
+      this._loadIndisData();
 
       //Selective loading depending on view
       if (config.scale.name == 'region') {      
         this._loadCountryMap('country-map');
         this._loadHabitatMap('hab-map');
+        this._loadBioMap('BIO-map');
         this._loadMpaMap('mpa-map');
         
         var clickZoomConfig = null;
@@ -60,7 +61,8 @@ $.widget( "geonode.ReefAssessment", {
       
       if (config.scale.name == 'country') {
         this._loadCountryMap('country-map');
-        this._loadHabitatMap('hab-map');        
+        this._loadHabitatMap('hab-map');
+        this._loadBioMap('BIO-map');
         this._loadMpaMap('mpa-map');
 
         var clickZoomConfig = null;
@@ -132,7 +134,7 @@ $.widget( "geonode.ReefAssessment", {
   /**
     * Fetch CSV indicators and trigger render when done
     */
-  _loadIndiData: function() {
+  _loadIndisData: function() {
     var getArray = [];
     _.each(config.indis, function(el, index, list){
       //Create deferred object
@@ -210,7 +212,16 @@ $.widget( "geonode.ReefAssessment", {
       });
 
       //Render new section for current type
+      /*
       $( "<div></div>" ).appendTo( "#indi-section" ).IndiSection({
+        'indi_type': curType.indi_type,
+        'indi_type_display': curType.indi_type_display,
+        'indis': indiSubset
+      });
+      */
+
+      //Render new list for current indicator type
+      $( "<div></div>" ).appendTo( "#indi-"+curType.indi_type+"-list" ).IndiList({
         'indi_type': curType.indi_type,
         'indi_type_display': curType.indi_type_display,
         'indis': indiSubset
@@ -336,6 +347,105 @@ $.widget( "geonode.ReefAssessment", {
       source: new ol.source.TileWMS({
         url: config.layers.shelf.links.WMS,
         params: {'LAYERS': 'coralreef_country', 'STYLES': 'coralreef_country', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** EEZ Layer ********/
+
+    //Get base URL and switch to web mercator projection
+    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
+    //Switch from JSON to JSONP
+    eezUrl = eezUrl.replace('json','text/javascript');
+    //Filter to include only current country
+    eezUrl += '&format_options=callback:loadEEZFeatures';
+    if (config.scale.name == 'country') {
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
+    } else if (config.scale.name == 'mpa') {
+      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
+    }
+
+    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+    function habEEZLoad(extent, resolution, projection) {
+      $.ajax({
+        url: eezUrl,
+        dataType: 'jsonp',
+        jsonp: null,
+        jsonpCallback: 'loadEEZFeatures',
+        context: this
+      });
+    }
+
+    //OL3 ServerVector source that uses custom loader
+    this.habEEZSource = new ol.source.ServerVector({
+      format: new ol.format.GeoJSON(),
+      projection: 'EPSG:3857',
+      loader: $.proxy(habEEZLoad, this)
+    });
+
+    this.habEEZLayer = new ol.layer.Vector({
+      source: this.habEEZSource,
+      style: $.proxy(this._getEEZStyle, this)
+    });
+
+    function zoomToEEZ(event) {
+      var eezFeat = this.habEEZLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
+      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
+      flyToExtent(this.habMap, bufExtent);        
+    }
+
+    if (config.scale.name == 'country') {
+      //Zoom in to the EEZ feature after a few seconds
+      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
+    }    
+
+    this.habMap.addLayer(this.habEEZLayer);
+  },
+
+  _loadBioMap: function(mapEl) {  
+    this.habMap = new ol.Map({
+      controls: ol.control.defaults().extend([
+        new ol.control.FullScreen()
+      ]),
+      target: mapEl,
+      view: new ol.View({
+        center: [-6786385.11927109, 1836323.167523076],
+        zoom: 6
+      })
+    });
+
+    /******** Base Layers ********/
+
+    if (this.options.config.scale.name == 'region' || this.options.config.scale.name == 'country') {
+      this.habMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.XYZ({          
+          url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        })
+      }));
+    }
+
+    /******* Shelf Layer ********/
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******* Habitat Layers ********/
+
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'sub_merge_4326', 'STYLES': 'sub_merge_4326', 'TILED': true},
         serverType: 'geoserver'
       })
     }));
@@ -656,13 +766,13 @@ $.widget( "geonode.ReefAssessment", {
 
     //Style based on mpa status
     if (status == "Proposed") {
-      strokeColor = 'rgba(184,233,134,1.0)';
+      strokeColor = 'rgba(153,204,255,1.0)';
       strokeWidth = 1.5;
-      fillColor = 'rgba(184,233,134,0)';
+      fillColor = 'rgba(153,204,255,0)';
     } else if (status == "Designated") {
-      strokeColor = 'rgba(126,211,33,1.0)';
+      strokeColor = 'rgba(51,102,255,1.0)';
       strokeWidth = 1.5;
-      fillColor = 'rgba(126,211,33,0)';
+      fillColor = 'rgba(51,102,255,0)';
     }
 
     return [new ol.style.Style({
@@ -810,6 +920,131 @@ $.widget( "geonode.ReefAssessment", {
   }    
 });
 
+/******** INDICATOR LIST WIDGET ********/
+
+$.widget( "geonode.IndiList", {
+  // Default options, must be overriden
+  options: {
+      indi_type: 'type name',
+      indi_type_display: 'type display name',
+      indis: []
+  },
+
+  _create: function() {
+      this._genRows();
+
+      //Compile and render template
+      var compiled = _.template($(".indiList").html());
+      var html = compiled(this.options);
+      this.element.append(html);
+  },
+
+  //Generate the table values for each indi
+  _genRows: function() {
+    _.each(this.options.indis, function(indi){
+      //Object containing all of the display values
+      indi.display = {};
+
+      //Check if any data available for this unit
+      if (indi.document.data.length == 0) {
+        indi.display.year = "-";
+        indi.display.value = "-";
+        indi.display.score = "-";
+        indi.display.grade = null;
+        indi.display.doc_link = null;
+        indi.display.trend = null;
+        indi.display.sample = '-';
+      } else {
+        //Get most recent two years data
+        var lastTwo = _.sortBy(indi.document.data, function(row){
+          //Use negative in test to sort descending, as it will sort ascending value by default
+          return -row[indi.year_field];
+        }).slice(0,2);
+
+        var yearOne = null
+        var yearTwo = null;
+
+        if (lastTwo.length == 0) {
+          //No data to show
+        } else if(lastTwo.length == 1) {
+          //One year of data to show
+          yearOne = lastTwo[0];
+        } else {
+          //Two years of data to show
+          yearOne = lastTwo[0];
+          yearTwo = lastTwo[1];
+        }
+        
+        //Handle each indicator, appending display object with prepped values
+        indi.display.year = yearOne[indi.year_field];
+        indi.display.value = yearOne[indi.value_field];
+        indi.display.score = yearOne[indi.score_field];
+        indi.display.grade = yearOne[indi.grade_field];
+        indi.display.sample = yearOne[indi.sample_field];
+        indi.display.doc_link = indi.document.link;
+
+        if (yearTwo) {
+          yearOneValue = yearOne[indi.value_field];
+          yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
+          yearOneScore = yearOne[indi.score_field];
+          yearTwoValue = yearTwo[indi.value_field];
+          yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
+          yearTwoScore = yearTwo[indi.score_field];
+          
+          if (yearOneScore) {
+            //If score then base trend on that
+            if (yearOneScore == yearTwoScore) {
+              indi.display.trend = 'same';
+            } else if (yearOneScore >= yearTwoScore) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';              
+            }
+          } else if (yearOneGradeValue) {
+            //If no value but grade then base trend on that
+            if (yearOneGradeValue == yearTwoGradeValue) {
+              indi.display.trend = 'same';
+            } else if (yearOneGradeValue >= yearTwoGradeValue) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';
+            }
+          } else {
+            indi.display.trend = false;
+          }          
+        }
+
+        if (indi.name == 'Coral Cover') {          
+          indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
+        } else if (indi.name == 'Herbivorous Fish' || indi.name == 'Commercial Fish') {
+          indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
+        }        
+      }
+
+      
+    }, this);
+  },
+
+  _getOrdinalValue: function(qual_value) {
+    switch(qual_value) {
+      case 'Definitely Yes':
+        return 4;
+        break;
+      case 'Mostly Yes':
+        return 3;
+        break;
+      case 'Mostly No':
+        return 2;
+        break;
+      case 'Definitely No':
+        return 1;
+        break;
+      default:
+        return 1;
+    }
+  }
+});
+
 /******** INDICATOR TABLE WIDGET ********/
 
 $.widget( "geonode.IndiSection", {
@@ -839,6 +1074,7 @@ $.widget( "geonode.IndiSection", {
       if (indi.document.data.length == 0) {
         indi.display.year = "-";
         indi.display.value = "-";
+        indi.display.score = '-';
         indi.display.grade = null;
         indi.display.doc_link = null;
         indi.display.trend = null;
@@ -866,20 +1102,23 @@ $.widget( "geonode.IndiSection", {
         //Handle each indicator, appending display object with prepped values
         indi.display.year = yearOne[indi.year_field];
         indi.display.value = yearOne[indi.value_field];
+        indi.display.score = yearOne[indi.score_field];
         indi.display.grade = yearOne[indi.grade_field];
         indi.display.doc_link = indi.document.link;
 
         if (yearTwo) {
           yearOneValue = yearOne[indi.value_field];
+          yearOneScore = yearOne[indi.score_field];
           yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
           yearTwoValue = yearTwo[indi.value_field];
+          yearTwoScore = yearTwo[indi.score_field];
           yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
           
-          if (yearOneValue) {
-            //If value then base trend on that
-            if (yearOneValue == yearTwoValue) {
+          if (yearOneScore) {
+            //If score then base trend on that
+            if (yearOneScore == yearTwoScore) {
               indi.display.trend = 'same';
-            } else if (yearOneValue >= yearTwoValue) {
+            } else if (yearOneScore >= yearTwoScore) {
               indi.display.trend = 'up';
             } else {
               indi.display.trend = 'down';              
