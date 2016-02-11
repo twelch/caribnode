@@ -77,17 +77,13 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     if scale.name == 'region' or scale.name == 'country':
 
-        #Number designated PAs and total area
-        query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+        #Number designated PAs
+        query = 'SELECT count(*) FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'
         if scale.name == 'country':
             query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
         pa_num_designated = row[0]
-        if row[1]:
-            pa_designated_total_area = row[1]
-        else:
-            pa_designated_total_area = 0
 
         #first year designated
         pa_year_first_designated = None
@@ -104,14 +100,13 @@ def reef_assess(request, scale_name, unit_id, template=''):
         else:
             pa_year_first_designated = 'N/A'
         
-        #Number proposed PAs and total area
-        query = 'SELECT count(*), Sum("{0}") FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'.format(layers['pa']['areaname'])
+        #Number proposed PAs
+        query = 'SELECT count(*) FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'
         if scale.name == 'country':
             query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
         pa_num_proposed = row[0]
-        pa_proposed_total_area = row[1]
 
         #eez total km, ocean protected
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
@@ -123,6 +118,16 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
         pa_perc_ocean_protected = row[1]
         pa_perc_ocean_proposed = row[2]
+
+        #PAs total area proposed and designated (don't use pa layer to calculate)
+        query = 'SELECT Sum("{0}"), Sum("{1}") FROM eez_noland'.format(layers['eez_noland']['areadesigname'],layers['eez_noland']['areaproposedname'])
+        if scale.name == 'country':
+            query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
+        cursor.execute(query)
+        row = cursor.fetchone()
+
+        pa_designated_total_area = row[0]
+        pa_proposed_total_area = row[1]
 
         #shelf total km, ocean protected
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
