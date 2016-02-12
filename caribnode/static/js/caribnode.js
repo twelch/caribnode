@@ -1169,18 +1169,6 @@ $.widget( "geonode.IndiSection", {
 });
 
 function loadHabCharts(chartConfig) {
-  //Check if value is less than one and set formatter for display accordingly
-  var less_coral_designated = chartConfig.coral_perc_designated < 1 ? '< ' : ''
-  var less_mangrove_designated = chartConfig.mangrove_perc_designated < 1 ? '< ' : ''
-  var less_seagrass_designated = chartConfig.seagrass_perc_designated < 1 ? '< ' : ''
-
-  //Format values for display by rounding up
-  chartConfig.coral_perc_designated = chartConfig.coral_perc_designated < 1 ? 1 : Math.round(chartConfig.coral_perc_designated);
-  chartConfig.coral_perc_proposed = chartConfig.coral_perc_proposed < 1 ? 1 : Math.round(chartConfig.coral_perc_proposed);
-  chartConfig.mangrove_perc_designated = chartConfig.mangrove_perc_designated < 1 ? 1 : Math.round(chartConfig.mangrove_perc_designated);
-  chartConfig.mangrove_perc_proposed = chartConfig.mangrove_perc_proposed < 1 ? 1 : Math.round(chartConfig.mangrove_perc_proposed);
-  chartConfig.seagrass_perc_designated = chartConfig.seagrass_perc_designated < 1 ? 1 : Math.round(chartConfig.seagrass_perc_designated);
-  chartConfig.seagrass_perc_proposed = chartConfig.seagrass_perc_proposed < 1 ? 1 : Math.round(chartConfig.seagrass_perc_proposed);    
 
   // Create the chart
   coralDonut = new Highcharts.Chart({
@@ -1197,7 +1185,7 @@ function loadHabCharts(chartConfig) {
           enabled: false
       },
       title: {
-          text: less_coral_designated+chartConfig.coral_perc_designated+'%',
+          text: formatVal(chartConfig.coral_perc_designated, true),
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -1226,7 +1214,7 @@ function loadHabCharts(chartConfig) {
       },
       series: [{
           name: '',
-          data: [["Designated",chartConfig.coral_perc_designated],["Proposed",chartConfig.coral_perc_proposed],["Unproposed",chartConfig.coralGoal-chartConfig.coral_perc_designated-chartConfig.coral_perc_proposed]],
+          data: [["Designated",formatVal(chartConfig.coral_perc_designated)],["Proposed",formatVal(chartConfig.coral_perc_proposed)],["Unproposed",chartConfig.coralGoal-formatVal(chartConfig.coral_perc_designated)-formatVal(chartConfig.coral_perc_proposed)]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
@@ -1251,7 +1239,7 @@ function loadHabCharts(chartConfig) {
           enabled: false
       },
       title: {
-          text: less_mangrove_designated+chartConfig.mangrove_perc_designated+'%',
+          text: formatVal(chartConfig.mangrove_perc_designated, true),
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -1280,7 +1268,7 @@ function loadHabCharts(chartConfig) {
       },
       series: [{
           name: '',
-          data: [["Designated",chartConfig.mangrove_perc_designated],["Proposed",chartConfig.mangrove_perc_proposed],["Unproposed",chartConfig.mangroveGoal-chartConfig.mangrove_perc_designated-chartConfig.mangrove_perc_proposed]],
+          data: [["Designated",formatVal(chartConfig.mangrove_perc_designated)],["Proposed",formatVal(chartConfig.mangrove_perc_proposed)],["Unproposed",chartConfig.mangroveGoal-formatVal(chartConfig.mangrove_perc_designated)-formatVal(chartConfig.mangrove_perc_proposed)]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
@@ -1305,7 +1293,7 @@ function loadHabCharts(chartConfig) {
           enabled: false
       },
       title: {
-          text: less_seagrass_designated+chartConfig.seagrass_perc_designated+'%',
+          text: formatVal(chartConfig.seagrass_perc_designated, true),
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -1334,7 +1322,7 @@ function loadHabCharts(chartConfig) {
       },
       series: [{
           name: '',
-          data: [["Designated",chartConfig.seagrass_perc_designated],["Proposed",chartConfig.seagrass_perc_proposed],["Unproposed",chartConfig.seagrassGoal-chartConfig.seagrass_perc_designated-chartConfig.seagrass_perc_proposed]],
+          data: [["Designated",formatVal(chartConfig.seagrass_perc_designated)],["Proposed",formatVal(chartConfig.seagrass_perc_proposed)],["Unproposed",chartConfig.seagrassGoal-formatVal(chartConfig.seagrass_perc_designated)-formatVal(chartConfig.seagrass_perc_proposed)]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
@@ -1347,15 +1335,6 @@ function loadHabCharts(chartConfig) {
 }
 
 function loadMpaCharts(chartConfig) {
-  //Check if value is less than one and set formatter for display accordingly
-  var less_ocean_protected = chartConfig.perc_ocean_protected < 1 ? '< ' : ''
-  var less_shelf_protected = chartConfig.perc_shelf_protected < 1 ? '< ' : ''  
-
-  //Format values for display by rounding
-  chartConfig.perc_ocean_protected = chartConfig.perc_ocean_protected < 1 ? 1 : Math.round(chartConfig.perc_ocean_protected);
-  chartConfig.perc_ocean_proposed = chartConfig.perc_ocean_proposed < 1 ? 1 : Math.round(chartConfig.perc_ocean_proposed);
-  chartConfig.perc_shelf_protected = chartConfig.perc_shelf_protected < 1 ? 1 : Math.round(chartConfig.perc_shelf_protected);
-  chartConfig.perc_shelf_proposed = chartConfig.perc_shelf_proposed < 1 ? 1 : Math.round(chartConfig.perc_shelf_proposed);
 
   // Create the chart
   oceanDonut = new Highcharts.Chart({
@@ -1367,7 +1346,7 @@ function loadMpaCharts(chartConfig) {
           enabled: false
       },
       title: {
-          text: less_ocean_protected+chartConfig.perc_ocean_protected+'%',
+          text: formatVal(chartConfig.perc_ocean_protected, true),
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -1396,7 +1375,7 @@ function loadMpaCharts(chartConfig) {
       },
       series: [{
           name: '',
-          data: [["Designated",chartConfig.perc_ocean_protected],["Proposed",chartConfig.perc_ocean_proposed],["Unproposed",chartConfig.oceanGoal-chartConfig.perc_ocean_protected-chartConfig.perc_ocean_proposed]],
+          data: [["Designated",formatVal(chartConfig.perc_ocean_protected)],["Proposed",formatVal(chartConfig.perc_ocean_proposed)],["Unproposed",chartConfig.oceanGoal-formatVal(chartConfig.perc_ocean_protected)-formatVal(chartConfig.perc_ocean_proposed)]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
@@ -1416,7 +1395,7 @@ function loadMpaCharts(chartConfig) {
           enabled: false
       },
       title: {
-          text: less_shelf_protected+chartConfig.perc_shelf_protected+'%',
+          text: formatVal(chartConfig.perc_shelf_protected, true),
           align: 'center',
           verticalAlign: 'middle',
           y: 15,
@@ -1444,7 +1423,7 @@ function loadMpaCharts(chartConfig) {
       },
       series: [{
           name: '',
-          data: [["Designated",chartConfig.perc_shelf_protected],["Proposed",chartConfig.perc_shelf_proposed],["Unproposed",chartConfig.shelfGoal-chartConfig.perc_shelf_protected-chartConfig.perc_shelf_proposed]],
+          data: [["Designated",formatVal(chartConfig.perc_shelf_protected)],["Proposed",formatVal(chartConfig.perc_shelf_proposed)],["Unproposed",chartConfig.shelfGoal-formatVal(chartConfig.perc_shelf_protected)-formatVal(chartConfig.perc_shelf_proposed)]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
@@ -1473,6 +1452,23 @@ function loadPAFeatures(features) {
 
 
 /******** Global Util Functions ********/
+
+//Format values for presentation
+function formatVal(value, extra) {
+  var newValue = value;
+  if (value > 0 && value < 1) {
+    newValue = 1;
+  } else {
+    newValue = Math.round(value);
+  }
+
+  if (extra) {
+    newValue = value < 1 && value > 0 ? '< '+newValue+'%' : newValue+'%'; 
+  }
+
+  //Update with formatted value
+  return newValue;
+}
 
 //Returns features with given attribute value
 function getFeatureByAttribute(layer, attr, value) {
