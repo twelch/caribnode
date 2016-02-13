@@ -28,4 +28,5 @@ urlpatterns = patterns('caribnode.tools.views',
     url(r'^$', 'tool_browse', name='tool_browse'),
     url(r'^indicator_help$', 'indicator_help', name='indicator_help'),
     url(r'^reef-assess/(?P<scale_name>(region|country|mpa))/(?P<unit_id>[^/]*)/$', 'reef_assess', name='reef_assess'),
+    url(r'^reload_mpas$', 'reload_mpas', name='reload_mpas'),
 )
