@@ -532,7 +532,7 @@ $.widget( "geonode.ReefAssessment", {
     if (this.options.config.scale.name == 'mpa') {
       this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.BingMaps({
-          key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+          key: config.settings.bingMapsKey,
           imagerySet: 'AerialWithLabels'
         })
       }));
@@ -548,17 +548,32 @@ $.widget( "geonode.ReefAssessment", {
       })
     }));
 
-    /******** Cora Reef Mosaic Layer ********/
+    /******* Habitat Layers - MPA level only ********/
 
     if (config.scale.name == 'mpa') {
-      this.coralLayer = new ol.layer.Tile({
+      this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.TileWMS({
-          url: config.layers.car_mar_coralreefmosaic_2013_wgs84.links.WMS,
-          params: {'LAYERS': 'car_mar_coralreefmosaic_2013_wgs84', 'STYLES': 'car_mar_coralreefmosaic_2013_wgs84_d3a29fb1', 'TILED': true},
+          url: config.layers.shelf.links.WMS,
+          params: {'LAYERS': 'mangrove_country', 'STYLES': 'mangrove_country', 'TILED': true},
           serverType: 'geoserver'
         })
-      });
-      this.paMap.addLayer(this.coralLayer);
+      }));
+
+      this.paMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.shelf.links.WMS,
+          params: {'LAYERS': 'seagrass_country', 'STYLES': 'seagrass_country', 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
+
+      this.paMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.shelf.links.WMS,
+          params: {'LAYERS': 'coralreef_country', 'STYLES': 'coralreef_country', 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
     }
 
     /******** PA Layer ********/
@@ -794,8 +809,12 @@ $.widget( "geonode.ReefAssessment", {
   },
 
   loadEEZFeatures: function(features) {
-    this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(features));
-    this.habEEZSource.addFeatures(this.habEEZSource.readFeatures(features));
+    if (this.paEEZSource) {
+      this.paEEZSource.addFeatures(this.paEEZSource.readFeatures(features));
+    }
+    if (this.habEEZSource) {
+      this.habEEZSource.addFeatures(this.habEEZSource.readFeatures(features));
+    }
   },
 
 /******** UI EVENT LOADERS ********/
