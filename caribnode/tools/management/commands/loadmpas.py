@@ -32,7 +32,12 @@ class Command(BaseCommand):
         dupIndex = 1
         for mpa in mpas:
             #Get parent
-            parent = Unit.objects.get(name=mpa[layers['pa']['parentunitname']])
+            try:
+                parent = Unit.objects.get(name=mpa[layers['pa']['parentunitname']])
+            except:
+                self.stdout.write('Error: "%s" unknown parent name in "%s" field.  Bad spelling?' % (newMpa.name, layers['pa']['parentunitname']))
+                pass
+
             try:
                 #Check for pa with the same name
                 oldMpa = Unit.objects.get(parent=parent, scale=mpaScale, name=mpa['AREANAM'])
@@ -41,7 +46,7 @@ class Command(BaseCommand):
                     newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM']+' '+unicode(dupIndex), order=orderIndex)
                     newMpa.save()
                     dupIndex += 1
-                    self.stdout.write('Created de-duped "%s"' % newMpa.name)
+                    self.stdout.write('MPA with this name already exists adding number to end -- "%s"' % newMpa.name)
             except Unit.DoesNotExist:
                 newMpa = Unit(parent=parent, scale=mpaScale, name=mpa['AREANAM'], order=orderIndex, status=mpa['STATUS'])
                 newMpa.save()                

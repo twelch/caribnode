@@ -30,6 +30,15 @@ def indicator_help(request, template="tools/indicator_help.html"):
     context = {'indi_groups': indi_groups}    
     return render(request, template, context)
 
+def reload_mpas(request, template="tools/reload_mpas.html"):
+    from django.core.management import call_command
+    from cStringIO import StringIO
+    output = StringIO()
+    call_command('loadmpas', stdout=output)
+    context = {'results': output.getvalue().replace('\n', '<br/>')}
+    return render(request, template, context)
+
+
 def reef_assess(request, scale_name, unit_id, template=''):
 
     #Database cursor
