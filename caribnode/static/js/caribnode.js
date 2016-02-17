@@ -407,8 +407,9 @@ $.widget( "geonode.ReefAssessment", {
     this.habMap.addLayer(this.habEEZLayer);
   },
 
+  /* Coral Reef Health */
   _loadBioMap: function(mapEl) {  
-    this.habMap = new ol.Map({
+    this.bioMap = new ol.Map({
       controls: ol.control.defaults().extend([
         new ol.control.FullScreen()
       ]),
@@ -422,7 +423,7 @@ $.widget( "geonode.ReefAssessment", {
     /******** Base Layers ********/
 
     if (this.options.config.scale.name == 'region' || this.options.config.scale.name == 'country') {
-      this.habMap.addLayer(new ol.layer.Tile({
+      this.bioMap.addLayer(new ol.layer.Tile({
         source: new ol.source.XYZ({          
           url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
             'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
@@ -432,17 +433,17 @@ $.widget( "geonode.ReefAssessment", {
 
     /******* Shelf Layer ********/
 
-    this.habMap.addLayer(new ol.layer.Tile({
+    this.bioMap.addLayer(new ol.layer.Tile({
       source: new ol.source.TileWMS({
         url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': 'shelf', 'STYLES': 'shelf_1a6f87cb', 'TILED': true},
+        params: {'LAYERS': config.layers.shelf.modelname, 'STYLES': config.layers.shelf.style, 'TILED': true},
         serverType: 'geoserver'
       })
     }));
 
     /******* Habitat Layers ********/
 
-    this.habMap.addLayer(new ol.layer.Tile({
+    this.bioMap.addLayer(new ol.layer.Tile({
       source: new ol.source.TileWMS({
         url: config.layers.shelf.links.WMS,
         params: {'LAYERS': 'sub_merge_4326', 'STYLES': 'sub_merge_4326', 'TILED': true},
@@ -452,58 +453,33 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** EEZ Layer ********/
 
-    //Get base URL and switch to web mercator projection
-    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
-    //Switch from JSON to JSONP
-    eezUrl = eezUrl.replace('json','text/javascript');
-    //Filter to include only current country
-    eezUrl += '&format_options=callback:loadEEZFeatures';
-    if (config.scale.name == 'country') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
-    } else if (config.scale.name == 'mpa') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
+    this.bioMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.eez.links.WMS,
+        params: {'LAYERS': config.layers.eez.modelname, 'STYLES': config.layers.eez.style, 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** PIE Layers ********/
+
+    if (this.options.config.scale.name == 'region') {
+      this.bioMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.regional_pies.links.WMS,
+          params: {'LAYERS': config.layers.regional_pies.modelname, 'STYLES': config.layers.regional_pies.style, 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
+    } else if (this.options.config.scale.name == 'country') {
+      this.bioMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.subregional_pies.links.WMS,
+          params: {'LAYERS': config.layers.subregional_pies.modelname, 'STYLES': config.layers.subregional_pies.style, 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
     }
-
-    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
-    function habEEZLoad(extent, resolution, projection) {
-      $.ajax({
-        url: eezUrl,
-        dataType: 'jsonp',
-        jsonp: null,
-        jsonpCallback: 'loadEEZFeatures',
-        context: this
-      });
-    }
-
-    //OL3 ServerVector source that uses custom loader
-    this.habEEZSource = new ol.source.ServerVector({
-      format: new ol.format.GeoJSON(),
-      projection: 'EPSG:3857',
-      loader: $.proxy(habEEZLoad, this)
-    });
-
-    this.habEEZLayer = new ol.layer.Vector({
-      source: this.habEEZSource,
-      style: $.proxy(this._getEEZStyle, this)
-    });
-
-    function zoomToEEZ(event) {
-      var eezFeat = this.habEEZLayer.getSource().forEachFeature(function(feat){
-        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
-          return feat;
-        }        
-      });
-      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
-      flyToExtent(this.habMap, bufExtent);        
-    }
-
-    if (config.scale.name == 'country') {
-      //Zoom in to the EEZ feature after a few seconds
-      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
-    }    
-
-    this.habMap.addLayer(this.habEEZLayer);
   },
 
   _loadMpaMap: function(mapEl) {  
@@ -553,7 +529,7 @@ $.widget( "geonode.ReefAssessment", {
     if (config.scale.name == 'mpa') {
       this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.TileWMS({
-          url: config.layers.shelf.links.WMS,
+          url: config.layers.mangrove.links.WMS,
           params: {'LAYERS': 'mangrove_country', 'STYLES': 'mangrove_country', 'TILED': true},
           serverType: 'geoserver'
         })
@@ -561,7 +537,7 @@ $.widget( "geonode.ReefAssessment", {
 
       this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.TileWMS({
-          url: config.layers.shelf.links.WMS,
+          url: config.layers.seagrass.links.WMS,
           params: {'LAYERS': 'seagrass_country', 'STYLES': 'seagrass_country', 'TILED': true},
           serverType: 'geoserver'
         })
@@ -569,7 +545,7 @@ $.widget( "geonode.ReefAssessment", {
 
       this.paMap.addLayer(new ol.layer.Tile({
         source: new ol.source.TileWMS({
-          url: config.layers.shelf.links.WMS,
+          url: config.layers.coral.links.WMS,
           params: {'LAYERS': 'coralreef_country', 'STYLES': 'coralreef_country', 'TILED': true},
           serverType: 'geoserver'
         })
