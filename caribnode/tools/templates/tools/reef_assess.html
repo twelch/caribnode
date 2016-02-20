@@ -169,10 +169,16 @@
               <td><p>{% trans "Managed Areas" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>{% trans "Coral Reef" %}</p>
+              <td>
+              <p>{% trans "Coral" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=car_mar_coralreefmosaic_2013_wgs84&style=car_mar_coralreefmosaic_2013_wgs84_d3a29fb1&SCALE=8735642.90291195"/>
-              </td>              
-              <td><p>{% trans "Shelf" %}</p>
+              <p>{% trans "Mangrove" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=mangrove_country&SCALE=8735642.90291195"/>
+              </td>
+              <td>
+              <p>{% trans "Seagrass" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
+              <p>{% trans "Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
               <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
