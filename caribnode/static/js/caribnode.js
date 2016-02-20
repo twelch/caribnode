@@ -431,15 +431,17 @@ $.widget( "geonode.ReefAssessment", {
       }));
     }
 
-    /******* Shelf Layer ********/
+    /******* Subregion Layer ********/
 
-    this.bioMap.addLayer(new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-        url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': config.layers.shelf.modelname, 'STYLES': config.layers.shelf.style, 'TILED': true},
-        serverType: 'geoserver'
-      })
-    }));
+    if (this.options.config.scale.name == 'country') {
+      this.bioMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.reef_subregion_line.links.WMS,
+          params: {'LAYERS': config.layers.reef_subregion_line.modelname, 'STYLES': config.layers.reef_subregion_line.style, 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
+    }
 
     /******* Habitat Layers ********/
 
@@ -463,6 +465,15 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** PIE Layers ********/
 
+    function zoomToPies(event) {      
+      var extent = config.layers.subregional_pies.extents[config.unit.name];
+      if (extent) {
+        extent = ol.proj.transformExtent(extent,'EPSG:4326','EPSG:3857');
+        var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale);
+        flyToExtent(this.bioMap, bufExtent);
+      }
+    }
+
     if (this.options.config.scale.name == 'region') {
       this.bioMap.addLayer(new ol.layer.Tile({
         source: new ol.source.TileWMS({
@@ -478,8 +489,10 @@ $.widget( "geonode.ReefAssessment", {
           params: {'LAYERS': config.layers.subregional_pies.modelname, 'STYLES': config.layers.subregional_pies.style, 'TILED': true},
           serverType: 'geoserver'
         })
-      }));
+      }));      
     }
+    // Zoom to pie extent
+    window.setTimeout($.proxy(zoomToPies, this), 3000);
   },
 
   _loadMpaMap: function(mapEl) {  
@@ -753,6 +766,7 @@ $.widget( "geonode.ReefAssessment", {
     var strokeWidth = 1;
     var fillColor = 'red';
     var fillOpacity = .5;
+    var lineDash = null;
     var status = feature.get(config.layers.pa.statusname);    
 
     //Style based on mpa status
@@ -760,6 +774,7 @@ $.widget( "geonode.ReefAssessment", {
       strokeColor = 'rgba(153,204,255,1.0)';
       strokeWidth = 1.5;
       fillColor = 'rgba(153,204,255,0)';
+      lineDash = [6,6];
     } else if (status == "Designated") {
       strokeColor = 'rgba(51,102,255,1.0)';
       strokeWidth = 1.5;
@@ -773,7 +788,8 @@ $.widget( "geonode.ReefAssessment", {
       }),
       stroke: new ol.style.Stroke({
         color: strokeColor,
-        width: strokeWidth
+        width: strokeWidth,
+        lineDash: lineDash
       })            
     })];
   },  
