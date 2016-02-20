@@ -278,10 +278,13 @@
               <td><p>{% trans "Seagrass" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
               </td>
+              <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
+              </td>
               <td class='last'>
               <ul class='map-links'>
-                <li><a href='/maps?category=biota'>VIEW MAP</a></li>
-                <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
+                <li><a href='/maps?category=biota'>SOURCE MAP</a></li>
+                <li><a href='/layers?category=biota'>SOURCE LAYERS</a></li>
               </ul>
               </td>
             </tr>
@@ -334,10 +337,13 @@
                   <td><p>{% trans "Grade" %}</p>
                   <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=geonode:regional_pies&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
                   </td>
+                  <td><p>{% trans "Subregion" %}</p>
+                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=:reef_subregion_200m_line&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+                  </td>
                   <td class='last'>
                   <ul class='map-links'>
-                    <li><a href='/maps?category=biota'>VIEW MAP</a></li>
-                    <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
+                    <li><a href='/maps?category=biota'>SOURCE MAP</a></li>
+                    <li><a href='/layers?category=biota'>SOURCE LAYERS</a></li>
                   </ul>
                   </td>
                 </tr>
@@ -461,8 +467,8 @@
               </td>
               <td class='last'>
                 <ul class='map-links'>
-                  <li><a href='/maps?category=boundaries'>VIEW MAP</a></li>
-                  <li><a href='/layers?category=boundaries'>VIEW LAYERS</a></li>
+                  <li><a href='/maps?category=boundaries'>SOURCE MAP</a></li>
+                  <li><a href='/layers?category=boundaries'>SOURCE LAYERS</a></li>
                 </ul>
               </td>
             </tr>
