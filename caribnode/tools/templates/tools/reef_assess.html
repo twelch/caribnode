@@ -172,7 +172,7 @@
               <td><p>{% trans "Coral Reef" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=car_mar_coralreefmosaic_2013_wgs84&style=car_mar_coralreefmosaic_2013_wgs84_d3a29fb1&SCALE=8735642.90291195"/>
               </td>              
-              <td><p>{% trans "Continental Shelf" %}</p>
+              <td><p>{% trans "Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
               <td class='last'><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
@@ -269,19 +269,23 @@
         <div class="legend">
           <table>
             <tr>        
-              <td><p>{% trans "Coral Reef" %}</p>
+              <td><p>{% trans "Coral" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=coralreef_country&SCALE=8735642.90291195"/>
-              </td>
-              <td><p>{% trans "Mangrove" %}</p>
+              <p>{% trans "Mangrove" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=mangrove_country&SCALE=8735642.90291195"/>
               </td>
               <td><p>{% trans "Seagrass" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=seagrass_country&SCALE=17471285.8058239"/>
+              <p>{% trans "Shelf" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
+              </td>
+              <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
+              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
               </td>
               <td class='last'>
               <ul class='map-links'>
-                <li><a href='/maps?category=biota'>VIEW MAP</a></li>
-                <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
+                <li><a href='/maps?category=biota'>SOURCE MAP</a></li>
+                <li><a href='/layers?category=biota'>SOURCE LAYERS</a></li>
               </ul>
               </td>
             </tr>
@@ -334,10 +338,13 @@
                   <td><p>{% trans "Grade" %}</p>
                   <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=geonode:regional_pies&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
                   </td>
+                  <td><p>{% trans "Subregion" %}</p>
+                  <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=:reef_subregion_200m_line&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+                  </td>
                   <td class='last'>
                   <ul class='map-links'>
-                    <li><a href='/maps?category=biota'>VIEW MAP</a></li>
-                    <li><a href='/layers?category=biota'>VIEW LAYERS</a></li>
+                    <li><a href='/maps?category=biota'>SOURCE MAP</a></li>
+                    <li><a href='/layers?category=biota'>SOURCE LAYERS</a></li>
                   </ul>
                   </td>
                 </tr>
@@ -453,7 +460,7 @@
               <td><p>{% trans "Managed Area Boundary" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa_4b0bd6b0&SCALE=8735642.90291195"/>
               </td>
-              <td><p>{% trans "Marine Shelf" %}</p>
+              <td><p>{% trans "Shelf" %}</p>
               <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
               </td>
               <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
@@ -461,8 +468,8 @@
               </td>
               <td class='last'>
                 <ul class='map-links'>
-                  <li><a href='/maps?category=boundaries'>VIEW MAP</a></li>
-                  <li><a href='/layers?category=boundaries'>VIEW LAYERS</a></li>
+                  <li><a href='/maps?category=boundaries'>SOURCE MAP</a></li>
+                  <li><a href='/layers?category=boundaries'>SOURCE LAYERS</a></li>
                 </ul>
               </td>
             </tr>

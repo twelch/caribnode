@@ -353,58 +353,26 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** EEZ Layer ********/
 
-    //Get base URL and switch to web mercator projection
-    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
-    //Switch from JSON to JSONP
-    eezUrl = eezUrl.replace('json','text/javascript');
-    //Filter to include only current country
-    eezUrl += '&format_options=callback:loadEEZFeatures';
-    if (config.scale.name == 'country') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
-    } else if (config.scale.name == 'mpa') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
-    }
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.eez.links.WMS,
+        params: {'LAYERS': config.layers.eez.modelname, 'STYLES': config.layers.eez.style, 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
 
-    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
-    function habEEZLoad(extent, resolution, projection) {
-      $.ajax({
-        url: eezUrl,
-        dataType: 'jsonp',
-        jsonp: null,
-        jsonpCallback: 'loadEEZFeatures',
-        context: this
-      });
-    }
+    /******** Annotation Layers ********/
 
-    //OL3 ServerVector source that uses custom loader
-    this.habEEZSource = new ol.source.ServerVector({
-      format: new ol.format.GeoJSON(),
-      projection: 'EPSG:3857',
-      loader: $.proxy(habEEZLoad, this)
-    });
+    this.habMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.XYZ({          
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+          'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
+      })
+    }));
 
-    this.habEEZLayer = new ol.layer.Vector({
-      source: this.habEEZSource,
-      style: $.proxy(this._getEEZStyle, this)
-    });
-
-    function zoomToEEZ(event) {
-      var eezFeat = this.habEEZLayer.getSource().forEachFeature(function(feat){
-        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
-          return feat;
-        }        
-      });
-      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
-      flyToExtent(this.habMap, bufExtent);        
-    }
-
-    if (config.scale.name == 'country') {
-      //Zoom in to the EEZ feature after a few seconds
-      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
-    }    
-
-    this.habMap.addLayer(this.habEEZLayer);
+    // Zoom to hab extent
+    var extent = config.settings.extents[config.unit.name];
+    window.setTimeout(zoomToLatLonExtent.call(this, this.habMap, extent), 3000);    
   },
 
   /* Coral Reef Health */
@@ -431,15 +399,17 @@ $.widget( "geonode.ReefAssessment", {
       }));
     }
 
-    /******* Shelf Layer ********/
+    /******* Subregion Layer ********/
 
-    this.bioMap.addLayer(new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-        url: config.layers.shelf.links.WMS,
-        params: {'LAYERS': config.layers.shelf.modelname, 'STYLES': config.layers.shelf.style, 'TILED': true},
-        serverType: 'geoserver'
-      })
-    }));
+    if (this.options.config.scale.name == 'country') {
+      this.bioMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.reef_subregion_line.links.WMS,
+          params: {'LAYERS': config.layers.reef_subregion_line.modelname, 'STYLES': config.layers.reef_subregion_line.style, 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
+    }
 
     /******* Habitat Layers ********/
 
@@ -478,8 +448,20 @@ $.widget( "geonode.ReefAssessment", {
           params: {'LAYERS': config.layers.subregional_pies.modelname, 'STYLES': config.layers.subregional_pies.style, 'TILED': true},
           serverType: 'geoserver'
         })
-      }));
+      }));      
     }
+
+    /******** Annotation Layers ********/
+    this.bioMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.XYZ({          
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+          'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
+      })
+    }));
+
+    // Zoom to pie extent
+    var extent = config.settings.extents[config.unit.name];
+    window.setTimeout(zoomToLatLonExtent.call(this, this.bioMap, extent), 3000);
   },
 
   _loadMpaMap: function(mapEl) {  
@@ -641,74 +623,13 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** EEZ Layer ********/
 
-    //Get base URL and switch to web mercator projection
-    var eezUrl = config.layers.eez.links.GeoJSON.replace('4326','3857');
-    //Switch from JSON to JSONP
-    eezUrl = eezUrl.replace('json','text/javascript');
-    //Filter to include only current country
-    eezUrl += '&format_options=callback:loadEEZFeatures';
-    if (config.scale.name == 'country') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.name+'\'';
-    } else if (config.scale.name == 'mpa') {
-      eezUrl += '&cql_filter='+config.layers.eez.unitname+'=\''+config.unit.parentname+'\'';
-    }
-
-    //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
-    function paEEZLoad(extent, resolution, projection) {
-      $.ajax({
-        url: eezUrl,
-        dataType: 'jsonp',
-        jsonp: null,
-        jsonpCallback: 'loadEEZFeatures',
-        context: this
-      });
-    }
-
-    //OL3 ServerVector source that uses custom loader
-    this.paEEZSource = new ol.source.ServerVector({
-      format: new ol.format.GeoJSON(),
-      projection: 'EPSG:3857',
-      loader: $.proxy(paEEZLoad, this)
-    });
-
-    this.paEEZLayer = new ol.layer.Vector({
-      source: this.paEEZSource,
-      style: $.proxy(this._getEEZStyle, this)
-    });
-
-    function zoomToEEZ(event) {
-      var eezFeat = this.paEEZLayer.getSource().forEachFeature(function(feat){
-        if (feat.get(config.layers.eez.unitname) == config.unit.name) {
-          return feat;
-        }        
-      });
-      var extent = eezFeat ? eezFeat.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale)
-      flyToExtent(this.paMap, bufExtent);        
-    }
-
-    function zoomToPA(event) {
-      var paFeat = this.paLayer.getSource().forEachFeature(function(feat){
-        if (feat.get(config.layers.pa.unitname) == config.unit.name) {
-          return feat;
-        }        
-      });
-      var extent = paFeat ? paFeat.getGeometry().getExtent() : null;
-      var bufExtent = getBufferedExtent(extent, this.options.config.scale.params.zoomBufScale)
-      flyToExtent(this.paMap, bufExtent, this.options.config.settings.maxSatResolution);   
-    }
-
-
-    if (config.scale.name == 'country') {
-      //Zoom in to the EEZ feature after a few seconds
-      window.setTimeout($.proxy(zoomToEEZ, this), 3000);
-    } else if (config.scale.name == 'mpa') {
-      //Zoom in to the PA feature after a few seconds
-      window.setTimeout($.proxy(zoomToPA, this), 3000);
-    }
-    
-
-    this.paMap.addLayer(this.paEEZLayer);
+    this.paMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.eez.links.WMS,
+        params: {'LAYERS': config.layers.eez.modelname, 'STYLES': config.layers.eez.style, 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
 
     /******** Feature Overlays ********/
 
@@ -736,6 +657,27 @@ $.widget( "geonode.ReefAssessment", {
           'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
       })
     }));
+
+    function zoomToPA(event) {
+      var paFeat = this.paLayer.getSource().forEachFeature(function(feat){
+        if (feat.get(config.layers.pa.unitname) == config.unit.name) {
+          return feat;
+        }        
+      });
+      var extent = paFeat ? paFeat.getGeometry().getExtent() : null;
+      var bufExtent = getBufferedExtent(extent, this.options.config.scale.params.zoomBufScale)
+      flyToExtent(this.paMap, bufExtent, this.options.config.settings.maxSatResolution);   
+    }
+
+    if (config.scale.name == 'region' || config.scale.name == 'country') {
+      // Zoom to pa extent
+      var extent = config.settings.extents[config.unit.name];
+      window.setTimeout(zoomToLatLonExtent.call(this, this.paMap, extent), 5000);    
+    } else if (config.scale.name == 'mpa') {
+      //Zoom in to the PA feature after a few seconds
+      window.setTimeout($.proxy(zoomToPA, this), 3000);
+    }    
+
   },
 
   _getEEZStyle: function(feature, resolution) {
@@ -753,6 +695,7 @@ $.widget( "geonode.ReefAssessment", {
     var strokeWidth = 1;
     var fillColor = 'red';
     var fillOpacity = .5;
+    var lineDash = null;
     var status = feature.get(config.layers.pa.statusname);    
 
     //Style based on mpa status
@@ -760,6 +703,7 @@ $.widget( "geonode.ReefAssessment", {
       strokeColor = 'rgba(153,204,255,1.0)';
       strokeWidth = 1.5;
       fillColor = 'rgba(153,204,255,0)';
+      lineDash = [6,6];
     } else if (status == "Designated") {
       strokeColor = 'rgba(51,102,255,1.0)';
       strokeWidth = 1.5;
@@ -773,7 +717,8 @@ $.widget( "geonode.ReefAssessment", {
       }),
       stroke: new ol.style.Stroke({
         color: strokeColor,
-        width: strokeWidth
+        width: strokeWidth,
+        lineDash: lineDash
       })            
     })];
   },  
@@ -1476,6 +1421,14 @@ function getFeatureByAttribute(layer, attr, value) {
 function zoomToFeature(map, feature) {
   var extent = feature ? feature.getGeometry().getExtent() : null;
   map.getView().fitExtent(extent, map.getSize());
+}
+
+function zoomToLatLonExtent(map, extent) {
+  if (extent) {
+    extent = ol.proj.transformExtent(extent,'EPSG:4326','EPSG:3857');
+    var bufExtent = getBufferedExtent(extent, config.scale.params.zoomBufScale);
+    flyToExtent(map, bufExtent);
+  }
 }
 
 function getBufferedExtent(extent, bufScale) {
