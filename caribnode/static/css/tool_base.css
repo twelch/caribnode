@@ -223,7 +223,7 @@ td.small-num {
 .map-links {
     list-style-type: none;
     margin: 0;
-    min-width: 100px;
+    min-width: 50px;
 }
 
 .map-links li {
