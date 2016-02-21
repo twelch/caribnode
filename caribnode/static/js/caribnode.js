@@ -917,7 +917,7 @@ $.widget( "geonode.IndiList", {
         
         //Handle each indicator, appending display object with prepped values
         indi.display.year = yearOne[indi.year_field];
-        indi.display.value = yearOne[indi.value_field];
+        indi.display.value = yearOne[indi.value_field] ? yearOne[indi.value_field] : '-';
         indi.display.score = yearOne[indi.score_field];
         indi.display.grade = yearOne[indi.grade_field];
         indi.display.sample = yearOne[indi.sample_field];
@@ -954,7 +954,7 @@ $.widget( "geonode.IndiList", {
           }          
         }
 
-        if (indi.name == 'Coral Cover') {          
+        if (indi.name == 'Coral Cover' || indi.name == 'Fleshy Macroalgae') {          
           indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
         } else if (indi.name == 'Herbivorous Fish' || indi.name == 'Commercial Fish') {
           indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
