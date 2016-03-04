@@ -544,7 +544,7 @@ $.widget( "geonode.ReefAssessment", {
       this.paLayer = new ol.layer.Tile({
         source: new ol.source.TileWMS({
           url: config.layers.pa.links.WMS,
-          params: {'LAYERS': 'pa', 'STYLES': 'pa_4b0bd6b0', 'TILED': true},
+          params: {'LAYERS': 'pa', 'STYLES': 'pa', 'TILED': true},
           serverType: 'geoserver'
         })
       });
