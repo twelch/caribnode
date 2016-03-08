@@ -292,7 +292,7 @@ to absolute */
 
 .funder {
     background-color: #028BAF;
-    padding-right: 10px;
+    padding: 10px;
 }
 
 .funder .header {
@@ -322,6 +322,7 @@ to absolute */
 
 .funder ul li {
     color: white;
+    padding-bottom: 10px;
 } 
 
 .tool-list {
