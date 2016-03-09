@@ -8,6 +8,7 @@
 {% load pagination_tags %}
 {% load staticfiles %}
 {% load url from future %}
+{% load chunks %}
 
 {% block title %} {% trans "Welcome!" %} - {{ block.super }} {% endblock %}
 
@@ -21,7 +22,7 @@
         <div class="span7">
           <div class="banner-header">{% trans "WELCOME" %}</div>
           <div class="banner-text">
-          {% trans "Discover valuable resources for marine management in the Eastern Caribbean" %}
+          {% chunk "banner-1" %}
           </div>
         </div>
         <div class="span5 text-center">
@@ -35,7 +36,7 @@
         <div class="span7">
           <div class="banner-header">{% trans "UPDATE" %}</div>
           <div class="banner-text">
-          {% trans "2015 Coral Reef Report Cards now available for 6 countries of the OECS" %}
+          {% chunk "banner-2" %}
           </div>
         </div>
         <div class="span5 text-center">
