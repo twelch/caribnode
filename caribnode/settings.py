@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     # Third party apps
 
     # Utility
+    'chunks',
     'pagination',
     'taggit',
     'taggit_templatetags',
