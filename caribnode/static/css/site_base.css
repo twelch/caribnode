@@ -435,6 +435,11 @@ footer.footer form select {
     width: 25%;
 }
 
-.margin-bottom-15 {
+.margin-15 {
     margin-bottom: 15px;
 }
+
+.margin-10 {
+    margin: 10px;
+}
+
