@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load tools_tags %}
+{% load chunks %}
 
 {% block title %} {% trans "Reef Assessment" %} - {{ block.super }} {% endblock %}
 
@@ -12,6 +13,11 @@
     <div class="tool-header">
     {{ scale.alt_name|upper }} REEF ASSESSMENT
     </div>
+    {% if scale.name == 'country' %}
+    <div class="pull-right">
+      <a href="/documents/?category=health">DOWNLOAD PRINTABLE REPORT CARD</a>
+    </div>
+    {% endif %}
     <h2 class="tool-unit">{{ unit.name }}</h2>
 
 <!-------- OVERVIEW SECTION -------->
@@ -314,7 +320,7 @@
             <div class="span12">
               <div class="BIO-indi-icon pull-left"></div>
               <div>
-                <p>{% trans "Coral reef health is measured using five indicators: coral cover, fleshy microalgae, herbivorous fish, commercial fish, and the overall Coral Reef Health Index (RHI).  The RHI is the average of the other four indicators.  Each indicator is assessed at the country and regional level for a given year resulting in a score from 0 and 5 and a grade ranging from Very Good to Critical.  If an indicator has been assessed for at least two years then a trend is calculated for the two most recent years, otherwise it is listed as Not Available (N/A).  The number of sites sampled and source dataset are also provided for each indicator." %}</p>
+                <p>{% chunk "coral-health-intro-1" %}</p>
               </div>
             </div>
           </section>
@@ -328,9 +334,9 @@
             <div class='margin-bottom-15 overflow'>
               <div class="pull-left width65"><p>
               {% if scale.name == "region" %}
-                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the regional and national level." %}
+                {% chunk "coral-health-intro-2-region" %}
               {% elif scale.name == 'country' %}
-                {% trans "Reef Health Charts allow you to see the grades assessed for all five indicators all at once.  Each chart contains the Reef Health Index (RHI) in the middle and the The 4 main indicators around the outside.  The map below includes Reef Health Charts for the national and subregion level." %}
+                {% chunk "coral-health-intro-2-country" %}
               {% endif %}
               </p></div>
               <div class='text-center'>
@@ -498,7 +504,7 @@
             <div class="span12">
               <div class="SOC-indi-icon pull-left"></div>
               <div>
-                <p>Socioeconomic indicators assess the economic and social aspects of fisheries and the interaction with the pursuit of sustainability.</p>
+                <p>{% chunk "socio-intro" %}</p>
                 <p class="unavailable">These indicators have not yet been collected.</p>
               </div>
             </div>
@@ -520,7 +526,7 @@
             <div class="span12">
               <div class="ME-indi-icon pull-left"></div>
               <div>
-                <p>The declaration of a managed area does not always result in adequate protection.  It is important to evaluate the effectiveness of management.</p>
+                <p>{% chunk "effect-intro" %}</p>
                 <p class="unavailable">These indicators have not yet been collected.</p>              
               </div>
             </div>
