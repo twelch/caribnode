@@ -1358,12 +1358,13 @@ function loadMpaCharts(chartConfig) {
       },
       tooltip: {
           formatter: function() {
-              return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+              var less_than_one_indicator = this.y == 1 ? '< ' : '';
+              return '<b>' + this.point.name+'</b>: '+less_than_one_indicator+this.y+' %';
           }
       },
       series: [{
           name: '',
-          data: [["Designated",formatVal(chartConfig.perc_shelf_protected)],["Proposed",formatVal(chartConfig.perc_shelf_proposed)],["Unproposed",chartConfig.shelfGoal-formatVal(chartConfig.perc_shelf_protected)-formatVal(chartConfig.perc_shelf_proposed)]],
+          data: [["Designated",formatVal(chartConfig.perc_shelf_protected)],["Proposed",formatVal(chartConfig.perc_shelf_proposed)],["Unproposed",chartConfig.shelfGoal-chartConfig.perc_shelf_protected-chartConfig.perc_shelf_proposed]],
           size: '100%',
           innerSize: '75%',
           showInLegend:false,
