@@ -118,25 +118,24 @@ def reef_assess(request, scale_name, unit_id, template=''):
         pa_num_proposed = row[0]
 
         #eez total km, ocean protected
-        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'])
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'],layers['eez_noland']['areadesigname'],layers['eez_noland']['areaproposedname'])
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
+
         eez_total_km = row[0]
+        #pa_perc_ocean_protected = row[1]
+        #pa_perc_ocean_proposed = row[2]
+        pa_designated_total_area = row[3]
+        pa_proposed_total_area = row[4]
 
-        pa_perc_ocean_protected = row[1]
-        pa_perc_ocean_proposed = row[2]
-
-        #PAs total area proposed and designated (don't use pa layer to calculate)
-        query = 'SELECT Sum("{0}"), Sum("{1}") FROM eez_noland'.format(layers['eez_noland']['areadesigname'],layers['eez_noland']['areaproposedname'])
         if scale.name == 'country':
-            query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
-        cursor.execute(query)
-        row = cursor.fetchone()
-
-        pa_designated_total_area = row[0]
-        pa_proposed_total_area = row[1]
+            pa_perc_ocean_protected = row[1]
+            pa_perc_ocean_proposed = row[2]
+        elif scale.name == 'region':
+            pa_perc_ocean_protected = row[3]/eez_total_km*100
+            pa_perc_ocean_proposed = row[4]/eez_total_km*100
 
         #shelf total km, ocean protected
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
