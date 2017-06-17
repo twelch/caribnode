@@ -45,7 +45,12 @@ class Unit(models.Model):
     parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
     scale = models.ForeignKey(Scale, related_name='unit_scale')
     order = models.IntegerField(default=1)
-    status = models.CharField(max_length=100, null=True)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+         if not self.status:
+              self.status = None
+         super(Unit, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
