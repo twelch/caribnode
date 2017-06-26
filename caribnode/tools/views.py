@@ -48,9 +48,15 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     #### Create Base Config ####
 
-    tool = Tool.objects.get(name='reef-assess')
     scale = Scale.objects.get(name=scale_name)    
     unit = Unit.objects.get(id=unit_id)
+
+    if scale_name == 'region':
+        tool = Tool.objects.get(unit=unit_id)
+    elif scale_name == 'country':
+        tool = Tool.objects.get(unit=unit.parent)
+    elif scale_name == 'mpa':
+        tool = Tool.objects.get(unit=unit.parent.parent)
 
     config['settings'] = tool.settings
     config['scale'] = model_to_dict(scale)

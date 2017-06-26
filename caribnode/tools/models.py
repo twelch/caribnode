@@ -20,6 +20,23 @@ class Scale(models.Model):
     def __unicode__(self):
         return self.name
 
+# Geographic unit at any given scale e.g. Caribbean or Grenada, where Caribbean
+# is the parent of Grenada
+class Unit(models.Model):
+    name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
+    scale = models.ForeignKey(Scale, related_name='unit_scale')
+    order = models.IntegerField(default=1)
+    status = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+         if not self.status:
+              self.status = None
+         super(Unit, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name
+
 class Tool(models.Model):
     name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
@@ -34,23 +51,7 @@ class Tool(models.Model):
     settings = JSONField(null=True, blank=True)
     order = models.IntegerField(default=0)
     scale = models.ForeignKey(Scale, related_name='tool_scale')
-
-    def __unicode__(self):
-        return self.name
-
-# Geographic unit at any given scale e.g. Caribbean or Grenada, where Caribbean
-# is the parent of Grenada
-class Unit(models.Model):
-    name = models.CharField(max_length=100)
-    parent = models.ForeignKey('self', related_name='unit_related', null=True, blank=True)
-    scale = models.ForeignKey(Scale, related_name='unit_scale')
-    order = models.IntegerField(default=1)
-    status = models.CharField(max_length=100, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-         if not self.status:
-              self.status = None
-         super(Unit, self).save(*args, **kwargs)
+    unit = models.ForeignKey(Unit, related_name='tool_id', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
