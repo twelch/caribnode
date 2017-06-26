@@ -255,8 +255,8 @@ $.widget( "geonode.ReefAssessment", {
       ]),
       target: countryEl,
       view: new ol.View({
-        center: [-6786385.11927109, 1836323.167523076],
-        zoom: 6
+        center: ol.proj.transform(config.settings.defaultView.center,'EPSG:4326','EPSG:3857'),
+        zoom: config.settings.defaultView.zoom
       })
     });
 
@@ -299,8 +299,8 @@ $.widget( "geonode.ReefAssessment", {
       ]),
       target: mapEl,
       view: new ol.View({
-        center: [-6786385.11927109, 1836323.167523076],
-        zoom: 6
+        center: ol.proj.transform(config.settings.defaultView.center,'EPSG:4326','EPSG:3857'),
+        zoom: config.settings.defaultView.zoom
       })
     });
 
@@ -383,8 +383,8 @@ $.widget( "geonode.ReefAssessment", {
       ]),
       target: mapEl,
       view: new ol.View({
-        center: [-6786385.11927109, 1836323.167523076],
-        zoom: 6
+        center: ol.proj.transform(config.settings.defaultView.center,'EPSG:4326','EPSG:3857'),
+        zoom: config.settings.defaultView.zoom
       })
     });
 
@@ -471,8 +471,8 @@ $.widget( "geonode.ReefAssessment", {
       ]),
       target: mapEl,
       view: new ol.View({
-        center: [-6786385.11927109, 1836323.167523076],
-        zoom: 6
+        center: ol.proj.transform(config.settings.defaultView.center,'EPSG:4326','EPSG:3857'),
+        zoom: config.settings.defaultView.zoom
       })
     });
 
