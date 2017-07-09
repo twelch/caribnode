@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import *
@@ -5,7 +6,6 @@ from geonode.layers.models import Layer
 from django.db.models import Sum
 
 from django.db import connection
-from psycopg2.extensions import QuotedString
 from caribnode.tools.util import dictfetchall
 from django.forms.models import model_to_dict
 
@@ -283,15 +283,16 @@ def reef_assess(request, scale_name, unit_id, template=''):
         query = 'SELECT "{0}" FROM eez_noland WHERE "{1}" = \'{2}\''.format(layers['eez_noland']['areaname'], layers['eez_noland']['unitname'], unit.parent.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        eezArea = row[0]
+        eezArea = row[0] or 0
 
         #Get all current pa attributes
-        query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = {1}'.format(layers['pa']['unitname'], QuotedString(unit.name))
+        query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
 
         #Calc % EEZ
-        percEEZ = (row[5]/eezArea)*100
+        paArea = row[5] or 0
+        percEEZ = (paArea/eezArea)*100
 
         #Format attributes as needed
         pa_protdate = pa_mod_date = None
