@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
 from caribnode.tools.models import *
@@ -5,7 +6,6 @@ from geonode.layers.models import Layer
 from django.db.models import Sum
 
 from django.db import connection
-from psycopg2.extensions import QuotedString
 from caribnode.tools.util import dictfetchall
 from django.forms.models import model_to_dict
 
@@ -48,9 +48,15 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
     #### Create Base Config ####
 
-    tool = Tool.objects.get(name='reef-assess')
     scale = Scale.objects.get(name=scale_name)    
     unit = Unit.objects.get(id=unit_id)
+
+    if scale_name == 'region':
+        tool = Tool.objects.get(unit=unit_id)
+    elif scale_name == 'country':
+        tool = Tool.objects.get(unit=unit.parent)
+    elif scale_name == 'mpa':
+        tool = Tool.objects.get(unit=unit.parent.parent)
 
     config['settings'] = tool.settings
     config['scale'] = model_to_dict(scale)
@@ -88,6 +94,8 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
         #Number designated PAs
         query = 'SELECT count(*) FROM pa WHERE pa."STATUS" = \'Designated\' AND "ON_WATER"=1'
+        if scale.name == 'region':
+            query += ' AND pa."COUNTRY" IN (select name from tools_unit where parent_id={0})'.format(unit_id)
         if scale.name == 'country':
             query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
         cursor.execute(query)
@@ -96,11 +104,11 @@ def reef_assess(request, scale_name, unit_id, template=''):
 
         #first year designated
         pa_year_first_designated = None
-        query = 'select "{0}" from pa'.format(layers['pa']['protdatename'])
+        query = 'select "{0}" from pa WHERE "STATUS"=\'Designated\' and "ON_WATER"=1'.format(layers['pa']['protdatename'])
         if scale.name == 'region':
-            query += ' WHERE "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{0}" ASC'.format(layers['pa']['protdatename'])
+            query += ' AND pa."COUNTRY" IN (select name from tools_unit where parent_id={0}) order by "{1}" ASC'.format(unit_id, layers['pa']['protdatename'])
         elif scale.name == 'country':
-            query += ' WHERE "{0}" = \'{1}\' and "STATUS"=\'Designated\' and "ON_WATER"=1 order by "{2}" ASC'.format(layers['pa']['parentunitname'], unit.name, layers['pa']['protdatename'])
+            query += ' AND "{0}" = \'{1}\' order by "{2}" ASC'.format(layers['pa']['parentunitname'], unit.name, layers['pa']['protdatename'])
         cursor.execute(query)
         pas = dictfetchall(cursor)
         if len(pas) > 0:
@@ -111,6 +119,8 @@ def reef_assess(request, scale_name, unit_id, template=''):
         
         #Number proposed PAs
         query = 'SELECT count(*) FROM pa WHERE pa."STATUS" = \'Proposed\' AND "ON_WATER"=1'
+        if scale.name == 'region':
+            query += ' AND pa."COUNTRY" IN (select name from tools_unit where parent_id={0})'.format(unit_id)
         if scale.name == 'country':
             query += ' AND "{0}" = \'{1}\''.format(layers['pa']['parentunitname'], unit.name)
         cursor.execute(query)
@@ -118,80 +128,130 @@ def reef_assess(request, scale_name, unit_id, template=''):
         pa_num_proposed = row[0]
 
         #eez total km, ocean protected
-        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM eez_noland'.format(layers['eez_noland']['areaname'],layers['eez_noland']['percentdesigname'],layers['eez_noland']['percentproposedname'],layers['eez_noland']['areadesigname'],layers['eez_noland']['areaproposedname'])
+        query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM eez_noland'.format(
+            layers['eez_noland']['areaname'],
+            layers['eez_noland']['percentdesigname'],
+            layers['eez_noland']['percentproposedname'],
+            layers['eez_noland']['areadesigname'],
+            layers['eez_noland']['areaproposedname']
+        )
+
+        if scale.name == 'region':
+            query += ' WHERE "{0}" IN (select name from tools_unit where parent_id={1})'.format(layers['eez_noland']['unitname'], unit_id)
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['eez_noland']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
 
-        eez_total_km = row[0]
-        #pa_perc_ocean_protected = row[1]
-        #pa_perc_ocean_proposed = row[2]
-        pa_designated_total_area = row[3]
-        pa_proposed_total_area = row[4]
+        eez_total_km = row[0] or 0
+
+        pa_designated_total_area = row[3] or 0
+        pa_proposed_total_area = row[4] or 0
 
         if scale.name == 'country':
-            pa_perc_ocean_protected = row[1]
-            pa_perc_ocean_proposed = row[2]
+            pa_perc_ocean_protected = 0
+            pa_perc_ocean_proposed = 0
+            if row[1]:
+                pa_perc_ocean_protected = row[1] or 0
+            if row[2]:
+                pa_perc_ocean_proposed = row[2] or 0
         elif scale.name == 'region':
-            pa_perc_ocean_protected = row[3]/eez_total_km*100
-            pa_perc_ocean_proposed = row[4]/eez_total_km*100
+            pa_perc_ocean_protected = 0
+            pa_perc_ocean_proposed = 0
+            if row[3]:
+                pa_perc_ocean_protected = row[3]/eez_total_km*100
+            if row[4]:
+                pa_perc_ocean_proposed = row[4]/eez_total_km*100
 
         #shelf total km, ocean protected
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM shelf_noland'.format(layers['shelf_noland']['areaname'],layers['shelf_noland']['percentdesigname'],layers['shelf_noland']['percentproposedname'],layers['shelf_noland']['areadesigname'],layers['shelf_noland']['areaproposedname'])
+        if scale.name == 'region':
+            query += ' WHERE "{0}" IN (select name from tools_unit where parent_id={1})'.format(layers['shelf_noland']['unitname'], unit_id)
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['shelf_noland']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        shelf_total_km = row[0]
+        shelf_total_km = row[0] or 0
         if scale.name == 'country':
-            pa_perc_shelf_protected = row[1]
-            pa_perc_shelf_proposed = row[2]
+            pa_perc_shelf_protected = 0
+            pa_perc_shelf_proposed = 0
+            if row[1]:
+                pa_perc_shelf_protected = row[1] or 0
+            if row[2]:
+                pa_perc_shelf_proposed = row[2] or 0
         elif scale.name == 'region':
-            pa_perc_shelf_protected = row[3]/shelf_total_km*100
-            pa_perc_shelf_proposed = row[4]/shelf_total_km*100
+            pa_perc_shelf_protected = 0
+            pa_perc_shelf_proposed = 0
+            if row[3]:
+                pa_perc_shelf_protected = row[3]/shelf_total_km*100
+            if row[4]:
+                pa_perc_shelf_proposed = row[4]/shelf_total_km*100
 
         #coral habitat
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM coralreef_country'.format(layers['coral']['areaname'],layers['coral']['percentdesigname'],layers['coral']['percentproposedname'],layers['coral']['areadesigname'],layers['coral']['areaproposedname'])
+        if scale.name == 'region':
+            query += ' WHERE "{0}" IN (select name from tools_unit where parent_id={1})'.format(layers['coral']['unitname'], unit_id)
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['coral']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        coral_total_km = row[0]
+        coral_total_km = row[0] or 0
+        coral_perc_designated = 0
+        coral_perc_proposed = 0
         if scale.name == 'country':
-            coral_perc_designated = row[1]
-            coral_perc_proposed = row[2]
+            if row[1]:
+                coral_perc_designated = row[1]
+            if row[2]:
+                coral_perc_proposed = row[2]
         elif scale.name == 'region':
-            coral_perc_designated = row[3]/coral_total_km*100
-            coral_perc_proposed = row[4]/coral_total_km*100
+            if row[3]:
+                coral_perc_designated = row[3]/coral_total_km*100
+            if row[4]:
+                coral_perc_proposed = row[4]/coral_total_km*100
 
         #seagrass habitat
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM seagrass_country'.format(layers['seagrass']['areaname'],layers['seagrass']['percentdesigname'],layers['seagrass']['percentproposedname'],layers['seagrass']['areadesigname'],layers['seagrass']['areaproposedname'])
+        if scale.name == 'region':
+            query += ' WHERE "{0}" IN (select name from tools_unit where parent_id={1})'.format(layers['seagrass']['unitname'], unit_id)
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['seagrass']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        seagrass_total_km = row[0]
+        seagrass_total_km = row[0] or 0
+        seagrass_perc_designated = 0
+        seagrass_perc_proposed = 0
         if scale.name == 'country':
-            seagrass_perc_designated = row[1]
-            seagrass_perc_proposed = row[2]
+            if row[1]:
+                seagrass_perc_designated = row[1]
+            if row[2]:
+                seagrass_perc_proposed = row[2]
         elif scale.name == 'region':
-            seagrass_perc_designated = row[3]/seagrass_total_km*100
-            seagrass_perc_proposed = row[4]/seagrass_total_km*100            
+            if row[3]:
+                seagrass_perc_designated = row[3]/seagrass_total_km*100
+            if row[4]:
+                seagrass_perc_proposed = row[4]/seagrass_total_km*100            
 
         #mangrove habitat
         query = 'SELECT Sum("{0}"), Sum("{1}"), Sum("{2}"), Sum("{3}"), Sum("{4}") FROM mangrove_country'.format(layers['mangrove']['areaname'],layers['mangrove']['percentdesigname'],layers['mangrove']['percentproposedname'],layers['mangrove']['areadesigname'],layers['mangrove']['areaproposedname'])
+        if scale.name == 'region':
+            query += ' WHERE "{0}" IN (select name from tools_unit where parent_id={1})'.format(layers['shelf_noland']['unitname'], unit_id)
         if scale.name == 'country':
             query += ' WHERE "{0}" = \'{1}\''.format(layers['mangrove']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        mangrove_total_km = row[0]
+        mangrove_total_km = row[0] or 0
+        mangrove_perc_designated = 0
+        mangrove_perc_proposed = 0
         if scale.name == 'country':
-            mangrove_perc_designated = row[1]
-            mangrove_perc_proposed = row[2]
+            if row[1]:
+                mangrove_perc_designated = row[1]
+            if row[2]:
+                mangrove_perc_proposed = row[2]
         elif scale.name == 'region':
-            mangrove_perc_designated = row[3]/mangrove_total_km*100
-            mangrove_perc_proposed = row[4]/mangrove_total_km*100
+            if row[3]:
+                mangrove_perc_designated = row[3]/mangrove_total_km*100
+            if row[4]:
+                mangrove_perc_proposed = row[4]/mangrove_total_km*100
 
         config['stats'] = {
             'eez_total_km': eez_total_km,
@@ -223,15 +283,16 @@ def reef_assess(request, scale_name, unit_id, template=''):
         query = 'SELECT "{0}" FROM eez_noland WHERE "{1}" = \'{2}\''.format(layers['eez_noland']['areaname'], layers['eez_noland']['unitname'], unit.parent.name)
         cursor.execute(query)
         row = cursor.fetchone()
-        eezArea = row[0]
+        eezArea = row[0] or 0
 
         #Get all current pa attributes
-        query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = {1}'.format(layers['pa']['unitname'], QuotedString(unit.name))
+        query = 'SELECT "STATUS", "PROTDATE", "CAMPAM_ID", "WDPA_ID", "MOD_DATE", "AREA_SQKM" FROM pa WHERE "{0}" = \'{1}\''.format(layers['pa']['unitname'], unit.name)
         cursor.execute(query)
         row = cursor.fetchone()
 
         #Calc % EEZ
-        percEEZ = (row[5]/eezArea)*100
+        paArea = row[5] or 0
+        percEEZ = (paArea/eezArea)*100
 
         #Format attributes as needed
         pa_protdate = pa_mod_date = None
