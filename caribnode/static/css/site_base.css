@@ -290,6 +290,11 @@ to absolute */
     padding: 16px 0px 0px 25px;
 }
 
+.funder-box {
+    margin-top: 20px;
+    background-color: white;
+}
+
 .funder {
     background-color: #028BAF;
     padding: 10px;
