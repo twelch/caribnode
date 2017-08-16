@@ -67,7 +67,7 @@
     <div class="features span6">
       <div class="feature-header">{% trans "FEATURED TOOLS" %}</div>
       
-    {% featured_tools "2" as feattools %}
+    {% featured_tools "3" as feattools %}
     {% if feattools|length > 0 %}
       {% for tool in feattools %}
       <div class="feature">
@@ -91,9 +91,9 @@
     <div class="features span6">
       <div class="feature-header">{% trans "LATEST MAPS" %}</div>
 
-    {% featured_maps "2" as last2maps %}
-    {% if last2maps|length > 0 %}
-      {% for map in last2maps %}
+    {% featured_maps "3" as lastmaps %}
+    {% if lastmaps|length > 0 %}
+      {% for map in lastmaps %}
         <div class="feature">
           <div class="feature-map-icon clickable pull-left">
             <a href="{% url "map_detail" map.id %}"></a>
