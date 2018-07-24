@@ -307,6 +307,126 @@
     </div>
   {% endif %}
 
+<!-------- MARINE MANAGED AREAS SECTION -------->
+
+{% if scale.name == "region" or scale.name == "country" %}
+<h3 class='section-header'>{% trans "MARINE MANAGED AREAS" %}</h3>
+<div class="row-fluid section-body">
+
+  <div class="span6 section-left">
+    <table class="stats-table">
+      <colgroup>
+         <col class="stat-col col1">
+         <col class="stat-col col2">
+         <col class="stat-col col3">
+      </colgroup>
+      <tr class="num-row">
+        <td><div class="mpa-desig-icon"></div></td>
+        <td class="big-num">{{stats.pa_num_designated}}</td>
+        <td class="small-num">{{stats.pa_designated_total_area|floatformat:0|intcomma}}</td>                
+      </tr>
+      <tr>
+        <td></td>
+        <td class="big-label">
+          {% if stats.pa_num_designated == 0 %}
+          {% trans "AREAS DESIGNATED" %}
+          {% else %} 
+          {% trans "AREAS DESIGNATED SINCE" %} {{stats.pa_year_first_designated}}
+          {% endif %}
+        </td>
+        <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
+      </tr>
+    </table>
+
+    {% if scale.name != 'region' and stats.pa_num_designated > 0 %}
+    <div class='unit-list country-pa-unit-list'>
+      {% for unit in childUnits %}
+      {% if unit.status == 'Designated' %}
+      <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+        <div class="unit-list-name" ><a href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a></div>
+        <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <table class="stats-table">
+      <colgroup>
+         <col class="stat-col col1">
+         <col class="stat-col col2">
+         <col class="stat-col col3">
+      </colgroup>              
+      <tr class="num-row">
+        <td><div class="mpa-proposed-icon"></div></td>
+        <td class="big-num">{{stats.pa_num_proposed}}</td>
+        <td class="small-num">{{stats.pa_proposed_total_area|floatformat:0|intcomma}}</td>                
+      </tr>
+      <tr>
+        <td></td>
+        <td class="big-label">{% trans "AREAS PROPOSED AND AWAITING DESIGNATION" %}</td>
+        <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
+      </tr>        
+    </table> 
+
+    {% if scale.name != 'region' and stats.pa_num_proposed > 0 %}
+    <div class='unit-list country-pa-unit-list'>
+      {% for unit in childUnits %}
+      {% if unit.status == 'Proposed' %}
+      <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
+        <div class="unit-list-name" ><a href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a></div>
+        <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if scale.name == 'region' or scale.name == "country" %}
+    <div class="row">
+      <div class='span6'>
+        <div class='donut-header'>{% trans "Ocean Managed" %}</div>
+        <div id="ocean-donut"></div>
+        <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity). Only designated areas count towards goal" %}</div>
+      </div>
+      <div class='span6'>
+        <div class='donut-header'>{% trans "Shelf Managed" %}</div>
+        <div id="shelf-donut"></div>
+        <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of marine shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
+      </div>
+    </div>        
+    {% endif %}
+
+  </div>
+  <div class="span6 section-right">
+    <div id="mpa-map">
+    </div>
+    <div class="legend">
+      <table>
+        <tr>        
+          <td><p>{% trans "Managed Area Boundary" %}</p>
+          <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa&SCALE=8735642.90291195"/>
+          </td>
+          <td><p>{% trans "Shelf" %}</p>
+          <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
+          </td>
+          <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
+          <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
+          </td>
+          <td class='last'>
+            <ul class='map-links'>
+              <li><a href='/maps?category=boundaries'>SOURCE MAP</a></li>
+              <li><a href='/layers?category=boundaries'>SOURCE LAYERS</a></li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endif %} 
+
 <!-------- CORAL REEF HEALTH SECTION -------->
 
   {% if scale.name == "region" or scale.name == "country" %}
@@ -369,151 +489,63 @@
     </div>
   {% endif %}    
 
-<!-------- MARINE MANAGED AREAS SECTION -------->
-
-  {% if scale.name == "region" or scale.name == "country" %}
-    <h3 class='section-header'>{% trans "MARINE MANAGED AREAS" %}</h3>
-    <div class="row-fluid section-body">
-
-      <div class="span6 section-left">
-        <table class="stats-table">
-          <colgroup>
-             <col class="stat-col col1">
-             <col class="stat-col col2">
-             <col class="stat-col col3">
-          </colgroup>
-          <tr class="num-row">
-            <td><div class="mpa-desig-icon"></div></td>
-            <td class="big-num">{{stats.pa_num_designated}}</td>
-            <td class="small-num">{{stats.pa_designated_total_area|floatformat:0|intcomma}}</td>                
-          </tr>
-          <tr>
-            <td></td>
-            <td class="big-label">
-              {% if stats.pa_num_designated == 0 %}
-              {% trans "AREAS DESIGNATED" %}
-              {% else %} 
-              {% trans "AREAS DESIGNATED SINCE" %} {{stats.pa_year_first_designated}}
-              {% endif %}
-            </td>
-            <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
-          </tr>
-        </table>
-
-        {% if scale.name != 'region' and stats.pa_num_designated > 0 %}
-        <div class='unit-list country-pa-unit-list'>
-          {% for unit in childUnits %}
-          {% if unit.status == 'Designated' %}
-          <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-            <div class="unit-list-name" ><a href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a></div>
-            <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
-          </article>
-          {% endif %}
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        <table class="stats-table">
-          <colgroup>
-             <col class="stat-col col1">
-             <col class="stat-col col2">
-             <col class="stat-col col3">
-          </colgroup>              
-          <tr class="num-row">
-            <td><div class="mpa-proposed-icon"></div></td>
-            <td class="big-num">{{stats.pa_num_proposed}}</td>
-            <td class="small-num">{{stats.pa_proposed_total_area|floatformat:0|intcomma}}</td>                
-          </tr>
-          <tr>
-            <td></td>
-            <td class="big-label">{% trans "AREAS PROPOSED AND AWAITING DESIGNATION" %}</td>
-            <td class="small-label">{% trans "SQUARE KM OF OCEAN" %}</td>
-          </tr>        
-        </table> 
-
-        {% if scale.name != 'region' and stats.pa_num_proposed > 0 %}
-        <div class='unit-list country-pa-unit-list'>
-          {% for unit in childUnits %}
-          {% if unit.status == 'Proposed' %}
-          <article class="unit-list-item {% if forloop.last %}last{% endif %}" name="{{ unit.name }}" >
-            <div class="unit-list-name" ><a href='{% url "reef_assess" childScale.name unit.id %}'>{{ unit.name }}</a></div>
-            <div class="zoom-unit-icon pull-right" name="{{ unit.name }}" title="Zoom map to {{childScale.name}}"></div>
-          </article>
-          {% endif %}
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if scale.name == 'region' or scale.name == "country" %}
-        <div class="row">
-          <div class='span6'>
-            <div class='donut-header'>{% trans "Ocean Managed" %}</div>
-            <div id="ocean-donut"></div>
-            <div class='donut-footer'>{% trans "Goal - " %}{{settings.oceanGoal}}{% trans "% of EEZ (Convention for Biological Diversity). Only designated areas count towards goal" %}</div>
-          </div>
-          <div class='span6'>
-            <div class='donut-header'>{% trans "Shelf Managed" %}</div>
-            <div id="shelf-donut"></div>
-            <div class='donut-footer'>{% trans "Goal -" %}{{settings.shelfGoal}}{% trans "% of marine shelf (Caribbean Challenge). Only designated areas count towards goal" %}</div>
-          </div>
-        </div>        
-        {% endif %}
-
-      </div>
-      <div class="span6 section-right">
-        <div id="mpa-map">
-        </div>
-        <div class="legend">
-          <table>
-            <tr>        
-              <td><p>{% trans "Managed Area Boundary" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=pa&style=pa&SCALE=8735642.90291195"/>
-              </td>
-              <td><p>{% trans "Shelf" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=shelf&style=shelf_1a6f87cb&SCALE=8735642.90291195"/>
-              </td>
-              <td><p>{% trans "Exclusive Economic Zone (EEZ)" %}</p>
-              <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&width=20&height=20&layer=eez&SCALE=17471285.8058239"/>
-              </td>
-              <td class='last'>
-                <ul class='map-links'>
-                  <li><a href='/maps?category=boundaries'>SOURCE MAP</a></li>
-                  <li><a href='/layers?category=boundaries'>SOURCE LAYERS</a></li>
-                </ul>
-              </td>
-            </tr>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  {% endif %}
-
-<!---- SOCIOECONOMIC ---->
-
-  {% if scale.name == "region" or scale.name == "country" %}
-    <h3 class='section-header'>SOCIOECONOMIC</h3>
-
-    <div class="row-fluid section-body">
-      <div class="span12">
-        <div class="row-fluid">
-          <section class="indi-top">
-            <div class="span12">
-              <div class="SOC-indi-icon pull-left"></div>
-              <div>
-                <p>{% chunk "socio-intro" %}</p>
-                <p class="unavailable">These indicators have not yet been collected.</p>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  {% endif %}    
-
 <!---- MANAGEMENT EFFECTIVENESS ---->
 
-  {% if scale.name == "region" or scale.name == "country" %}
+  {% if scale.name == "country" %}
+  <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
+
+  <div class="row-fluid section-body">
+    <div class="span12">
+      <div class="row-fluid">
+        <section class="indi-top">
+          <div class="span12">
+            <div class="ME-indi-icon pull-left"></div>
+            <div>
+              <p>{% chunk "effect-intro-2" %}</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="row-fluid">
+        <div id="indi-ME-list" class="span6 section-left"></div>
+
+        <div class="span6 section-right">
+          
+          <div id="ME-map">
+            <div id="ME-display">
+              <div id='me-unit'></div>
+              <div>Grade: <span id='me-grade'></span></div>
+              <div>Score: <span id='me-score'></span></div>
+            </div>
+          </div>
+          <div class="legend">
+            <table>
+              <tr>        
+                <td><p>{% trans "Grade" %}</p>
+                <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=geonode:me_mpa&style=me_mpa_8fc7bfaa&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+                </td>
+                <td><p>{% trans "Subregion" %}</p>
+                <img src="{{GEOSERVER_URL}}/wms?request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=:reef_subregion_200m_line&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+                </td>
+                <td class='last'>
+                <ul class='map-links'>
+                  <li><a href='/maps?category=biota'>SOURCE MAP</a></li>
+                  <li><a href='/layers?category=biota'>SOURCE LAYERS</a></li>
+                </ul>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+  {% if scale.name == "region" %}
     <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
 
     <div class="row-fluid section-body">
@@ -532,6 +564,28 @@
       </div>
     </div>
   {% endif %}   
+
+<!---- SOCIOECONOMIC ---->
+
+{% if scale.name == "region" or scale.name == "country" %}
+<h3 class='section-header'>SOCIOECONOMIC</h3>
+
+<div class="row-fluid section-body">
+  <div class="span12">
+    <div class="row-fluid">
+      <section class="indi-top">
+        <div class="span12">
+          <div class="SOC-indi-icon pull-left"></div>
+          <div>
+            <p>{% chunk "socio-intro" %}</p>
+            <p class="unavailable">These indicators have not yet been collected.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% endif %}   
 
 <!-------- INDICATORS SECTION -------->
   <div class="row-fluid">

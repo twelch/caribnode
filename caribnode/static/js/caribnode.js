@@ -63,6 +63,7 @@ $.widget( "geonode.ReefAssessment", {
         this._loadCountryMap('country-map');
         this._loadHabitatMap('hab-map');
         this._loadBioMap('BIO-map');
+        this._loadMeMap('ME-map');
         this._loadMpaMap('mpa-map');
 
         var clickZoomConfig = null;
@@ -292,6 +293,32 @@ $.widget( "geonode.ReefAssessment", {
     this._highlightListItem(this.listItemClass, countryName);
   },
 
+  _MEHoverHandler: function(evt) {
+    var pixel = this.meMap.getEventPixel(evt.originalEvent);
+    var unit = '';
+    var grade = '';
+    var score = '';
+    
+    var feature = this.meMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+      return feature;
+    });
+
+    if (feature) {
+      unit = feature.get('AREANAM') || feature.get('MPA');
+      grade = feature.get('CAP_STAFF1') || 'N/A';
+      score = '' + (feature.get('CAP_STAFF' || 'N/A'));
+    }
+    
+    this._displayME(
+      unit,
+      grade,
+      score
+    );
+    // this._highlightFeature(this.cOverlay, feature);
+    // var countryName = feature ? feature.get(config.layers.eez.unitname) : null;
+    // this._highlightListItem(this.listItemClass, countryName);
+  },
+
   _loadHabitatMap: function(mapEl) {  
     this.habMap = new ol.Map({
       controls: ol.control.defaults().extend([
@@ -462,6 +489,156 @@ $.widget( "geonode.ReefAssessment", {
     // Zoom to pie extent
     var extent = config.settings.extents[config.unit.name];
     window.setTimeout(zoomToLatLonExtent.call(this, this.bioMap, extent), 3000);
+  },
+
+  /* Management Effectiveness */
+  _loadMeMap: function(mapEl) {  
+    this.meMap = new ol.Map({
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.XYZ({          
+            url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+              'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+          })
+        })     
+      ],
+      controls: ol.control.defaults().extend([
+        new ol.control.FullScreen()
+      ]),
+      target: mapEl,
+      view: new ol.View({
+        center: ol.proj.transform(config.settings.defaultView.center,'EPSG:4326','EPSG:3857'),
+        zoom: config.settings.defaultView.zoom
+      })
+    });
+
+    $(this.meMap.getViewport()).on('mousemove', $.proxy(this._MEHoverHandler, this));
+
+    /******** Base Layers ********/
+
+    if (this.options.config.scale.name == 'region' || this.options.config.scale.name == 'country') {
+      this.meMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.XYZ({          
+          url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+        })
+      }));
+    }
+
+    /******* Subregion Layer ********/
+
+    if (this.options.config.scale.name == 'country') {
+      this.meMap.addLayer(new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: config.layers.reef_subregion_line.links.WMS,
+          params: {'LAYERS': config.layers.reef_subregion_line.modelname, 'STYLES': config.layers.reef_subregion_line.style, 'TILED': true},
+          serverType: 'geoserver'
+        })
+      }));
+    }
+
+    /******* Habitat Layers ********/
+
+    this.meMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.shelf.links.WMS,
+        params: {'LAYERS': 'sub_merge_4326', 'STYLES': 'sub_merge_4326', 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** EEZ Layer ********/
+
+    this.meMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        url: config.layers.eez.links.WMS,
+        params: {'LAYERS': config.layers.eez.modelname, 'STYLES': config.layers.eez.style, 'TILED': true},
+        serverType: 'geoserver'
+      })
+    }));
+
+    /******** Annotation Layers ********/
+    this.meMap.addLayer(new ol.layer.Tile({
+      source: new ol.source.XYZ({          
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+          'Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}'
+      })
+    }));
+
+    /******** ME Layers **********/
+
+    if (config.scale.name=='country') {
+
+      /********** ME PA Polygon Layer **********/
+      //Get base URL and switch to web mercator projection
+      var paUrl = config.layers.me_mpa_poly.links.GeoJSON.replace('4326','3857');
+      //Also switch from JSON to JSONP
+      paUrl = paUrl.replace('json','text/javascript');
+      //Filter to include only mpas for current country 
+      paUrl += '&format_options=callback:loadMEPAFeatures';    
+
+      //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+      function paLoad(extent, resolution, projection) {
+        $.ajax({
+          url: paUrl,
+          dataType: 'jsonp',
+          jsonp: null,
+          jsonpCallback: "loadMEPAFeatures",
+          context: this
+        });
+      }
+
+      //OL3 ServerVector source that uses custom loader
+      this.mePASource = new ol.source.ServerVector({
+        format: new ol.format.GeoJSON(),
+        projection: 'EPSG:3857',
+        loader: $.proxy(paLoad, this)
+      });   
+
+      this.mePALayer = new ol.layer.Vector({
+        source: this.mePASource,
+        style: $.proxy(this._getMEPAStyle, this)
+      });   
+
+      this.meMap.addLayer(this.mePALayer);    
+      
+      /********** ME Point Layer **********/
+      //Get base URL and switch to web mercator projection
+      var mePAIndiUrl = config.layers.me_mpa.links.GeoJSON.replace('4326','3857');
+      //Also switch from JSON to JSONP
+      mePAIndiUrl = mePAIndiUrl.replace('json','text/javascript');
+      //Filter to include only mpas for current country 
+      mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures';    
+
+      //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
+      function paIndiLoad(extent, resolution, projection) {
+        $.ajax({
+          url: mePAIndiUrl,
+          dataType: 'jsonp',
+          jsonp: null,
+          jsonpCallback: "loadMEPAIndiFeatures",
+          context: this
+        });
+      }
+
+      //OL3 ServerVector source that uses custom loader
+      this.mePAIndiSource = new ol.source.ServerVector({
+        format: new ol.format.GeoJSON(),
+        projection: 'EPSG:3857',
+        loader: $.proxy(paIndiLoad, this)
+      });  
+
+      this.mePAIndiLayer = new ol.layer.Vector({
+        source: this.mePAIndiSource,
+        style: $.proxy(this._getMEStyle, this)
+      });
+      
+      this.meMap.addLayer(this.mePAIndiLayer);
+    }
+
+    // Zoom to pie extent
+    var extent = config.settings.extents[config.unit.name];
+    window.setTimeout(zoomToLatLonExtent.call(this, this.meMap, extent), 3000);
   },
 
   _loadMpaMap: function(mapEl) {  
@@ -688,6 +865,59 @@ $.widget( "geonode.ReefAssessment", {
         width: 1
       })            
     })];
+  },
+  
+  _getMEStyle: function(feature, resolution) {
+    var indiCol = 'CAP_STAFF1';
+    var dotColor = '#999999';
+    var aboveColor = '#7DBC3D';
+    var belowColor = '#EB8034';
+
+    var radius = 8;
+    if (resolution > 100) {
+      radius = 7;
+    } else if (resolution > 200) {
+      radius = 6;
+    } else if (resolution > 500) {
+      radius = 3;
+    }
+    var grade = feature.get(indiCol);
+    if (grade === 'above') {
+      dotColor = aboveColor;
+    } else if (grade === 'below') {
+      dotColor = belowColor;
+    }
+
+    return [new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: radius,
+        fill: new ol.style.Fill({color: dotColor})
+      })
+    })];
+  },
+
+  _getMEPAStyle: function(feature, resolution) {
+    var aboveColor = '#7DBC3D';
+    var belowColor = '#EB8034';
+    var strokeColor = 'red';
+    var strokeWidth = 1;
+    var fillColor = 'red';
+    var grade = feature.get('CAP_STAFF1');
+
+    strokeColor = grade === 'above' ? aboveColor: belowColor;;
+    strokeWidth = 1.5;
+    fillColor = 'rgba(51,102,255,0)';
+
+    return [new ol.style.Style({
+      fill: new ol.style.Stroke({
+        color: fillColor,
+        width: 1
+      }),
+      stroke: new ol.style.Stroke({
+        color: strokeColor,
+        width: strokeWidth
+      })            
+    })];
   },  
 
   _getPAStyle: function(feature, resolution) {
@@ -728,6 +958,15 @@ $.widget( "geonode.ReefAssessment", {
   loadPAFeatures: function(features) {
     this.paSource.addFeatures(this.paSource.readFeatures(features));    
   },
+
+  loadMEPAFeatures: function(features) {
+    this.mePASource.addFeatures(this.mePASource.readFeatures(features));
+  },
+
+  loadMEPAIndiFeatures: function(features) {
+    this.MEPAIndiFeatures = this.mePAIndiSource.readFeatures(features)
+    this.mePAIndiSource.addFeatures(this.MEPAIndiFeatures);
+  },  
 
   loadEEZFeatures: function(features) {
     if (this.paEEZSource) {
@@ -857,7 +1096,25 @@ $.widget( "geonode.ReefAssessment", {
       }
       this.highName = name;
     }
-  }    
+  },
+  
+  _displayME: function(unit, grade, score) {
+    if (unit.length > 0) {
+      $('#ME-display').show();
+      $('#me-unit').text(unit);
+      if (grade === 'above') {
+        grade = '<span class="me-grade-above">' + grade + '</span>';
+      } else if (grade === 'below') {
+        grade = '<span class="me-grade-below">' + grade + '</span>';
+      }
+      $('#me-grade').html(grade);
+      $('#me-score').text(score);
+      // Feed in data
+    } else {
+      // $('#ME-display').hide()
+      // Clear data
+    }
+  }
 });
 
 /******** INDICATOR LIST WIDGET ********/
@@ -1391,6 +1648,13 @@ function loadPAFeatures(features) {
   $('body').data().geonodeReefAssessment.loadPAFeatures(features);  
 }
 
+function loadMEPAFeatures(features) {
+  $('body').data().geonodeReefAssessment.loadMEPAFeatures(features);  
+}
+
+function loadMEPAIndiFeatures(features) {
+  $('body').data().geonodeReefAssessment.loadMEPAIndiFeatures(features);  
+}
 
 /******** Global Util Functions ********/
 

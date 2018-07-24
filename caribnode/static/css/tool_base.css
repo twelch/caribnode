@@ -394,6 +394,40 @@ td.small-num {
     height: 580px;
 }
 
+#ME-map {
+    height: 580px;
+    position: relative;
+}
+
+#ME-display {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: #EFEFEF;
+    border-top: 1px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+    height: 100px;
+    width: 200px;
+    z-index: 1000;
+    display: none;
+    padding: 8px;
+}
+
+#me-unit {
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.me-grade-below {
+    color: #EB8034;
+}
+
+.me-grade-above {
+    color: #7DBC3D;
+}
+
+
+
 /******** INDICATORS ********/
 
 .indi-top {
@@ -613,9 +647,13 @@ a .doc-data-icon {
     border-bottom: 1px solid #ccc;
 }
 
+.indi-list-item:hover {
+    background-color: #DFDFDF;
+}
+
 .indi-list-title {
     font-size: 20px;
-    margin: 10px 0;
+    padding: 10px 0;
 }
 
 .indi-list-desc p {
