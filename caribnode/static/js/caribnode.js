@@ -575,7 +575,7 @@ $.widget( "geonode.ReefAssessment", {
       //Also switch from JSON to JSONP
       paUrl = paUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      paUrl += '&format_options=callback:loadMEPAFeatures';    
+      paUrl += '&format_options=callback:loadMEPAFeatures&cql_filter='+config.layers.me_mpa_poly.parentunitname+'=\''+config.unit.name+'\'';    
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paLoad(extent, resolution, projection) {
@@ -604,11 +604,11 @@ $.widget( "geonode.ReefAssessment", {
       
       /********** ME Point Layer **********/
       //Get base URL and switch to web mercator projection
-      var mePAIndiUrl = config.layers.me_mpa.links.GeoJSON.replace('4326','3857');
+      var mePAIndiUrl = config.layers.me_mpa_point.links.GeoJSON.replace('4326','3857');
       //Also switch from JSON to JSONP
       mePAIndiUrl = mePAIndiUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures';    
+      mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures&cql_filter='+config.layers.me_mpa_point.parentunitname+'=\''+config.unit.name+'\'';    
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paIndiLoad(extent, resolution, projection) {
