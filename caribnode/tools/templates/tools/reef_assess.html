@@ -809,4 +809,57 @@ $( document ).ready(function() {
         </div>      
       </section>                                            
 </script>
+
+<script type="text/template" class="MEindiList">
+  <div class="indi-list-header caps">
+    Indicators
+  </div>
+  <% _.each(indis, function(indi) { %>
+  <div class="indi-list-item">
+    <div class="indi-list-title">
+      <%= indi.name %>
+    </div>
+    <div class="indi-list-desc">
+      <p><%= indi.description %> &nbsp;&nbsp;<a href="/tools/indicator_help#<%= indi_type_display %>" target="_window">Learn More</a></p>
+    </div>
+    <div class="indi-list-stats">
+      <table class="table table-indi-list">
+        <tr class='indi-list-value'>
+          <td>
+            <div><%= indi.display.year %></div>
+          </td>
+          <td>
+            <div id='<%= indi.indi_type %>-<%= indi.id %>' class='me-bar'></div>
+          </td>
+          <td>
+            <div><%= indi.display.sample %></div>
+          </td>
+          <td>
+            <div>
+              <% if (indi.display.doc_link) { %>
+                <a href="<%= indi.display.doc_link %>"><i class="icon-table indi-list-icon"></i></a>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+        <tr class='indi-list-label'>
+          <td>
+            <div>Year</div>
+          </td>
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <div>Sites</div>
+          </td>
+          <td>
+            <div>Source</div>
+          </td>                  
+        </tr>
+      </table>
+    </div>
+  </div>
+  <% }); %>
+</script>
+
 {% endblock extra_script %}

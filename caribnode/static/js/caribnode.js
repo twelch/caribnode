@@ -213,20 +213,21 @@ $.widget( "geonode.ReefAssessment", {
       });
 
       //Render new section for current type
-      /*
-      $( "<div></div>" ).appendTo( "#indi-section" ).IndiSection({
-        'indi_type': curType.indi_type,
-        'indi_type_display': curType.indi_type_display,
-        'indis': indiSubset
-      });
-      */
-
-      //Render new list for current indicator type
-      $( "<div></div>" ).appendTo( "#indi-"+curType.indi_type+"-list" ).IndiList({
-        'indi_type': curType.indi_type,
-        'indi_type_display': curType.indi_type_display,
-        'indis': indiSubset
-      });
+      if (curType.indi_type === 'ME') {
+        $( "<div></div>" ).appendTo( "#indi-"+curType.indi_type+"-list" ).MEIndiList({
+          'indi_type': curType.indi_type,
+          'indi_type_display': curType.indi_type_display,
+          'indis': indiSubset
+        });
+      } else {
+        $( "<div></div>" ).appendTo( "#indi-"+curType.indi_type+"-list" ).IndiList({
+          'indi_type': curType.indi_type,
+          'indi_type_display': curType.indi_type_display,
+          'indis': indiSubset
+        });
+      }
+      
+      
     });
   },
 
@@ -1117,7 +1118,7 @@ $.widget( "geonode.ReefAssessment", {
   }
 });
 
-/******** INDICATOR LIST WIDGET ********/
+/******** BIO INDICATOR LIST WIDGET ********/
 
 $.widget( "geonode.IndiList", {
   // Default options, must be overriden
@@ -1242,7 +1243,7 @@ $.widget( "geonode.IndiList", {
   }
 });
 
-/******** INDICATOR TABLE WIDGET ********/
+/******** BIO INDICATOR TABLE WIDGET ********/
 
 $.widget( "geonode.IndiSection", {
   // Default options, must be overriden
@@ -1364,6 +1365,217 @@ $.widget( "geonode.IndiSection", {
     }
   }
 });
+
+/******** ME INDICATOR LIST WIDGET ********/
+
+$.widget( "geonode.MEIndiList", {
+  // Default options, must be overriden
+  options: {
+      indi_type: 'type name',
+      indi_type_display: 'type display name',
+      indis: []
+  },
+
+  _create: function() {
+      this._genRows();
+
+      //Compile and render template
+      var compiled = _.template($(".MEindiList").html());
+      var html = compiled(this.options);
+      this.element.append(html);
+      this._genCharts();
+  },
+
+  //Generate the table values for each indi
+  _genRows: function() {
+    _.each(this.options.indis, function(indi){
+      //Object containing all of the display values
+      indi.display = {};
+
+      //Check if any data available for this unit
+      if (indi.document.data.length == 0) {
+        indi.display.year = "-";
+        indi.display.value = "-";
+        indi.display.score = "-";
+        indi.display.grade = null;
+        indi.display.doc_link = null;
+        indi.display.trend = null;
+        indi.display.sample = '-';
+      } else {
+        //Get most recent two years data
+        var lastTwo = _.sortBy(indi.document.data, function(row){
+          //Use negative in test to sort descending, as it will sort ascending value by default
+          return -row[indi.year_field];
+        }).slice(0,2);
+
+        var yearOne = null
+        var yearTwo = null;
+
+        if (lastTwo.length == 0) {
+          //No data to show
+        } else if(lastTwo.length == 1) {
+          //One year of data to show
+          yearOne = lastTwo[0];
+        } else {
+          //Two years of data to show
+          yearOne = lastTwo[0];
+          yearTwo = lastTwo[1];
+        }
+        
+        //Handle each indicator, appending display object with prepped values
+        indi.display.year = yearOne[indi.year_field];
+        indi.display.value = yearOne[indi.value_field] ? yearOne[indi.value_field] : '-';
+        indi.display.score = yearOne[indi.score_field];
+        indi.display.grade = yearOne[indi.grade_field];
+        indi.display.sample = yearOne[indi.sample_field];
+        indi.display.doc_link = indi.document.link;
+
+        if (yearTwo) {
+          yearOneValue = yearOne[indi.value_field];
+          yearOneGradeValue = this._getOrdinalValue(yearOne[indi.grade_field]);
+          yearOneScore = yearOne[indi.score_field];
+          yearTwoValue = yearTwo[indi.value_field];
+          yearTwoGradeValue = this._getOrdinalValue(yearTwo[indi.grade_field]);         
+          yearTwoScore = yearTwo[indi.score_field];
+          
+          if (yearOneScore) {
+            //If score then base trend on that
+            if (yearOneScore == yearTwoScore) {
+              indi.display.trend = 'same';
+            } else if (yearOneScore >= yearTwoScore) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';              
+            }
+          } else if (yearOneGradeValue) {
+            //If no value but grade then base trend on that
+            if (yearOneGradeValue == yearTwoGradeValue) {
+              indi.display.trend = 'same';
+            } else if (yearOneGradeValue >= yearTwoGradeValue) {
+              indi.display.trend = 'up';
+            } else {
+              indi.display.trend = 'down';
+            }
+          } else {
+            indi.display.trend = false;
+          }          
+        }
+
+        if (indi.name == 'Coral Cover' || indi.name == 'Fleshy Macroalgae') {          
+          indi.display.value = parseFloat(indi.display.value*100).toFixed(1)+'%';          
+        } else if (indi.name == 'Herbivorous Fish' || indi.name == 'Commercial Fish') {
+          indi.display.value = humanize.numberFormat(indi.display.value, 0, '.', ',');
+        }        
+      }
+
+      
+    }, this);
+  },
+
+  _genCharts: function() {
+    _.each(this.options.indis, function(indi){
+      //Object containing all of the display values
+      loadMeChart({
+        'target':indi.indi_type+'-'+indi.id,
+        'below': -4,
+        'above': 45
+      });
+    }, this);
+  },
+
+  _getOrdinalValue: function(qual_value) {
+    switch(qual_value) {
+      case 'Definitely Yes':
+        return 4;
+        break;
+      case 'Mostly Yes':
+        return 3;
+        break;
+      case 'Mostly No':
+        return 2;
+        break;
+      case 'Definitely No':
+        return 1;
+        break;
+      default:
+        return 1;
+    }
+  }
+});
+
+/**************** CHARTS ************/
+
+function loadMeChart(chartConfig) {
+
+  // Create the chart
+  var categories = [
+      ''
+  ];
+  meBar = new Highcharts.Chart({
+      chart: {
+          renderTo: chartConfig.target,
+          type: 'bar',
+          margin: [0, 0, 0, 0],
+          spacingTop: 0,
+          spacingBottom: 0,
+          spacingLeft: 0,
+          spacingRight: 0
+      },
+      credits: {
+          enabled: false
+      },
+      title: {
+          text: ''
+      },
+      colors: ['#EB8034','#7DBC3D'],
+      xAxis: [{
+          categories: categories,
+          reversed: false,
+          labels: {
+              step: 1
+          }
+      }, { // mirror axis on right side
+          opposite: true,
+          reversed: false,
+          categories: categories,
+          linkedTo: 0,
+          labels: {
+              step: 1
+          }
+      }],
+      yAxis: {
+          min: -100,
+          max: 100,
+          title: {
+              text: null
+          },
+          labels: {
+              step: 100,
+              formatter: function () {
+                  return Math.abs(this.value) + '%';
+              }
+          }
+      },
+      plotOptions: {
+          series: {
+              stacking: 'normal'
+          }
+      },
+      series: [{
+          name: 'Below threshold',
+          showInLegend:false,
+          data: [
+              chartConfig.below
+          ]
+      }, {
+          name: 'Above threshold',
+          showInLegend:false,
+          data: [
+              chartConfig.above
+          ]
+      }]
+  });
+}
 
 function loadHabCharts(chartConfig) {
 

@@ -368,6 +368,10 @@ td.small-num {
     width: 130px; height: 130px; margin: 0 auto
 }
 
+.me-bar {
+    width: 300px; height: 50px; margin: 0 auto;
+}
+
 #ocean-donut {
     width: 90%; height: 200px; margin: 0 auto
 }
