@@ -1402,25 +1402,9 @@ $.widget( "geonode.MEIndiList", {
         indi.display.trend = null;
         indi.display.sample = '-';
       } else {
-        //Get most recent two years data
-        var lastTwo = _.sortBy(indi.document.data, function(row){
-          //Use negative in test to sort descending, as it will sort ascending value by default
-          return -row[indi.year_field];
-        }).slice(0,2);
-
-        var yearOne = null
-        var yearTwo = null;
-
-        if (lastTwo.length == 0) {
-          //No data to show
-        } else if(lastTwo.length == 1) {
-          //One year of data to show
-          yearOne = lastTwo[0];
-        } else {
-          //Two years of data to show
-          yearOne = lastTwo[0];
-          yearTwo = lastTwo[1];
-        }
+        var lastTwo = this._getLastTwoYears(indi);
+        var yearOne = lastTwo[0];
+        var yearTwo = lastTwo[1];
         
         //Handle each indicator, appending display object with prepped values
         indi.display.year = yearOne[indi.year_field];
@@ -1474,13 +1458,43 @@ $.widget( "geonode.MEIndiList", {
 
   _genCharts: function() {
     _.each(this.options.indis, function(indi){
+      var lastTwo = this._getLastTwoYears(indi);
+      var yearOne = lastTwo[0];
+      var yearTwo = lastTwo[1];
+      
       //Object containing all of the display values
       loadMeChart({
         'target':indi.indi_type+'-'+indi.id,
-        'below': -4,
-        'above': 45
+        'belowSites': parseInt(yearOne['SITES_BELOW']),
+        'belowPerc': parseInt(yearOne['SITES_BELOW'] / yearOne['SITES'] * -100),
+        'aboveSites': parseInt(yearOne['SITES_ABOVE']),
+        'abovePerc': parseInt(yearOne['SITES_ABOVE'] / yearOne['SITES'] * 100)
       });
     }, this);
+  },
+
+  _getLastTwoYears(indi) {
+    //Get most recent two years data
+    var lastTwo = _.sortBy(indi.document.data, function(row){
+      //Use negative in test to sort descending, as it will sort ascending value by default
+      return -row[indi.year_field];
+    }).slice(0,2);
+
+    var yearOne = null
+    var yearTwo = null;
+
+    if (lastTwo.length == 0) {
+      //No data to show
+    } else if(lastTwo.length == 1) {
+      //One year of data to show
+      yearOne = lastTwo[0];
+    } else {
+      //Two years of data to show
+      yearOne = lastTwo[0];
+      yearTwo = lastTwo[1];
+    }
+
+    return [yearOne, yearTwo];
   },
 
   _getOrdinalValue: function(qual_value) {
@@ -1511,70 +1525,92 @@ function loadMeChart(chartConfig) {
   var categories = [
       ''
   ];
-  meBar = new Highcharts.Chart({
-      chart: {
-          renderTo: chartConfig.target,
-          type: 'bar',
-          margin: [0, 0, 0, 0],
-          spacingTop: 0,
-          spacingBottom: 0,
-          spacingLeft: 0,
-          spacingRight: 0
-      },
-      credits: {
-          enabled: false
-      },
-      title: {
-          text: ''
-      },
-      colors: ['#EB8034','#7DBC3D'],
-      xAxis: [{
-          categories: categories,
-          reversed: false,
-          labels: {
-              step: 1
+
+  if (chartConfig.aboveSites === 0 && chartConfig.belowSites === 0) {
+    $('#'+chartConfig.target).html('N/A');
+  } else {
+    meBar = new Highcharts.Chart({
+        chart: {
+            renderTo: chartConfig.target,
+            type: 'bar',
+            margin: [0, 0, 0, 0],
+            spacingTop: 0,
+            spacingBottom: 0,
+            spacingLeft: 0,
+            spacingRight: 0
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: ''
+        },
+        colors: ['#EB8034','#7DBC3D'],
+        xAxis: [{
+            categories: categories,
+            reversed: false,
+            labels: {
+                step: 1
+            }
+        }, { // mirror axis on right side
+            opposite: true,
+            reversed: false,
+            categories: categories,
+            linkedTo: 0,
+            labels: {
+                step: 1
+            }
+        }],
+        yAxis: {
+            min: -100,
+            max: 100,
+            title: {
+                text: null
+            },
+            labels: {
+                step: 100,
+                formatter: function () {
+                    return Math.abs(this.value) + '%';
+                }
+            }
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        tooltip: {
+          formatter: function() {
+            var label = '';
+            if (this.y >= 0) {
+              label = chartConfig.aboveSites + ' sites <b>above</b> threshold: '+this.y+'%';
+            } else {
+              label = chartConfig.belowSites + ' sites <b>below</b> threshold: '+(this.y * -1)+'%';
+            }
+            return label;
           }
-      }, { // mirror axis on right side
-          opposite: true,
-          reversed: false,
-          categories: categories,
-          linkedTo: 0,
-          labels: {
-              step: 1
-          }
-      }],
-      yAxis: {
-          min: -100,
-          max: 100,
-          title: {
-              text: null
-          },
-          labels: {
-              step: 100,
-              formatter: function () {
-                  return Math.abs(this.value) + '%';
-              }
-          }
-      },
-      plotOptions: {
-          series: {
-              stacking: 'normal'
-          }
-      },
-      series: [{
-          name: 'Below threshold',
-          showInLegend:false,
-          data: [
-              chartConfig.below
-          ]
-      }, {
-          name: 'Above threshold',
-          showInLegend:false,
-          data: [
-              chartConfig.above
-          ]
-      }]
-  });
+        },
+        series: [{
+            name: 'Below threshold',
+            dataLabels: {
+              enabled: false
+            },
+            showInLegend:false,
+            data: [
+                chartConfig.belowPerc
+            ]
+        }, {
+            name: 'Above threshold',
+            dataLabels: {
+              enabled: false
+            },
+            showInLegend:false,
+            data: [
+                chartConfig.abovePerc
+            ]
+        }]
+    });
+  }
 }
 
 function loadHabCharts(chartConfig) {
