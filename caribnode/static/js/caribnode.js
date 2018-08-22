@@ -333,9 +333,29 @@ $.widget( "geonode.ReefAssessment", {
       grade,
       score
     );
-    // this._highlightFeature(this.cOverlay, feature);
-    // var countryName = feature ? feature.get(config.layers.eez.unitname) : null;
-    // this._highlightListItem(this.listItemClass, countryName);
+  },
+
+  _MEClickHandler: function(evt) {
+    var pixel = this.meMap.getEventPixel(evt.originalEvent);
+    var unit = '';
+    var grade = '';
+    var score = '';
+    
+    var feature = this.meMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+      return feature;
+    });
+
+    if (feature) {
+      unit = feature.get('AREANAM') || feature.get('MPA');
+      grade = feature.get(this.curMEIndi + '1') || 'N/A';
+      score = '' + (feature.get(this.curMEIndi || 'N/A'));
+    }
+    
+    this._displayME(
+      unit,
+      grade,
+      score
+    );
   },
 
   _loadHabitatMap: function(mapEl) {  
@@ -532,6 +552,7 @@ $.widget( "geonode.ReefAssessment", {
     });
 
     $(this.meMap.getViewport()).on('mousemove', $.proxy(this._MEHoverHandler, this));
+    $(this.meMap.on('singleclick', $.proxy(this._MEClickHandler, this)));
 
     /******** Base Layers ********/
 
