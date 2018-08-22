@@ -23,6 +23,20 @@ $.widget( "geonode.ReefAssessment", {
 
   highName: null,
   highFeature: null,
+  curMEIndi: 0,
+  meIndis: [
+    'RUR_LEGAL',
+    'RUR_REGUL',
+    'MGT_PLAN',
+    'MES_ENF',
+    'CAP_BDGT',
+    'RUR_BOUND',
+    'ME_MON',
+    'CAP_STAFF',
+    'DA_INCL',
+    'DEVOL'
+  ],
+  curMEIndi: 'RUR_LEGAL',
 
   /*
    * Constructor
@@ -56,7 +70,9 @@ $.widget( "geonode.ReefAssessment", {
           elemClass: this.listItemClass, 
           nameAttr: this.options.config.layers.eez.unitname
         }
-        this._loadHoverHighlightMapEvents(hoverConfig);        
+        this._loadHoverHighlightMapEvents(hoverConfig);
+
+        this._loadMESelectEvent();
       }
       
       if (config.scale.name == 'country') {
@@ -82,6 +98,8 @@ $.widget( "geonode.ReefAssessment", {
           nameAttr: this.options.config.layers.pa.unitname
         }
         this._loadHoverHighlightMapEvents(hoverConfig);
+
+        this._loadMESelectEvent();
       } 
 
       if (config.scale.name == 'region' || config.scale.name == 'country') {
@@ -306,8 +324,8 @@ $.widget( "geonode.ReefAssessment", {
 
     if (feature) {
       unit = feature.get('AREANAM') || feature.get('MPA');
-      grade = feature.get('CAP_STAFF1') || 'N/A';
-      score = '' + (feature.get('CAP_STAFF' || 'N/A'));
+      grade = feature.get(this.curMEIndi + '1') || 'N/A';
+      score = '' + (feature.get(this.curMEIndi || 'N/A'));
     }
     
     this._displayME(
@@ -632,7 +650,7 @@ $.widget( "geonode.ReefAssessment", {
       this.mePAIndiLayer = new ol.layer.Vector({
         source: this.mePAIndiSource,
         style: $.proxy(this._getMEStyle, this)
-      });
+      });      
       
       this.meMap.addLayer(this.mePAIndiLayer);
     }
@@ -869,7 +887,7 @@ $.widget( "geonode.ReefAssessment", {
   },
   
   _getMEStyle: function(feature, resolution) {
-    var indiCol = 'CAP_STAFF1';
+    var indiCol = this.curMEIndi + '1';
     var dotColor = '#999999';
     var aboveColor = '#7DBC3D';
     var belowColor = '#EB8034';
@@ -903,7 +921,7 @@ $.widget( "geonode.ReefAssessment", {
     var strokeColor = 'red';
     var strokeWidth = 1;
     var fillColor = 'red';
-    var grade = feature.get('CAP_STAFF1');
+    var grade = feature.get(this.curMEIndi + '1');
 
     strokeColor = grade === 'above' ? aboveColor: belowColor;;
     strokeWidth = 1.5;
@@ -1006,7 +1024,18 @@ $.widget( "geonode.ReefAssessment", {
     $(params.elemClass).mouseleave(params, $.proxy(this._hoverOut, this));
   },
 
+  _loadMESelectEvent: function() {
+    //load hover events    
+    $('.ME-select').on('change', $.proxy(this._changeMEIndi, this));
+  },
+
 /******** UI EVENT HANDLERS ********/
+
+  _changeMEIndi: function(event) {
+    this.curMEIndi = event.target.value;
+    this.mePAIndiSource.dispatchEvent('change');
+    this.mePASource.dispatchEvent('change');
+  },
 
   _clickZoom: function(event) {
     //Get name from list element
@@ -1101,21 +1130,37 @@ $.widget( "geonode.ReefAssessment", {
   
   _displayME: function(unit, grade, score) {
     if (unit.length > 0) {
-      $('#ME-display').show();
+      
       $('#me-unit').text(unit);
       if (grade === 'above') {
         grade = '<span class="me-grade-above">' + grade + '</span>';
       } else if (grade === 'below') {
         grade = '<span class="me-grade-below">' + grade + '</span>';
       }
-      $('#me-grade').html(grade);
-      $('#me-score').text(score);
-      // Feed in data
-    } else {
-      // $('#ME-display').hide()
-      // Clear data
+      $('#me-grade').html('Grade: ' + grade);
+      $('#me-score').text('Score: ' + score);
     }
-  }
+  },
+
+    /*
+   * Control of active ME layer
+   * name - layer name
+   */
+  _changeMELayer: function(name) {
+    //if new element to highlight
+    if (trigFeature !== this.highFeature) {
+      //Unhighlight existing feature
+      if (this.highFeature) {
+        overlay.removeFeature(this.highFeature);
+      }
+      //Highlight the new feature
+      if (trigFeature) {
+        overlay.addFeature(trigFeature);
+      }
+      //Update cur feature
+      this.highFeature = trigFeature;
+    }
+  },
 });
 
 /******** BIO INDICATOR LIST WIDGET ********/

@@ -369,9 +369,7 @@ td.small-num {
 }
 
 .me-bar {
-    width: 260px; height: 36px; margin: 0 auto;
-    padding-left: 10px;
-    padding-right: 10px;
+    width: 185px; height: 36px; margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -408,6 +406,25 @@ td.small-num {
     position: relative;
 }
 
+#ME-menu {
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    width: 100%;
+    z-index: 1000;
+    padding-top: 8px;
+}
+
+.ME-select {
+    width: 180px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Lato',sans-serif;
+}
+
 #ME-display {
     position: absolute;
     right: 0;
@@ -415,10 +432,9 @@ td.small-num {
     background-color: #EFEFEF;
     border-top: 1px solid #CCCCCC;
     border-left: 1px solid #CCCCCC;
-    height: 100px;
-    width: 200px;
+    height: 80px;
+    width: 180px;
     z-index: 1000;
-    display: none;
     padding: 8px;
 }
 

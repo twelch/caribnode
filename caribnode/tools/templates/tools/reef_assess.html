@@ -513,10 +513,24 @@
         <div class="span6 section-right">
           
           <div id="ME-map">
-            <div id="ME-display">
-              <div id='me-unit'></div>
-              <div>Grade: <span id='me-grade'></span></div>
-              <div>Score: <span id='me-score'></span></div>
+            <div id="ME-menu">
+              <select class="ME-select">
+                <option value="RUR_LEGAL">Legally Gazetted</option>
+                <option value="RUR_REGUL">Appropriate Regulation</option>
+                <option value="MGT_PLAN">Management Plan</option>
+                <option value="MES_ENF">Enforcement Capacity</option>
+                <option value="CAP_BDGT">Budget Capacity</option>
+                <option value="RUR_BOUND">Defined Boundaries</option>
+                <option value="ME_MON">Monitoring</option>
+                <option value="CAP_STAFF">Staff Capacity</option>
+                <option value="DA_INCL">Inclusive</option>
+                <option value="DEVOL">Shared Management</option>
+              </select>
+            </div>
+            <div id="ME-display">              
+              <div id='me-unit'>Select a managed area to view its score</div>
+              <div id='me-grade'></div>
+              <div id='me-score'></div>
             </div>
           </div>
           <div class="legend">
@@ -826,10 +840,10 @@ $( document ).ready(function() {
       <table class="table table-indi-list">
         <tr class='indi-list-value'>
           <td>
-            <div><%= indi.display.year %></div>
+            <div id='<%= indi.indi_type %>-<%= indi.id %>' class='me-bar'></div>
           </td>
           <td>
-            <div id='<%= indi.indi_type %>-<%= indi.id %>' class='me-bar'></div>
+            <div><%= indi.display.year %></div>
           </td>
           <td>
             <div><%= indi.display.sample %></div>
@@ -844,10 +858,10 @@ $( document ).ready(function() {
         </tr>
         <tr class='indi-list-label'>
           <td>
-            <div>Year</div>
+            <div>Grade</div>
           </td>
           <td>
-            <div>Score</div>
+            <div>Year</div>
           </td>
           <td>
             <div>Sites</div>
