@@ -52,6 +52,7 @@ $.widget( "geonode.ReefAssessment", {
         this._loadCountryMap('country-map');
         this._loadHabitatMap('hab-map');
         this._loadBioMap('BIO-map');
+        this._loadMeMap('ME-map');
         this._loadMpaMap('mpa-map');
         
         var clickZoomConfig = null;
@@ -324,7 +325,7 @@ $.widget( "geonode.ReefAssessment", {
 
     if (feature) {
       unit = feature.get('AREANAM') || feature.get('MPA');
-      grade = feature.get(this.curMEIndi + '1') || 'N/A';
+      grade = feature.get(this.curMEIndi + '1') || 'Not Measured';
       score = '' + (feature.get(this.curMEIndi || 'N/A'));
     }
     
@@ -607,7 +608,7 @@ $.widget( "geonode.ReefAssessment", {
 
     /******** ME Layers **********/
 
-    if (config.scale.name=='country') {
+    if (config.scale.name=='region' || config.scale.name=='country') {
 
       /********** ME PA Polygon Layer **********/
       //Get base URL and switch to web mercator projection
@@ -615,7 +616,12 @@ $.widget( "geonode.ReefAssessment", {
       //Also switch from JSON to JSONP
       paUrl = paUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      paUrl += '&format_options=callback:loadMEPAFeatures&cql_filter='+config.layers.me_mpa_poly.parentunitname+'=\''+config.unit.name+'\'';    
+      if (config.scale.name === 'region') {
+        paUrl += '&format_options=callback:loadMEPAFeatures';
+      } else if (config.scale.name === 'country') {
+        paUrl += '&format_options=callback:loadMEPAFeatures&cql_filter='+config.layers.me_mpa_poly.parentunitname+'=\''+config.unit.name+'\'';    
+      }
+      
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paLoad(extent, resolution, projection) {
@@ -648,7 +654,11 @@ $.widget( "geonode.ReefAssessment", {
       //Also switch from JSON to JSONP
       mePAIndiUrl = mePAIndiUrl.replace('json','text/javascript');
       //Filter to include only mpas for current country 
-      mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures&cql_filter='+config.layers.me_mpa_point.parentunitname+'=\''+config.unit.name+'\'';    
+      if (config.scale.name === 'region') {
+        mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures';            
+      } else if (config.scale.name === 'country') {
+        mePAIndiUrl += '&format_options=callback:loadMEPAIndiFeatures&cql_filter='+config.layers.me_mpa_point.parentunitname+'=\''+config.unit.name+'\'';    
+      }
 
       //OL3 custom loader function that uses JSONP.  Based on OL3 WFS-feature example
       function paIndiLoad(extent, resolution, projection) {
@@ -939,12 +949,16 @@ $.widget( "geonode.ReefAssessment", {
   _getMEPAStyle: function(feature, resolution) {
     var aboveColor = '#7DBC3D';
     var belowColor = '#EB8034';
-    var strokeColor = 'red';
+    var strokeColor = '#999999';
     var strokeWidth = 1;
     var fillColor = 'red';
     var grade = feature.get(this.curMEIndi + '1');
 
-    strokeColor = grade === 'above' ? aboveColor: belowColor;;
+    if (grade === 'above') {
+      strokeColor = aboveColor
+    } else if (grade === 'below') {
+      strokeColor = belowColor
+    }
     strokeWidth = 1.5;
     fillColor = 'rgba(51,102,255,0)';
 

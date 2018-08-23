@@ -491,7 +491,7 @@
 
 <!---- MANAGEMENT EFFECTIVENESS ---->
 
-  {% if scale.name == "country" %}
+  {% if scale.name == 'region' or scale.name == "country" %}
   <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
 
   <div class="row-fluid section-body">
@@ -557,27 +557,7 @@
 
     </div>
   </div>
-  {% endif %}
-
-  {% if scale.name == "region" %}
-    <h3 class='section-header'>MANAGEMENT EFFECTIVENESS</h3>
-
-    <div class="row-fluid section-body">
-      <div class="span12">
-        <div class="row-fluid">
-          <section class="indi-top">
-            <div class="span12">
-              <div class="ME-indi-icon pull-left"></div>
-              <div>
-                <p>{% chunk "effect-intro" %}</p>
-                <p class="unavailable">These indicators have not yet been collected.</p>              
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  {% endif %}   
+  {% endif %} 
 
 <!---- SOCIOECONOMIC ---->
 
