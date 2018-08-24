@@ -1,4 +1,4 @@
-{% extends "tools/tool_base.html" %}
+  {% extends "tools/tool_base.html" %}
 {% load i18n %}
 {% load humanize %}
 {% load tools_tags %}
@@ -512,6 +512,14 @@
 
         <div class="span6 section-right">
           
+            <div class='margin-bottom-15 overflow'>
+              <div class="pull-left width65"><p>
+                {% chunk "effect-intro-3" %}
+              </p></div>
+              <div class='text-center'>
+                <img src='/static/img/me-legend.png' />
+              </div>
+            </div>
           <div id="ME-map">
             <div id="ME-menu">
               <select class="ME-select">
