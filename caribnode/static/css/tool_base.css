@@ -419,15 +419,15 @@ td.small-num {
 }
 
 .ME-select {
-    width: 180px;
-    font-size: 14px;
+    width: 220px;
+    font-size: 18px;
     font-weight: bold;
     font-family: 'Lato',sans-serif;
 }
 
 #ME-display {
     position: absolute;
-    right: 0;
+    left: 0;
     bottom: 0;
     background-color: #EFEFEF;
     border-top: 1px solid #CCCCCC;
@@ -441,6 +441,7 @@ td.small-num {
 #me-unit {
     padding-bottom: 5px;
     font-weight: bold;
+    font-size: 14px;
 }
 
 .me-grade-below {
